@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"allowJs": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"sourceMap": true,
+		"baseUrl": ".",
+		"outDir": "dist",
+		"moduleResolution": "bundler",
+		"jsx": "react-jsx",
+		"paths": {
+			"@main/*": ["./main/*"],
+			"@renderer/*": ["./renderer/*"],
+			"@shared/*": ["./shared/*"]
+		},
+		"resolveJsonModule": true
+	}
+}
