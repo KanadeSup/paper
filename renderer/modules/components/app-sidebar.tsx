@@ -1,3 +1,4 @@
+import { Link, useRouter } from "@tanstack/react-router";
 import { HomeIcon, SettingsIcon, SquareLibrary } from "lucide-react";
 import { cn } from "../design-system/lib/utils";
 
@@ -33,13 +34,8 @@ function AppSidebarHeader() {
 
 const appSidebarNavItems = [
 	{
-		label: "Home",
-		href: "/",
-		icon: HomeIcon,
-	},
-	{
 		label: "Library",
-		href: "/library",
+		href: "/",
 		icon: SquareLibrary,
 	},
 	{
@@ -49,19 +45,23 @@ const appSidebarNavItems = [
 	},
 ];
 function AppSidebarNav() {
+	const router = useRouter();
 	return (
 		<div className="flex flex-col gap-1">
 			{appSidebarNavItems.map((item) => (
-				<div
-					key={item.href}
+				<Link
+					to={item.href}
+					key={item.label}
 					className={cn(
-						"flex items-center gap-2 cursor-pointer text-sm",
+						"flex items-center gap-2 cursor-pointer text-sm w-full",
 						"hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md p-2",
+						router.state.location.pathname === item.href &&
+							"bg-sidebar-accent text-sidebar-accent-foreground",
 					)}
 				>
 					<item.icon className="size-3" />
 					<span>{item.label}</span>
-				</div>
+				</Link>
 			))}
 		</div>
 	);
