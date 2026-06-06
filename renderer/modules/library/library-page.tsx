@@ -1,5 +1,4 @@
-import { AppLayout } from "../components/app-layout";
-import { AppTitle } from "../components/app-title";
+import { AppLayout, AppTitle } from "../app-layout";
 import { BookList } from "./components/book-list";
 
 export function LibraryPage() {

@@ -1,6 +1,6 @@
+import { cn } from "@renderer/modules/design-system";
 import { Link, useRouter } from "@tanstack/react-router";
-import { HomeIcon, SettingsIcon, SquareLibrary } from "lucide-react";
-import { cn } from "../design-system/lib/utils";
+import { SettingsIcon, SquareLibrary } from "lucide-react";
 
 export type AppSidebarProps = {
 	className?: string;

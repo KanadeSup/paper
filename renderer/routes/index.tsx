@@ -1,4 +1,4 @@
-import { LibraryPage } from "@renderer/modules/library/library-page";
+import { LibraryPage } from "@renderer/modules/library";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({

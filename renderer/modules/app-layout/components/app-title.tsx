@@ -1,7 +1,6 @@
+import { cn, IconButton } from "@renderer/modules/design-system";
 import { SidebarIcon } from "lucide-react";
-import { useAppLayoutStore } from "../app-layout/provider/app-layout-provider";
-import { IconButton } from "../design-system/components/button/icon-button";
-import { cn } from "../design-system/lib/utils";
+import { useAppLayoutStore } from "../provider/app-layout-provider";
 
 export type AppTitleProps = {
 	children: React.ReactNode;

@@ -1,6 +1,8 @@
-import { IconButton } from "@renderer/modules/design-system/components/button/icon-button";
-import { SearchInput } from "@renderer/modules/design-system/components/input/search-input";
-import { Button } from "@renderer/modules/design-system/components/ui/button";
+import {
+	Button,
+	IconButton,
+	SearchInput,
+} from "@renderer/modules/design-system";
 import { ImportIcon, RefreshCcw } from "lucide-react";
 import { DocumentCard } from "./document-card";
 

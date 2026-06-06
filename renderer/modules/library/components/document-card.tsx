@@ -1,4 +1,4 @@
-import { cn } from "@renderer/modules/design-system/lib/utils";
+import { cn } from "@renderer/modules/design-system";
 
 export type DocumentCardProps = {
 	title: string;
