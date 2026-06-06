@@ -1,11 +1,14 @@
 import path from "node:path";
 import { app, BrowserWindow } from "electron";
+import log from "electron-log/main";
 import started from "electron-squirrel-startup";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
 	app.quit();
 }
+
+log.initialize();
 
 const createWindow = () => {
 	// Create the browser window.
