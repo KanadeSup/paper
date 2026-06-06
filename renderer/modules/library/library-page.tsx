@@ -1,5 +1,6 @@
 import { AppLayout } from "../components/app-layout";
 import { AppTitle } from "../components/app-title";
+import { BookList } from "./component/book-list";
 
 export function LibraryPage() {
 	return (
@@ -7,7 +8,7 @@ export function LibraryPage() {
 			<AppTitle>
 				<h1 className="font-semibold text-lg">Library</h1>
 			</AppTitle>
-			<div>test</div>
+			<BookList />
 		</AppLayout>
 	);
 }
