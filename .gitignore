@@ -93,3 +93,5 @@ out/
 
 # Tanstack Router
 **/routeTree.gen.ts
+
+dist/

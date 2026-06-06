@@ -1,6 +1,1 @@
-export enum IpcResponseStatusCodes {
-	BAD_REQUEST = 400,
-	NOT_FOUND = 404,
-	INTERNAL_ERROR = 500,
-	UNPROCESSABLE_ENTITY = 422,
-}
+export * from "@shared/common/constants/ipc-channel.constant";

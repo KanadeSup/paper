@@ -7,6 +7,7 @@ import { BaseError } from "./modules/common/errors/base.error";
 import { BadRequestError } from "./modules/common/errors/common.error";
 import type { BaseChannel } from "./modules/common/ipc/channel.ipc";
 import type { IpcChannelResponse } from "./modules/common/types/ip-channel.type";
+import { GetDocumentListChannel } from "./modules/library";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -115,4 +116,4 @@ class Main {
 	}
 }
 
-new Main().init();
+new Main().init([new GetDocumentListChannel()]);
