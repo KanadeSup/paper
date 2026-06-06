@@ -1,5 +1,5 @@
-import { cn } from "@renderer/design-system/lib/utils";
 import type { ComponentProps } from "react";
+import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
 
 export type IconButtonProps = ComponentProps<typeof Button> & {

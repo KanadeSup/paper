@@ -90,3 +90,6 @@ typings/
 
 # Electron-Forge
 out/
+
+# Tanstack Router
+**/routeTree.gen.ts

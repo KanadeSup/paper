@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./app.css";
-import { AppLayout } from "./app-layout/components/app-layout";
-import { AppTitle } from "./app-layout/components/app-title";
+import { AppLayout } from "./modules/components/app-layout";
+import { AppTitle } from "./modules/components/app-title";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {

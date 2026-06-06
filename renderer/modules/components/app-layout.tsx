@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
 	AppLayoutProvider,
 	useAppLayoutStore,
-} from "../provider/app-layout-provider";
+} from "../app-layout/provider/app-layout-provider";
 import { AppSidebar } from "./app-sidebar";
 
 export type AppLayoutProps = {
