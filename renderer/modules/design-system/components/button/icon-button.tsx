@@ -11,7 +11,7 @@ export function IconButton(props: IconButtonProps) {
 	const { children, className, ...rest } = props;
 
 	return (
-		<Button {...rest} variant="ghost" size="icon" className={cn(className)}>
+		<Button variant="ghost" size="icon" className={cn(className)} {...rest}>
 			{children}
 		</Button>
 	);
