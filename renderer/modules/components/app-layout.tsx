@@ -6,7 +6,7 @@ import {
 import { AppSidebar } from "./app-sidebar";
 
 export type AppLayoutProps = {
-	children: React.ReactNode;
+	children?: React.ReactNode;
 };
 
 export function AppLayout(props: AppLayoutProps) {

@@ -11,6 +11,7 @@
 		"outDir": "dist",
 		"moduleResolution": "bundler",
 		"jsx": "react-jsx",
+		"strictNullChecks": true,
 		"paths": {
 			"@main/*": ["./main/*"],
 			"@renderer/*": ["./renderer/*"],
