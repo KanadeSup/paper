@@ -1,10 +1,15 @@
 import { createRoot } from "react-dom/client";
 import "./app.css";
-import { Button } from "./design-system/components/ui/button";
+import { AppLayout } from "./app-layout/components/app-layout";
+import { AppTitle } from "./app-layout/components/app-title";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
 	throw new Error("Root element not found");
 }
 const root = createRoot(rootElement);
-root.render(<Button>Hello from React!</Button>);
+root.render(
+	<AppLayout>
+		<AppTitle>Hello from React!</AppTitle>
+	</AppLayout>,
+);
