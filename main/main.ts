@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { app, BrowserWindow, ipcMain } from "electron";
 import log from "electron-log/main";
@@ -18,6 +19,7 @@ log.initialize();
 
 class Main {
 	public init(ipcChannels?: BaseChannel<unknown, unknown>[]): void {
+		this.setupPaths();
 		app.whenReady().then(this.onReady.bind(this));
 		app.on("window-all-closed", this.onWindowAllClosed.bind(this));
 		app.on("activate", this.onActivate.bind(this));
@@ -43,6 +45,14 @@ class Main {
 		if (BrowserWindow.getAllWindows().length === 0) {
 			this.createWindow();
 		}
+	}
+
+	private setupPaths() {
+		if (process.platform !== "linux") return;
+		const dataPath = path.join(app.getPath("home"), ".data");
+		// ensure the data path exists
+		mkdirSync(dataPath, { recursive: true });
+		app.setPath("appData", dataPath);
 	}
 
 	private createWindow(): void {
