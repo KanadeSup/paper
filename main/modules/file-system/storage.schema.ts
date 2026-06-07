@@ -7,6 +7,22 @@ export const storageDefinition = {
 			storagePath: null,
 		},
 	}),
+	documents: defineStorage({
+		schema: z.object({
+			records: z
+				.object({
+					id: z.string(),
+					title: z.string().nullable(),
+					author: z.string().nullable(),
+					totalPages: z.number().nullable(),
+					fileName: z.string(),
+				})
+				.array(),
+		}),
+		defaultData: {
+			records: [],
+		},
+	}),
 };
 
 export type StorageDefinition = typeof storageDefinition;

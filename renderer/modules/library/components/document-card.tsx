@@ -2,9 +2,9 @@ import { cn } from "@renderer/modules/design-system";
 
 export type DocumentCardProps = {
 	title: string;
-	totalPages?: number;
-	author?: string;
-	thumbnail?: string;
+	totalPages?: number | null;
+	author?: string | null;
+	thumbnail?: string | null;
 };
 
 export function DocumentCard(props: DocumentCardProps) {
@@ -13,26 +13,32 @@ export function DocumentCard(props: DocumentCardProps) {
 	return (
 		<div
 			className={cn(
-				"flex flex-col gap-2 cursor-pointer",
+				"flex min-w-0 flex-col gap-2 cursor-pointer",
 				"hover:translate-y-[-4px] transition-transform duration-300",
 			)}
 		>
-			<div className="w-full h-64 bg-accent rounded-lg">
-				{thumbnail && (
+			<div className="aspect-3/4 w-full overflow-hidden rounded-lg bg-accent">
+				{thumbnail ? (
 					<img
 						src={thumbnail}
 						alt={title}
-						className="w-full h-full object-cover"
+						className="h-full w-full object-cover"
 					/>
-				)}
+				) : null}
 			</div>
-			<div>
-				<h3 className="font-medium truncate">{title}</h3>
+			<div className="min-w-0">
+				<h3 className="truncate font-medium">{title}</h3>
 				<div className="flex items-center justify-between gap-2">
-					<p className="text-sm text-muted-foreground truncate">{author}</p>
-					<p className="shrink-0 text-sm text-muted-foreground/80">
-						[{totalPages} pages]
-					</p>
+					{author ? (
+						<p className="truncate text-muted-foreground text-sm">{author}</p>
+					) : (
+						<span />
+					)}
+					{totalPages != null ? (
+						<p className="shrink-0 text-muted-foreground/80 text-sm">
+							[{totalPages} pages]
+						</p>
+					) : null}
 				</div>
 			</div>
 		</div>

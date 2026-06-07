@@ -12,6 +12,10 @@ import { IpcResponseStatusCodes } from "./modules/common/constants/ipc-channel.c
 import { BaseError } from "./modules/common/errors/base.error";
 import { BadRequestError } from "./modules/common/errors/common.error";
 import type { BaseChannel } from "./modules/common/ipc/channel.ipc";
+import {
+	registerLocalAssetScheme,
+	setupLocalAssetProtocol,
+} from "./modules/common/protocol/local-asset.protocol";
 import type { IpcChannelResponse } from "./modules/common/types/ip-channel.type";
 import { GetDocumentListChannel } from "./modules/library";
 
@@ -20,12 +24,17 @@ if (started) {
 	app.quit();
 }
 
+registerLocalAssetScheme();
+
 log.initialize();
 
 class Main {
 	public init(ipcChannels?: BaseChannel<unknown, unknown>[]): void {
 		this.setupPaths();
-		app.whenReady().then(this.onReady.bind(this));
+		app.whenReady().then(async () => {
+			setupLocalAssetProtocol();
+			this.onReady();
+		});
 		app.on("window-all-closed", this.onWindowAllClosed.bind(this));
 		app.on("activate", this.onActivate.bind(this));
 		this.registerIpcChannels(ipcChannels ?? []);

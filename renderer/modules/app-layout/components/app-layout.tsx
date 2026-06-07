@@ -1,3 +1,4 @@
+import { cn } from "@renderer/modules/design-system";
 import { AnimatePresence, motion } from "motion/react";
 import {
 	AppLayoutProvider,
@@ -6,27 +7,27 @@ import {
 import { AppSidebar } from "./app-sidebar";
 
 export type AppLayoutProps = {
+	className?: string;
 	children?: React.ReactNode;
 };
 
 export function AppLayout(props: AppLayoutProps) {
-	const { children } = props;
+	const { children, className } = props;
 
 	return (
 		<AppLayoutProvider>
-			<AppLayoutView>{children}</AppLayoutView>
+			<AppLayoutView className={className}>{children}</AppLayoutView>
 		</AppLayoutProvider>
 	);
 }
 
 export function AppLayoutView(props: AppLayoutProps) {
-	const { children } = props;
+	const { children, className } = props;
 
 	const isSidebarOpen = useAppLayoutStore((state) => state.isSidebarOpen);
-	console.log(isSidebarOpen);
 
 	return (
-		<div className="flex h-screen w-screen p-3 gap-4">
+		<div className="flex h-screen w-screen gap-4 overflow-hidden p-3">
 			<AnimatePresence mode="popLayout">
 				{isSidebarOpen && (
 					<motion.div
@@ -47,7 +48,7 @@ export function AppLayoutView(props: AppLayoutProps) {
 			<motion.main
 				layout
 				transition={{ duration: 0.2, ease: "easeInOut" }}
-				className="flex-1"
+				className={cn("flex min-h-0 min-w-0 flex-1 flex-col", className)}
 			>
 				{children}
 			</motion.main>

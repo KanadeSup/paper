@@ -27,10 +27,11 @@ export class FileStorageService {
 	}
 
 	/** Get the path to the storage file */
-	getOrCreateStorageFilePath(name: string) {
+	getOrCreateStorageFilePath(name: keyof StorageDefinition) {
 		const filePath = join(this.getOrCreateStorageDirPath(), `${name}.json`);
 		if (!existsSync(filePath)) {
-			writeFileSync(filePath, "{}");
+			const defaultData = storageDefinition[name].defaultData;
+			writeFileSync(filePath, JSON.stringify(defaultData, null, 2));
 		}
 		return filePath;
 	}

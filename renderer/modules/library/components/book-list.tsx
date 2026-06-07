@@ -1,37 +1,79 @@
 import {
 	Button,
+	cn,
+	getFileBasename,
 	IconButton,
 	SearchInput,
 } from "@renderer/modules/design-system";
-import { ImportIcon, RefreshCcw } from "lucide-react";
+import { ImportIcon, Loader2, RefreshCcw } from "lucide-react";
+import { useDocumentList } from "../hooks/useDocumentList";
 import { DocumentCard } from "./document-card";
 
 export type BookListProps = {};
 
 export function BookList(props: BookListProps) {
+	const { documents, isLoading, error, refresh } = useDocumentList();
+
 	return (
-		<div className="flex flex-col gap-4">
-			<BookListToolbar />
-			<div className="grid grid-cols-5 gap-6">
-				<DocumentCard title="Book 1" totalPages={100} author="Author 1" />
-				<DocumentCard title="Book 2" totalPages={200} author="Author 2" />
-				<DocumentCard title="Book 3" totalPages={300} author="Author 3" />
+		<div className="flex min-h-0 flex-1 flex-col gap-4">
+			<BookListToolbar isLoading={isLoading} onRefresh={refresh} />
+
+			{error && (
+				<div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm">
+					{error}
+				</div>
+			)}
+
+			<div className="min-h-0 flex-1 overflow-y-auto">
+				{isLoading ? (
+					<div className="flex h-40 items-center justify-center text-muted-foreground">
+						<Loader2 className="size-6 animate-spin" />
+					</div>
+				) : documents.length === 0 ? (
+					<div className="flex h-40 items-center justify-center text-muted-foreground text-sm">
+						No documents found. Add PDF files to your storage directory.
+					</div>
+				) : (
+					<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-6">
+						{documents.map((document) => (
+							<DocumentCard
+								key={document.id}
+								title={document.title ?? getFileBasename(document.fileName)}
+								author={document.author}
+								totalPages={document.totalPages}
+								thumbnail={document.thumbnail}
+							/>
+						))}
+					</div>
+				)}
 			</div>
 		</div>
 	);
 }
 
-export function BookListToolbar() {
+type BookListToolbarProps = {
+	isLoading: boolean;
+	onRefresh: () => void;
+};
+
+export function BookListToolbar(props: BookListToolbarProps) {
+	const { isLoading, onRefresh } = props;
+
 	return (
-		<div className="flex items-center justify-between">
-			<SearchInput placeholder="Search" />
-			<div className="flex items-center gap-2">
+		<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+			<SearchInput placeholder="Search" className="w-full sm:max-w-xs" />
+			<div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
 				<Button>
 					<ImportIcon className="size-4" />
 					Import Book
 				</Button>
-				<IconButton variant="secondary">
-					<RefreshCcw className="size-4" />
+				<IconButton
+					variant="secondary"
+					onClick={onRefresh}
+					disabled={isLoading}
+					aria-label="Refresh document list"
+				>
+					<RefreshCcw className={cn("size-4", isLoading && "animate-spin")} />
 				</IconButton>
 			</div>
 		</div>

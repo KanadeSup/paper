@@ -21,18 +21,41 @@ export class PdfService {
 		return engine;
 	}
 
-	async getDocument(documentPath: string) {
+	async openDocument(documentPath: string, documentId: string) {
 		const engine = await this.getEngine();
 		const documentBuffer = await readFile(documentPath);
-		const documentId = crypto.randomUUID();
 
-		const document = await engine
+		return engine
 			.openDocumentBuffer({
 				id: documentId,
 				content: documentBuffer.buffer,
 			})
 			.toPromise();
+	}
 
-		return document;
+	async extractMetadata(documentPath: string, documentId: string) {
+		const engine = await this.getEngine();
+		const document = await this.openDocument(documentPath, documentId);
+		const metadata = await engine.getMetadata(document).toPromise();
+
+		return {
+			title: metadata.title,
+			author: metadata.author,
+			totalPages: document.pageCount,
+		};
+	}
+
+	async renderThumbnail(
+		documentPath: string,
+		documentId: string,
+	): Promise<Buffer<ArrayBufferLike>> {
+		const engine = await this.getEngine();
+		const document = await this.openDocument(documentPath, documentId);
+
+		if (document.pages.length === 0) {
+			throw new Error("Document has no pages");
+		}
+
+		return engine.renderThumbnail(document, document.pages[0]).toPromise();
 	}
 }
