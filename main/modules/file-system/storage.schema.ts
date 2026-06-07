@@ -7,14 +7,6 @@ export const storageDefinition = {
 			storagePath: null,
 		},
 	}),
-	appStatus: defineStorage({
-		schema: z.object({
-			isRunning: z.boolean(),
-		}),
-		defaultData: {
-			isRunning: false,
-		},
-	}),
 };
 
 export type StorageDefinition = typeof storageDefinition;

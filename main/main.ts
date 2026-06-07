@@ -3,6 +3,11 @@ import path from "node:path";
 import { app, BrowserWindow, ipcMain } from "electron";
 import log from "electron-log/main";
 import started from "electron-squirrel-startup";
+import {
+	GetAppConfigChannel,
+	SelectStorageDirectoryChannel,
+	UpdateAppConfigChannel,
+} from "./modules/app-config";
 import { IpcResponseStatusCodes } from "./modules/common/constants/ipc-channel.constant";
 import { BaseError } from "./modules/common/errors/base.error";
 import { BadRequestError } from "./modules/common/errors/common.error";
@@ -126,4 +131,9 @@ class Main {
 	}
 }
 
-new Main().init([new GetDocumentListChannel()]);
+new Main().init([
+	new GetAppConfigChannel(),
+	new UpdateAppConfigChannel(),
+	new SelectStorageDirectoryChannel(),
+	new GetDocumentListChannel(),
+]);
