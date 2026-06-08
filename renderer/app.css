@@ -132,3 +132,7 @@
 		@apply font-sans;
 	}
 }
+:root {
+	/* Tells Chromium to render native elements in dark mode */
+	color-scheme: dark;
+}
