@@ -28,23 +28,26 @@ export function AppLayoutView(props: AppLayoutProps) {
 
 	return (
 		<div className="flex h-screen w-screen gap-4 overflow-hidden p-3">
-			<AnimatePresence mode="popLayout">
-				{isSidebarOpen && (
-					<motion.div
-						layout
-						initial={{ x: -256, opacity: 1 }}
-						animate={{ x: 0, opacity: 1 }}
-						exit={{ x: -256, opacity: 1 }}
-						transition={{
-							duration: 0.2,
-							ease: "easeInOut",
-						}}
-						className="w-72 h-full shrink-0"
-					>
-						<AppSidebar className="w-full" />
-					</motion.div>
-				)}
-			</AnimatePresence>
+			<motion.aside
+				animate={{
+					width: isSidebarOpen ? 288 : 0,
+					opacity: isSidebarOpen ? 1 : 1,
+				}}
+				className="shrink-0 overflow-hidden"
+			>
+				<motion.div
+					animate={{
+						x: isSidebarOpen ? 0 : -300,
+					}}
+					transition={{
+						duration: 0.2,
+						ease: "easeInOut",
+					}}
+					className="h-full w-72"
+				>
+					<AppSidebar className="w-full" />
+				</motion.div>
+			</motion.aside>
 			<motion.main
 				layout
 				transition={{ duration: 0.2, ease: "easeInOut" }}

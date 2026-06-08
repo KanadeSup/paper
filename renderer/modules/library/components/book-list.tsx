@@ -3,15 +3,14 @@ import {
 	cn,
 	getFileBasename,
 	IconButton,
+	ScrollArea,
 	SearchInput,
 } from "@renderer/modules/design-system";
 import { ImportIcon, Loader2, RefreshCcw } from "lucide-react";
 import { useDocumentList } from "../hooks/useDocumentList";
 import { DocumentCard } from "./document-card";
 
-export type BookListProps = {};
-
-export function BookList(props: BookListProps) {
+export function BookList() {
 	const { documents, isLoading, error, refresh } = useDocumentList();
 
 	return (
@@ -24,7 +23,7 @@ export function BookList(props: BookListProps) {
 				</div>
 			)}
 
-			<div className="min-h-0 flex-1 overflow-y-auto">
+			<ScrollArea className="min-h-0 flex-1 @container pr-4">
 				{isLoading ? (
 					<div className="flex h-40 items-center justify-center text-muted-foreground">
 						<Loader2 className="size-6 animate-spin" />
@@ -34,7 +33,16 @@ export function BookList(props: BookListProps) {
 						No documents found. Add PDF files to your storage directory.
 					</div>
 				) : (
-					<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-6">
+					<div
+						className={cn(
+							"grid grid-cols-1 gap-4",
+							"@md:grid-cols-2",
+							"@2xl:grid-cols-3",
+							"@3xl:grid-cols-4",
+							"@4xl:grid-cols-5",
+							"@xl:gap-6",
+						)}
+					>
 						{documents.map((document) => (
 							<DocumentCard
 								key={document.id}
@@ -46,7 +54,7 @@ export function BookList(props: BookListProps) {
 						))}
 					</div>
 				)}
-			</div>
+			</ScrollArea>
 		</div>
 	);
 }
