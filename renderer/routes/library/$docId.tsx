@@ -1,4 +1,4 @@
-import { PDFReaderPage } from "@renderer/modules/PDFReader/PDFReaderPage";
+import { PDFReaderPage } from "@renderer/modules/pdf-reader/pdf-reader-page";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/library/$docId")({

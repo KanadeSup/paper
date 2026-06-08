@@ -10,6 +10,7 @@ import {
 	RenderPluginPackage,
 } from "@embedpdf/plugin-render/react";
 import { Scroller, ScrollPluginPackage } from "@embedpdf/plugin-scroll/react";
+import { SpreadPluginPackage } from "@embedpdf/plugin-spread/react";
 import {
 	Viewport,
 	ViewportPluginPackage,
@@ -27,6 +28,7 @@ const plugins = [
 	createPluginRegistration(ScrollPluginPackage),
 	createPluginRegistration(RenderPluginPackage),
 	createPluginRegistration(ZoomPluginPackage),
+	createPluginRegistration(SpreadPluginPackage),
 ];
 
 export const PDFViewer = () => {
@@ -41,7 +43,7 @@ export const PDFViewer = () => {
 	}
 
 	return (
-		<div className="h-full">
+		<div className="h-full select-none">
 			<EmbedPDF engine={engine} plugins={plugins}>
 				{({ activeDocumentId }) =>
 					activeDocumentId && (

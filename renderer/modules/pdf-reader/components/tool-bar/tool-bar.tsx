@@ -1,5 +1,7 @@
 import { cn } from "@renderer/modules/design-system";
 import { useRef, useState } from "react";
+import { PageNavigation } from "./page-navigation";
+import { ViewControl } from "./view-control";
 import { Zoom } from "./zoom";
 
 export type ToolbarProps = {
@@ -44,18 +46,32 @@ export function Toolbar({ className, documentId }: ToolbarProps) {
 		>
 			<div
 				className={cn(
-					"flex items-center gap-2 rounded-lg bg-sidebar/90 w-full",
+					"flex items-center justify-between gap-1 rounded-lg bg-sidebar/90 w-full",
 					"px-2 py-1 transition-all duration-200 ease-out",
 					!toolBarHovered && "translate-y-[-120%]",
 					visible && "translate-y-0",
 					className,
 				)}
 			>
-				<Zoom
-					documentId={documentId}
-					onPopupOpen={() => setPopupOpened(true)}
-					onPopupClose={() => setPopupOpened(false)}
-				/>
+				<div className="flex items-center gap-2">
+					<PageNavigation documentId={documentId} />
+				</div>
+
+				<div>
+					<Zoom
+						documentId={documentId}
+						onPopupOpen={() => setPopupOpened(true)}
+						onPopupClose={() => setPopupOpened(false)}
+					/>
+				</div>
+
+				<div>
+					<ViewControl
+						documentId={documentId}
+						onPopupOpen={() => setPopupOpened(true)}
+						onPopupClose={() => setPopupOpened(false)}
+					/>
+				</div>
 			</div>
 		</div>
 	);
