@@ -6,6 +6,7 @@ import {
 	ScrollArea,
 	SearchInput,
 } from "@renderer/modules/design-system";
+import { Link } from "@tanstack/react-router";
 import { ImportIcon, Loader2, RefreshCcw } from "lucide-react";
 import { useDocumentList } from "../hooks/useDocumentList";
 import { DocumentCard } from "./document-card";
@@ -44,13 +45,15 @@ export function BookList() {
 						)}
 					>
 						{documents.map((document) => (
-							<DocumentCard
-								key={document.id}
-								title={document.title ?? getFileBasename(document.fileName)}
-								author={document.author}
-								totalPages={document.totalPages}
-								thumbnail={document.thumbnail}
-							/>
+							<Link to={`/library/${document.id}`} key={document.id}>
+								<DocumentCard
+									key={document.id}
+									title={document.title ?? getFileBasename(document.fileName)}
+									author={document.author}
+									totalPages={document.totalPages}
+									thumbnail={document.thumbnail}
+								/>
+							</Link>
 						))}
 					</div>
 				)}
