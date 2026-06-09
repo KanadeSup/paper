@@ -1,5 +1,7 @@
-import { cn } from "@renderer/modules/design-system";
+import { cn, IconButton } from "@renderer/modules/design-system";
+import { SidebarIcon } from "lucide-react";
 import { useRef, useState } from "react";
+import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
 import { PageNavigation } from "./page-navigation";
 import { ViewControl } from "./view-control";
 import { Zoom } from "./zoom";
@@ -9,12 +11,16 @@ export type ToolbarProps = {
 	documentId: string;
 };
 
-export function Toolbar({ className, documentId }: ToolbarProps) {
-	const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+export function Toolbar(props: ToolbarProps) {
+	const { className, documentId } = props;
+
+	const pdfReaderActions = usePdfReaderStore((state) => state.actions);
 
 	const [toolBarHovered, setToolBarHovered] = useState(false);
 	const [popupOpened, setPopupOpened] = useState(false);
 	const visible = toolBarHovered || popupOpened;
+
+	const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const handleMouseEnter = () => {
 		clearHideTimer();
@@ -40,7 +46,7 @@ export function Toolbar({ className, documentId }: ToolbarProps) {
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: toolbar wrapper uses mouse hover for show/hide
 		<div
-			className="absolute w-full z-10 py-2 px-4"
+			className="absolute w-full z-10 px-4"
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
 		>
@@ -54,6 +60,12 @@ export function Toolbar({ className, documentId }: ToolbarProps) {
 				)}
 			>
 				<div className="flex items-center gap-2">
+					<IconButton
+						variant="secondary"
+						onClick={() => pdfReaderActions.toggleSidebar()}
+					>
+						<SidebarIcon />
+					</IconButton>
 					<PageNavigation documentId={documentId} />
 				</div>
 

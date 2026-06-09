@@ -17,6 +17,8 @@ import {
 } from "@embedpdf/plugin-viewport/react";
 import { ZoomPluginPackage } from "@embedpdf/plugin-zoom/react";
 import { Loader2 } from "lucide-react";
+import { usePdfReaderStore } from "../provider/pdf-reader-provider";
+import { PdfSidebar } from "./pdf-sidebar/pdf-sidebar";
 import { Toolbar } from "./tool-bar/tool-bar";
 
 // 1. Register the plugins
@@ -34,6 +36,8 @@ const plugins = [
 export const PDFViewer = () => {
 	const { engine, isLoading } = usePdfiumEngine();
 
+	const isSidebarOpen = usePdfReaderStore((state) => state.isSidebarOpen);
+
 	if (isLoading || !engine) {
 		return (
 			<div className="flex h-full items-center justify-center">
@@ -50,24 +54,27 @@ export const PDFViewer = () => {
 						<DocumentContent documentId={activeDocumentId}>
 							{({ isLoaded }) =>
 								isLoaded && (
-									<div className="relative h-full">
-										<Toolbar documentId={activeDocumentId} />
-										<Viewport
-											documentId={activeDocumentId}
-											className="h-full bg-background"
-										>
-											<Scroller
+									<div className="flex h-full w-full">
+										{isSidebarOpen && <PdfSidebar />}
+										<div className="relative h-full w-full">
+											<Toolbar documentId={activeDocumentId} />
+											<Viewport
 												documentId={activeDocumentId}
-												renderPage={({ width, height, pageIndex }) => (
-													<div style={{ width, height }}>
-														<RenderLayer
-															documentId={activeDocumentId}
-															pageIndex={pageIndex}
-														/>
-													</div>
-												)}
-											/>
-										</Viewport>
+												className="h-full bg-background"
+											>
+												<Scroller
+													documentId={activeDocumentId}
+													renderPage={({ width, height, pageIndex }) => (
+														<div style={{ width, height }}>
+															<RenderLayer
+																documentId={activeDocumentId}
+																pageIndex={pageIndex}
+															/>
+														</div>
+													)}
+												/>
+											</Viewport>
+										</div>
 									</div>
 								)
 							}
