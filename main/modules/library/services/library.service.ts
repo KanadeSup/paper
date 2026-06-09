@@ -1,7 +1,10 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { AppConfigService } from "@main/modules/app-config/services/app-config.service";
-import { UnprocessableEntityError } from "@main/modules/common/errors/common.error";
+import {
+	NotFoundError,
+	UnprocessableEntityError,
+} from "@main/modules/common/errors/common.error";
 import {
 	DOCUMENT_THUMBNAIL_CATEGORY,
 	FileStorageService,
@@ -9,6 +12,8 @@ import {
 } from "@main/modules/file-system";
 import type { DocumentRecord } from "@main/modules/file-system/types/document-storage.type";
 import { PdfService } from "@main/modules/pdf";
+import { LOCAL_ASSET_PROTOCOL } from "@shared/common/constants/local-asset.constant";
+import type { GetDocumentResponse } from "@shared/library/ipc/get-document.contract";
 import type { ResponseDocument } from "@shared/library/ipc/get-document-list.contract";
 
 type ScannedDocument = {
@@ -64,6 +69,47 @@ export class LibraryService {
 		});
 	}
 
+	async getDocument(documentId: string): Promise<GetDocumentResponse> {
+		await this.syncDocuments();
+
+		const scannedDocument = this.findScannedDocument(documentId);
+		if (!scannedDocument) {
+			throw new NotFoundError("Document not found");
+		}
+
+		const { records } = this.fileStorageService.getStorageData("documents");
+		const record = records.find((document) => document.id === documentId);
+		const thumbnailFilename = `${documentId}.png`;
+		const isThumbnailExists = this.imageStorageService.imageExists(
+			DOCUMENT_THUMBNAIL_CATEGORY,
+			thumbnailFilename,
+		);
+
+		return {
+			id: documentId,
+			title: record?.title ?? null,
+			author: record?.author ?? null,
+			totalPages: record?.totalPages ?? null,
+			thumbnail: isThumbnailExists
+				? this.imageStorageService.getAssetUrl(
+						DOCUMENT_THUMBNAIL_CATEGORY,
+						thumbnailFilename,
+					)
+				: null,
+			fileName: scannedDocument.fileName,
+			url: this.getDocumentUrl(documentId),
+		};
+	}
+
+	resolveDocumentPath(documentId: string): string {
+		const scannedDocument = this.findScannedDocument(documentId);
+		if (!scannedDocument) {
+			throw new NotFoundError("Document not found");
+		}
+
+		return scannedDocument.filePath;
+	}
+
 	async getDocumentList(): Promise<ResponseDocument[]> {
 		await this.syncDocuments();
 
@@ -93,7 +139,16 @@ export class LibraryService {
 		});
 	}
 
-	private getStoragePath() {
+	private findScannedDocument(documentId: string): ScannedDocument | null {
+		const storagePath = this.getStoragePath();
+		const scannedDocuments = this.scanPdfDocuments(storagePath);
+
+		return (
+			scannedDocuments.find((document) => document.id === documentId) ?? null
+		);
+	}
+
+	getStoragePath() {
 		const { storagePath } = this.appConfigService.getConfig();
 
 		if (!storagePath) {
@@ -124,17 +179,6 @@ export class LibraryService {
 					fileName: entry.name,
 				};
 			});
-	}
-
-	private getDocumentTitle(
-		title: string | null | undefined,
-		fileName: string,
-	): string {
-		if (title?.trim()) {
-			return title.trim();
-		}
-
-		return fileName.replace(/\.pdf$/i, "");
 	}
 
 	private async ensureThumbnail(document: ScannedDocument) {
@@ -175,5 +219,9 @@ export class LibraryService {
 			totalPages: metadata.totalPages,
 			fileName: document.fileName,
 		};
+	}
+
+	private getDocumentUrl(documentId: string) {
+		return `${LOCAL_ASSET_PROTOCOL}://document/${encodeURIComponent(documentId)}`;
 	}
 }

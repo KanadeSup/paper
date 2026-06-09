@@ -6,5 +6,7 @@ export const Route = createFileRoute("/library/$docId")({
 });
 
 function RouteComponent() {
-	return <PDFReaderPage />;
+	const { docId } = Route.useParams();
+
+	return <PDFReaderPage documentId={docId} />;
 }

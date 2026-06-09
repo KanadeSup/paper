@@ -1,6 +1,7 @@
 import { createPluginRegistration } from "@embedpdf/core";
 import { EmbedPDF } from "@embedpdf/core/react";
 import { usePdfiumEngine } from "@embedpdf/engines/react";
+import { BookmarkPluginPackage } from "@embedpdf/plugin-bookmark/react";
 import {
 	DocumentContent,
 	DocumentManagerPluginPackage,
@@ -16,39 +17,69 @@ import {
 	ViewportPluginPackage,
 } from "@embedpdf/plugin-viewport/react";
 import { ZoomPluginPackage } from "@embedpdf/plugin-zoom/react";
+import { useDocument } from "@renderer/modules/library/hooks/useDocument";
 import { Loader2 } from "lucide-react";
+import { useMemo } from "react";
 import { usePdfReaderStore } from "../provider/pdf-reader-provider";
 import { PdfSidebar } from "./pdf-sidebar/pdf-sidebar";
 import { Toolbar } from "./tool-bar/tool-bar";
 
-// 1. Register the plugins
-const plugins = [
-	createPluginRegistration(DocumentManagerPluginPackage, {
-		initialDocuments: [{ url: "https://snippet.embedpdf.com/ebook.pdf" }],
-	}),
+const basePlugins = [
 	createPluginRegistration(ViewportPluginPackage),
 	createPluginRegistration(ScrollPluginPackage),
 	createPluginRegistration(RenderPluginPackage),
 	createPluginRegistration(ZoomPluginPackage),
 	createPluginRegistration(SpreadPluginPackage),
+	createPluginRegistration(BookmarkPluginPackage),
 ];
 
-export const PDFViewer = () => {
-	const { engine, isLoading } = usePdfiumEngine();
+type PDFViewerProps = {
+	documentId: string;
+};
+
+export const PDFViewer = ({ documentId }: PDFViewerProps) => {
+	const { engine, isLoading: isEngineLoading } = usePdfiumEngine();
+	const {
+		document,
+		isLoading: isDocumentLoading,
+		error,
+	} = useDocument(documentId);
 
 	const isSidebarOpen = usePdfReaderStore((state) => state.isSidebarOpen);
 
-	if (isLoading || !engine) {
+	const plugins = useMemo(
+		() => [
+			createPluginRegistration(DocumentManagerPluginPackage, {
+				initialDocuments: document
+					? [
+							{
+								url: document.url,
+								documentId: document.id,
+								name: document.title || document.fileName,
+							},
+						]
+					: [],
+			}),
+			...basePlugins,
+		],
+		[document],
+	);
+
+	if (isEngineLoading || isDocumentLoading || !engine || !document) {
 		return (
 			<div className="flex h-full items-center justify-center">
-				<Loader2 className="size-6 animate-spin" />
+				{error ? (
+					<p className="text-destructive text-sm">{error}</p>
+				) : (
+					<Loader2 className="size-6 animate-spin" />
+				)}
 			</div>
 		);
 	}
 
 	return (
 		<div className="h-full select-none">
-			<EmbedPDF engine={engine} plugins={plugins}>
+			<EmbedPDF key={documentId} engine={engine} plugins={plugins}>
 				{({ activeDocumentId }) =>
 					activeDocumentId && (
 						<DocumentContent documentId={activeDocumentId}>
