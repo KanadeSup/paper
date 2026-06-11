@@ -86,7 +86,9 @@ export const PDFViewer = ({ documentId }: PDFViewerProps) => {
 							{({ isLoaded }) =>
 								isLoaded && (
 									<div className="flex h-full w-full">
-										{isSidebarOpen && <PdfSidebar />}
+										{isSidebarOpen && (
+											<PdfSidebar documentId={activeDocumentId} />
+										)}
 										<div className="relative h-full w-full">
 											<Toolbar documentId={activeDocumentId} />
 											<Viewport
