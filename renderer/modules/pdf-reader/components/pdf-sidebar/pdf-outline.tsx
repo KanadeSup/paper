@@ -2,7 +2,6 @@ import type { PdfBookmarkObject } from "@embedpdf/models";
 import { useBookmarkCapability } from "@embedpdf/plugin-bookmark/react";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { ScrollArea } from "@renderer/modules/design-system";
-import { Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { PdfOutlineItem } from "./pdf-outline-item";
 
@@ -71,11 +70,7 @@ export function PdfOutline({ documentId }: PdfOutlineProps) {
 	}, [bookmarkProvides, documentId]);
 
 	if (isLoading) {
-		return (
-			<div className="flex flex-1 items-center justify-center">
-				<Loader2 className="size-4 animate-spin text-muted-foreground" />
-			</div>
-		);
+		return null;
 	}
 
 	if (error) {
