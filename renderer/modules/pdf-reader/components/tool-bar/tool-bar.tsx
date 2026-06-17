@@ -1,89 +1,45 @@
 import { cn, IconButton } from "@renderer/modules/design-system";
 import { SidebarIcon } from "lucide-react";
-import { useRef, useState } from "react";
-import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
+import { usePdfReaderLayoutStore } from "../pdf-layout/pdf-reader-layout-provider";
 import { PageNavigation } from "./page-navigation";
 import { ViewControl } from "./view-control";
 import { Zoom } from "./zoom";
 
 export type ToolbarProps = {
-	className?: string;
 	documentId: string;
 };
 
 export function Toolbar(props: ToolbarProps) {
-	const { className, documentId } = props;
+	const { documentId } = props;
 
-	const pdfReaderActions = usePdfReaderStore((state) => state.actions);
-
-	const [toolBarHovered, setToolBarHovered] = useState(false);
-	const [popupOpened, setPopupOpened] = useState(false);
-	const visible = toolBarHovered || popupOpened;
-
-	const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-	const handleMouseEnter = () => {
-		clearHideTimer();
-
-		setToolBarHovered(true);
-	};
-
-	const handleMouseLeave = () => {
-		clearHideTimer();
-
-		hideTimerRef.current = setTimeout(() => {
-			setToolBarHovered(false);
-		}, 500);
-	};
-
-	const clearHideTimer = () => {
-		if (hideTimerRef.current) {
-			clearTimeout(hideTimerRef.current);
-			hideTimerRef.current = null;
-		}
-	};
+	const pdfReaderLayoutActions = usePdfReaderLayoutStore(
+		(state) => state.actions,
+	);
 
 	return (
-		// biome-ignore lint/a11y/noStaticElementInteractions: toolbar wrapper uses mouse hover for show/hide
 		<div
-			className="absolute w-full z-10 px-4"
-			onMouseEnter={handleMouseEnter}
-			onMouseLeave={handleMouseLeave}
+			className={cn(
+				"flex items-center justify-between gap-1 rounded-lg bg-sidebar",
+				"w-full flex items-center justify-between gap-2",
+				"px-2 py-1",
+			)}
 		>
-			<div
-				className={cn(
-					"flex items-center justify-between gap-1 rounded-lg bg-sidebar/90 w-full",
-					"px-2 py-1 transition-all duration-200 ease-out",
-					!toolBarHovered && "translate-y-[-120%]",
-					visible && "translate-y-0",
-					className,
-				)}
-			>
-				<div className="flex items-center gap-2">
-					<IconButton
-						variant="secondary"
-						onClick={() => pdfReaderActions.toggleSidebar()}
-					>
-						<SidebarIcon />
-					</IconButton>
-					<PageNavigation documentId={documentId} />
-				</div>
+			<div className="flex items-center gap-2">
+				<IconButton
+					variant="secondary"
+					onClick={() => pdfReaderLayoutActions.toggleSidebar()}
+				>
+					<SidebarIcon />
+				</IconButton>
+				<PageNavigation documentId={documentId} />
+			</div>
 
-				<div>
-					<Zoom
-						documentId={documentId}
-						onPopupOpen={() => setPopupOpened(true)}
-						onPopupClose={() => setPopupOpened(false)}
-					/>
-				</div>
+			<div>
+				<Zoom documentId={documentId} />
+			</div>
 
-				<div>
-					<ViewControl
-						documentId={documentId}
-						onPopupOpen={() => setPopupOpened(true)}
-						onPopupClose={() => setPopupOpened(false)}
-					/>
-				</div>
+			<div>
+				<ViewControl documentId={documentId} />
 			</div>
 		</div>
 	);

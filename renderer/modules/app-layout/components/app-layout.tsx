@@ -1,5 +1,5 @@
 import { cn } from "@renderer/modules/design-system";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import {
 	AppLayoutProvider,
 	useAppLayoutStore,
