@@ -6,7 +6,7 @@ type PdfSidebarProps = {
 
 export function PdfSidebar({ documentId }: PdfSidebarProps) {
 	return (
-		<aside className="flex h-full w-72 shrink-0 flex-col rounded-md bg-sidebar p-3">
+		<aside className="flex h-full w-72 shrink-0 flex-col rounded-md bg-sidebar py-3 pl-3">
 			<h2 className="mb-2 px-1 font-medium text-sm">Outline</h2>
 			<PdfOutline documentId={documentId} />
 		</aside>

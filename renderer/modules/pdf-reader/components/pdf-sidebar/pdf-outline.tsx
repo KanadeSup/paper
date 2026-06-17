@@ -84,8 +84,8 @@ export function PdfOutline({ documentId }: PdfOutlineProps) {
 	}
 
 	return (
-		<ScrollArea className="min-h-0 flex-1">
-			<div className="pr-2">
+		<ScrollArea className="min-h-0 flex-1 pr-3">
+			<div>
 				{bookmarks.map((bookmark, index) => (
 					<PdfOutlineItem
 						key={bookmark.title}
