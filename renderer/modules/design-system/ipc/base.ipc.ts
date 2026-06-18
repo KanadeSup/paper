@@ -41,6 +41,14 @@ export async function invoke<ReqT, ResT>(
 	}
 }
 
+export function onIpc<ResT>(
+	channel: string,
+	listener: (event: Electron.IpcMainEvent, response: ResT) => void,
+) {
+	window.electron.ipcRenderer.on(channel, (event, response) => {
+		listener(event, response as ResT);
+	});
+}
 function validateResponseData<ResT>(
 	response: IpcChannelResponse<ResT>,
 	responseResultSchema?: z.ZodType,

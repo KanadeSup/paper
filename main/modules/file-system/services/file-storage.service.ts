@@ -92,4 +92,12 @@ export class FileStorageService {
 		const data = storageDefinition[name].schema.parse({ records });
 		writeFileSync(filePath, JSON.stringify(data, null, 2));
 	}
+
+	findCollectionRecord<T extends CollectionStorageKeys>(
+		name: T,
+		id: string,
+	): StorageData<T>["records"][number] | null {
+		const storageData = this.getStorageData(name);
+		return storageData.records.find((record) => record.id === id) ?? null;
+	}
 }

@@ -28,11 +28,12 @@ export const storageDefinition = {
 			records: z
 				.object({
 					id: z.string(),
+					documentId: z.string(),
 					modelConfiguration: z.object({
 						temperature: z.number().nullable(),
 						maxTokens: z.number().nullable(),
 						topP: z.number().nullable(),
-						systemPromptWithPlaceholders: z.string().nullable(),
+						systemPromptWithPlaceholders: z.string(),
 					}),
 					messages: z
 						.object({
