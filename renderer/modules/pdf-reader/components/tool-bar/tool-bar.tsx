@@ -1,5 +1,5 @@
 import { cn, IconButton } from "@renderer/modules/design-system";
-import { SidebarIcon } from "lucide-react";
+import { MessageCircleIcon, SidebarIcon } from "lucide-react";
 import { usePdfReaderLayoutStore } from "../pdf-layout/pdf-reader-layout-provider";
 import { PageNavigation } from "./page-navigation";
 import { ViewControl } from "./view-control";
@@ -44,12 +44,18 @@ export function Toolbar(props: ToolbarProps) {
 				/>
 			</div>
 
-			<div>
+			<div className="flex items-center gap-2">
 				<ViewControl
 					documentId={documentId}
 					onPopupOpen={onPopupOpen}
 					onPopupClose={onPopupClose}
 				/>
+				<IconButton
+					variant="secondary"
+					onClick={() => pdfReaderLayoutActions.toggleSidebarRight()}
+				>
+					<MessageCircleIcon />
+				</IconButton>
 			</div>
 		</div>
 	);

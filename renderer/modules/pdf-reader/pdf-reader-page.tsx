@@ -7,9 +7,11 @@ import {
 	ReaderLayout,
 	ReaderMain,
 	ReaderSideLeft,
+	ReaderSideRight,
 } from "./components/pdf-layout/pdf-reader-layout";
 import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
+import { SideChat } from "./components/side-chat/side-chat";
 import { Toolbar } from "./components/tool-bar/tool-bar";
 import { ZoomGesture } from "./components/zoom-gesture/zoom-gesture";
 import { PdfReaderProvider } from "./provider/pdf-reader-provider";
@@ -56,6 +58,9 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 								</ZoomGesture>
 							</Viewport>
 						</ReaderMain>
+						<ReaderSideRight width={288}>
+							<SideChat />
+						</ReaderSideRight>
 					</ReaderLayout>
 				)}
 			</PDFLoader>

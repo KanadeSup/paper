@@ -14,7 +14,7 @@ export type ReaderLayoutProps = {
 export function ReaderLayout({ children }: ReaderLayoutProps) {
 	return (
 		<PdfReaderLayoutProvider>
-			<div className="h-screen w-screen p-3 flex">{children}</div>
+			<div className="h-screen w-screen p-3 flex select-none">{children}</div>
 		</PdfReaderLayoutProvider>
 	);
 }
@@ -35,6 +35,7 @@ export function ReaderSideLeft(props: ReaderSideLeftProps) {
 		<motion.aside
 			animate={{
 				width: isSidebarOpen ? width : 0,
+				marginRight: isSidebarOpen ? 12 : 0,
 				opacity: isSidebarOpen ? 1 : 1,
 			}}
 			className="shrink-0 overflow-hidden"
@@ -149,5 +150,35 @@ export function ReaderFloatTop({
 				{children}
 			</div>
 		</div>
+	);
+}
+
+/* Side right */
+export type ReaderSideRightProps = {
+	children?: React.ReactNode;
+	width: number;
+	offset?: number;
+	className?: string;
+};
+export function ReaderSideRight(props: ReaderSideRightProps) {
+	const { children, width, className } = props;
+
+	const isSidebarRightOpen = usePdfReaderLayoutStore(
+		(state) => state.isSidebarRightOpen,
+	);
+
+	return (
+		<motion.aside
+			animate={{
+				width: isSidebarRightOpen ? width : 0,
+				marginLeft: isSidebarRightOpen ? 12 : 0,
+				opacity: isSidebarRightOpen ? 1 : 1,
+			}}
+			className="shrink-0 overflow-hidden"
+		>
+			<motion.div className={cn("h-full", className)} style={{ width }}>
+				{children}
+			</motion.div>
+		</motion.aside>
 	);
 }

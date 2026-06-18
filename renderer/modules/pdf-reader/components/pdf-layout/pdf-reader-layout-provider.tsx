@@ -9,8 +9,10 @@ export type PdfReaderLayoutProviderProps = {
 
 type PdfReaderLayoutContext = {
 	isSidebarOpen: boolean;
+	isSidebarRightOpen: boolean;
 	actions: {
 		toggleSidebar: (open?: boolean) => void;
+		toggleSidebarRight: (open?: boolean) => void;
 	};
 };
 
@@ -18,10 +20,16 @@ export function PdfReaderLayoutProvider(props: PdfReaderLayoutProviderProps) {
 	const [store] = useState(() =>
 		createStore<PdfReaderLayoutContext>(() => ({
 			isSidebarOpen: true,
+			isSidebarRightOpen: true,
 			actions: {
 				toggleSidebar: (open?: boolean) => {
 					store.setState({
 						isSidebarOpen: open ?? !store.getState().isSidebarOpen,
+					});
+				},
+				toggleSidebarRight: (open?: boolean) => {
+					store.setState({
+						isSidebarRightOpen: open ?? !store.getState().isSidebarRightOpen,
 					});
 				},
 			},
