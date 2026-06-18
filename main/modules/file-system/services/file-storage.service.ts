@@ -5,6 +5,7 @@ import {
 	type StorageDefinition,
 	storageDefinition,
 } from "../storage.schema";
+import type { CollectionStorageKeys } from "../types/document-storage.type";
 import { FileSystemService } from "./file-system.services";
 
 export class FileStorageService {
@@ -70,5 +71,25 @@ export class FileStorageService {
 
 		const filePath = this.getOrCreateStorageFilePath(name);
 		writeFileSync(filePath, JSON.stringify(mergedData, null, 2));
+	}
+
+	createCollectionRecord<T extends CollectionStorageKeys>(
+		name: T,
+		record: StorageData<T>["records"][number],
+	) {
+		const storageData = this.getStorageData(name);
+		const oldRecords = storageData.records;
+		const newRecords = [...oldRecords, record] as StorageData<T>["records"];
+		this.setCollectionRecords(name, newRecords);
+	}
+
+	setCollectionRecords<T extends CollectionStorageKeys>(
+		name: T,
+		records: StorageData<T>["records"],
+	) {
+		const filePath = this.getOrCreateStorageFilePath(name);
+
+		const data = storageDefinition[name].schema.parse({ records });
+		writeFileSync(filePath, JSON.stringify(data, null, 2));
 	}
 }
