@@ -66,7 +66,11 @@ export function ReaderMain({ children, className }: ReaderMainProps) {
 		<motion.main
 			layout
 			transition={{ duration: 0.2, ease: "easeInOut" }}
-			className={cn("flex-1 flex flex-col relative", className)}
+			className={cn(
+				"flex-1 flex flex-col relative",
+				"overflow-auto",
+				className,
+			)}
 		>
 			{children}
 		</motion.main>

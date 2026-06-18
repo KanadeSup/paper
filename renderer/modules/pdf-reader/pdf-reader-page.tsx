@@ -11,6 +11,7 @@ import {
 import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
 import { Toolbar } from "./components/tool-bar/tool-bar";
+import { ZoomGesture } from "./components/zoom-gesture/zoom-gesture";
 import { PdfReaderProvider } from "./provider/pdf-reader-provider";
 
 type PDFReaderPageProps = {
@@ -40,17 +41,19 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 								documentId={documentId}
 								className="h-full bg-background"
 							>
-								<Scroller
-									documentId={documentId}
-									renderPage={({ width, height, pageIndex }) => (
-										<div style={{ width, height }}>
-											<RenderLayer
-												documentId={documentId}
-												pageIndex={pageIndex}
-											/>
-										</div>
-									)}
-								/>
+								<ZoomGesture documentId={documentId}>
+									<Scroller
+										documentId={documentId}
+										renderPage={({ width, height, pageIndex }) => (
+											<div style={{ width, height }}>
+												<RenderLayer
+													documentId={documentId}
+													pageIndex={pageIndex}
+												/>
+											</div>
+										)}
+									/>
+								</ZoomGesture>
 							</Viewport>
 						</ReaderMain>
 					</ReaderLayout>
