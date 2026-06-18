@@ -1,6 +1,7 @@
 import { RenderLayer } from "@embedpdf/plugin-render/react";
 import { Scroller } from "@embedpdf/plugin-scroll/react";
 import { Viewport } from "@embedpdf/plugin-viewport/react";
+import { useState } from "react";
 import {
 	ReaderFloatTop,
 	ReaderLayout,
@@ -17,6 +18,8 @@ type PDFReaderPageProps = {
 };
 
 export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
+	const [isToolbarPopupOpen, setIsToolbarPopupOpen] = useState(false);
+
 	return (
 		<PdfReaderProvider>
 			<PDFLoader documentId={documentId}>
@@ -26,8 +29,12 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 							<PdfSidebar documentId={documentId} />
 						</ReaderSideLeft>
 						<ReaderMain>
-							<ReaderFloatTop>
-								<Toolbar documentId={documentId} />
+							<ReaderFloatTop visible={isToolbarPopupOpen}>
+								<Toolbar
+									documentId={documentId}
+									onPopupOpen={() => setIsToolbarPopupOpen(true)}
+									onPopupClose={() => setIsToolbarPopupOpen(false)}
+								/>
 							</ReaderFloatTop>
 							<Viewport
 								documentId={documentId}

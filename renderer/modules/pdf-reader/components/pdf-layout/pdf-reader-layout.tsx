@@ -1,6 +1,6 @@
 import { cn } from "@renderer/modules/design-system";
 import { motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	PdfReaderLayoutProvider,
 	usePdfReaderLayoutStore,
@@ -85,29 +85,45 @@ export function ReaderFloatTop({
 	visible,
 }: ReaderFloatTopProps) {
 	const [floatTopHovered, setFloatTopHovered] = useState(false);
+	const [isVisible, setIsVisible] = useState(visible);
 
-	const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const handleMouseEnter = () => {
-		clearHideTimer();
+		clearTimer();
 
 		setFloatTopHovered(true);
 	};
 
 	const handleMouseLeave = () => {
-		clearHideTimer();
-
-		hideTimerRef.current = setTimeout(() => {
-			setFloatTopHovered(false);
-		}, 500);
+		clearTimer();
+		delayTimer(() => setFloatTopHovered(false));
 	};
 
-	const clearHideTimer = () => {
-		if (hideTimerRef.current) {
-			clearTimeout(hideTimerRef.current);
-			hideTimerRef.current = null;
+	const clearTimer = useCallback(() => {
+		if (timerRef.current) {
+			clearTimeout(timerRef.current);
+			timerRef.current = null;
 		}
-	};
+	}, []);
+
+	const delayTimer = useCallback((callback: () => void) => {
+		timerRef.current = setTimeout(() => {
+			callback();
+		}, 500);
+	}, []);
+
+	useEffect(() => {
+		if (visible) setIsVisible(true);
+		else {
+			clearTimer();
+			delayTimer(() => setIsVisible(false));
+		}
+
+		return () => {
+			clearTimer();
+		};
+	}, [visible, clearTimer, delayTimer]);
 
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: topbar wrapper uses mouse hover for show/hide
@@ -121,6 +137,7 @@ export function ReaderFloatTop({
 					"w-full",
 					"transition-all duration-200 ease-out",
 					!floatTopHovered && "translate-y-[-120%]",
+					isVisible && "translate-y-0",
 					visible && "translate-y-0",
 					className,
 				)}

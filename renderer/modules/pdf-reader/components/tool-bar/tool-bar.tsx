@@ -7,10 +7,12 @@ import { Zoom } from "./zoom";
 
 export type ToolbarProps = {
 	documentId: string;
+	onPopupOpen?: () => void;
+	onPopupClose?: () => void;
 };
 
 export function Toolbar(props: ToolbarProps) {
-	const { documentId } = props;
+	const { documentId, onPopupOpen, onPopupClose } = props;
 
 	const pdfReaderLayoutActions = usePdfReaderLayoutStore(
 		(state) => state.actions,
@@ -35,11 +37,19 @@ export function Toolbar(props: ToolbarProps) {
 			</div>
 
 			<div>
-				<Zoom documentId={documentId} />
+				<Zoom
+					documentId={documentId}
+					onPopupOpen={onPopupOpen}
+					onPopupClose={onPopupClose}
+				/>
 			</div>
 
 			<div>
-				<ViewControl documentId={documentId} />
+				<ViewControl
+					documentId={documentId}
+					onPopupOpen={onPopupOpen}
+					onPopupClose={onPopupClose}
+				/>
 			</div>
 		</div>
 	);
