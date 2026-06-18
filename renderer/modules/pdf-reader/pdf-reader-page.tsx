@@ -2,6 +2,7 @@ import { RenderLayer } from "@embedpdf/plugin-render/react";
 import { Scroller } from "@embedpdf/plugin-scroll/react";
 import { Viewport } from "@embedpdf/plugin-viewport/react";
 import { useState } from "react";
+import { PdfChat } from "./components/pdf-chat/pdf-chat";
 import {
 	ReaderFloatTop,
 	ReaderLayout,
@@ -11,7 +12,6 @@ import {
 } from "./components/pdf-layout/pdf-reader-layout";
 import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
-import { SideChat } from "./components/side-chat/side-chat";
 import { Toolbar } from "./components/tool-bar/tool-bar";
 import { ZoomGesture } from "./components/zoom-gesture/zoom-gesture";
 import { PdfReaderProvider } from "./provider/pdf-reader-provider";
@@ -59,7 +59,7 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 							</Viewport>
 						</ReaderMain>
 						<ReaderSideRight width={288}>
-							<SideChat />
+							<PdfChat />
 						</ReaderSideRight>
 					</ReaderLayout>
 				)}
