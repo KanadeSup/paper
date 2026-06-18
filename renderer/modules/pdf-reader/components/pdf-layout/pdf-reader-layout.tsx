@@ -133,7 +133,7 @@ export function ReaderFloatTop({
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: topbar wrapper uses mouse hover for show/hide
 		<div
-			className="absolute w-full z-10 px-4"
+			className="absolute w-full z-10 pl-2 pr-6"
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={handleMouseLeave}
 		>

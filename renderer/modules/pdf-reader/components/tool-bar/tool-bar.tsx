@@ -23,7 +23,7 @@ export function Toolbar(props: ToolbarProps) {
 			className={cn(
 				"flex items-center justify-between gap-1 rounded-lg bg-sidebar",
 				"w-full flex items-center justify-between gap-2",
-				"px-2 py-1",
+				"px-2 py-1 border border-border",
 			)}
 		>
 			<div className="flex items-center gap-2">
