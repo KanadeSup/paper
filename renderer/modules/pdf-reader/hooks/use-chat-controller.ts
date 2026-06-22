@@ -12,7 +12,7 @@ import { useChatSession } from "./use-chat-session";
 import { useStreamMessage } from "./use-stream-message";
 
 export type UseChatControllerProps = {
-	bookId: string;
+	documentId: string;
 	sessionId?: string;
 };
 
@@ -55,7 +55,6 @@ export function useChatController(props: UseChatControllerProps) {
 
 	const handleMessageError = useCallback(
 		(errorMessage: ChatSessionAssistantMessage) => {
-			console.error("errorMessage", errorMessage);
 			updateMessage(null, "assistant", {
 				...errorMessage,
 				isError: true,

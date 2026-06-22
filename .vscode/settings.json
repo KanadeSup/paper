@@ -16,5 +16,8 @@
 	},
 	"search.exclude": {
 		"**/routeTree.gen.ts": true
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
 	}
 }

@@ -1,5 +1,5 @@
+import { randomUUID } from "node:crypto";
 import { FileStorageService } from "@main/modules/file-system";
-import { v4 } from "uuid";
 import type { ChatModelConfiguration, ChatSession } from "../types/chat.type";
 
 export class ChatService {
@@ -9,7 +9,7 @@ export class ChatService {
 		documentId: string,
 		modelConfiguration: ChatModelConfiguration,
 	): Promise<ChatSession> {
-		const chatSessionId = v4();
+		const chatSessionId = randomUUID();
 		this.fileStorageService.createCollectionRecord("chatSessions", {
 			id: chatSessionId,
 			documentId: documentId,

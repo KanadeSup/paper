@@ -5,8 +5,8 @@ contextBridge.exposeInMainWorld("electron", {
 		invoke: (channel: string, request?: unknown) =>
 			ipcRenderer.invoke(channel, request),
 		on: (channel: string, listener: (...args: unknown[]) => void) => {
-			ipcRenderer.on(channel, (_event, ...args) => {
-				listener(...args);
+			ipcRenderer.on(channel, (event, ...args) => {
+				listener(event, ...args);
 			});
 		},
 		removeAllListeners: (channel: string) => {

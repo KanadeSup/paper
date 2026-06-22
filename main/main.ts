@@ -8,6 +8,9 @@ import {
 	SelectStorageDirectoryChannel,
 	UpdateAppConfigChannel,
 } from "./modules/app-config";
+import { CreateChatSessionChannel } from "./modules/chat/ipc/create-chat-session.ipc";
+import { GetChatSessionChannel } from "./modules/chat/ipc/get-chat-session.ipc";
+import { SendMessageChannel } from "./modules/chat/ipc/send-message.ipc";
 import { IpcResponseStatusCodes } from "./modules/common/constants/ipc-channel.constant";
 import { BaseError } from "./modules/common/errors/base.error";
 import { BadRequestError } from "./modules/common/errors/common.error";
@@ -146,4 +149,7 @@ new Main().init([
 	new SelectStorageDirectoryChannel(),
 	new GetDocumentListChannel(),
 	new GetDocumentChannel(),
+	new SendMessageChannel(),
+	new CreateChatSessionChannel(),
+	new GetChatSessionChannel(),
 ]);

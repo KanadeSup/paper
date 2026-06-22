@@ -1,6 +1,7 @@
 import { RenderLayer } from "@embedpdf/plugin-render/react";
 import { Scroller } from "@embedpdf/plugin-scroll/react";
 import { Viewport } from "@embedpdf/plugin-viewport/react";
+import { getRouteApi } from "@tanstack/react-router";
 import { useState } from "react";
 import { PdfChat } from "./components/pdf-chat/pdf-chat";
 import {
@@ -59,7 +60,7 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 							</Viewport>
 						</ReaderMain>
 						<ReaderSideRight width={288}>
-							<PdfChat />
+							<PdfChat documentId={documentId} />
 						</ReaderSideRight>
 					</ReaderLayout>
 				)}
