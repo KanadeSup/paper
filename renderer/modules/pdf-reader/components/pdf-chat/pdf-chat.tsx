@@ -1,4 +1,4 @@
-import { cn } from "@renderer/modules/design-system";
+import { cn, ScrollArea } from "@renderer/modules/design-system";
 import Logger from "electron-log/renderer.js";
 import { useChatController } from "../../hooks/use-chat-controller";
 import { ChatInput } from "./chat-input";
@@ -44,9 +44,9 @@ export function PdfChat(props: PdfChatProps) {
 			<div className="rounded-md bg-sidebar p-2">
 				<h2 className="text-sm font-medium"> PDF chat</h2>
 			</div>
-			<div className="w-full h-full bg-sidebar rounded-md">
-				<ChatMessageList messages={messages} />
-			</div>
+			<ScrollArea className="flex-1 bg-sidebar rounded-md overflow-auto">
+				<ChatMessageList className="px-2 pr-2" messages={messages} />
+			</ScrollArea>
 			<div>
 				<ChatInput
 					className="mt-auto"
