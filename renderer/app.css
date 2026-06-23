@@ -4,6 +4,7 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/geist";
 @plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:is(.dark *));
 :root {
 	--background: oklch(1 0 0);

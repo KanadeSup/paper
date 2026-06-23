@@ -12,11 +12,10 @@ type ChatMessageListProps = {
 	messages: DisplayedChatMessage[];
 	askAIText?: string | null;
 	className?: string;
+	scrollContainer?: HTMLDivElement | null;
 };
 
 export function ChatMessageList(props: ChatMessageListProps) {
-	const messageListRef = useRef<HTMLDivElement>(null);
-
 	const lastMessage =
 		props.messages.length > 0
 			? props.messages[props.messages.length - 1]
@@ -26,19 +25,15 @@ export function ChatMessageList(props: ChatMessageListProps) {
 		lastMessage && lastMessage.role === "assistant" && lastMessage.isStreaming;
 
 	const scrollToBottom = useCallback(() => {
-		const messageListElement = messageListRef.current;
-		if (!messageListElement) return;
+		const scrollContainer = props.scrollContainer;
+		if (!scrollContainer) return;
 
 		// smooth scroll to bottom
-		const MARGIN = 5;
-		messageListElement.scrollTo({
-			top:
-				messageListElement.scrollHeight -
-				messageListElement.clientHeight -
-				MARGIN,
+		scrollContainer.scrollTo({
+			top: scrollContainer.scrollHeight - scrollContainer.clientHeight,
 			behavior: "smooth",
 		});
-	}, []);
+	}, [props.scrollContainer]);
 
 	useEffect(() => {
 		if (isLastMessageStreaming) {
@@ -52,7 +47,6 @@ export function ChatMessageList(props: ChatMessageListProps) {
 				"flex flex-col gap-2 h-full overflow-y-auto dark-lean-scrollbar scroll-smooth",
 				props.className,
 			)}
-			ref={messageListRef}
 		>
 			{props.askAIText && (
 				<div className="px-5 py-2 bg-[#2c394d] rounded-md border border-default-400">
@@ -78,7 +72,7 @@ export function ChatMessageList(props: ChatMessageListProps) {
 			{props.messages.length > 0 && (
 				<div
 					style={{
-						minHeight: useMinHeightWrapper ? "calc(100vh - 215px)" : "auto",
+						minHeight: useMinHeightWrapper ? "calc(100vh - 205px)" : "auto",
 					}}
 				>
 					<MessageItem message={props.messages[props.messages.length - 1]} />

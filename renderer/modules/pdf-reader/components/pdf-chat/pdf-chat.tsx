@@ -1,6 +1,7 @@
 import { cn, IconButton, ScrollArea } from "@renderer/modules/design-system";
 import Logger from "electron-log/renderer.js";
 import { HistoryIcon, PlusIcon } from "lucide-react";
+import { useRef } from "react";
 import { useChatController } from "../../hooks/use-chat-controller";
 import { ChatInput } from "./chat-input";
 import { ChatMessageList } from "./message-list";
@@ -11,6 +12,8 @@ export type PdfChatProps = {
 };
 export function PdfChat(props: PdfChatProps) {
 	const { documentId, className } = props;
+
+	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 	const {
 		session,
@@ -53,8 +56,16 @@ export function PdfChat(props: PdfChatProps) {
 					</IconButton>
 				</div>
 			</div>
-			<ScrollArea className="flex-1 bg-sidebar rounded-md overflow-auto">
-				<ChatMessageList className="px-2 pr-2" messages={messages} />
+			<ScrollArea
+				overflowAnchor="none"
+				ref={scrollContainerRef}
+				className="flex-1 bg-sidebar rounded-md overflow-auto"
+			>
+				<ChatMessageList
+					className="px-2 pr-2"
+					messages={messages}
+					scrollContainer={scrollContainerRef.current}
+				/>
 			</ScrollArea>
 			<div>
 				<ChatInput

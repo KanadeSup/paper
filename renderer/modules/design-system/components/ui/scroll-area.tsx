@@ -2,20 +2,26 @@ import { cn } from "@renderer/modules/design-system/lib/utils";
 import { ScrollArea as ScrollAreaPrimitive } from "radix-ui";
 import type * as React from "react";
 
-function ScrollArea({
-	className,
-	children,
-	...props
-}: React.ComponentProps<typeof ScrollAreaPrimitive.Root>) {
+export type ScrollAreaProps = React.ComponentProps<
+	typeof ScrollAreaPrimitive.Root
+> & {
+	overflowAnchor?: "none" | "auto" | "inherit" | "initial" | "revert" | "unset";
+};
+function ScrollArea({ className, children, ...props }: ScrollAreaProps) {
+	const { ref, overflowAnchor, ...rest } = props;
 	return (
 		<ScrollAreaPrimitive.Root
 			data-slot="scroll-area"
 			className={cn("relative", className)}
-			{...props}
+			{...rest}
 		>
 			<ScrollAreaPrimitive.Viewport
 				data-slot="scroll-area-viewport"
 				className="size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
+				style={{
+					overflowAnchor: overflowAnchor,
+				}}
+				ref={ref}
 			>
 				{children}
 			</ScrollAreaPrimitive.Viewport>
