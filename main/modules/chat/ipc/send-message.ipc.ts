@@ -53,7 +53,7 @@ export class SendMessageChannel extends BaseChannel<
 		for await (const chunk of fakeStream()) {
 			messageBuffer += chunk;
 			sender.send(SEND_CHAT_MESSAGE_CHUNK_CHANNEL_NAME, {
-				chunk: messageBuffer,
+				chunk: chunk,
 			});
 		}
 
@@ -73,7 +73,40 @@ export class SendMessageChannel extends BaseChannel<
 }
 
 async function* fakeStream() {
-	yield "Hello ";
-	yield "World";
-	yield "!";
+	const chunks = [
+		"Hello",
+		",",
+		" ",
+		"I",
+		"'m",
+		" ",
+		"an",
+		" ",
+		"AI",
+		" ",
+		"assistant",
+		".",
+		" ",
+		"How",
+		" ",
+		"can",
+		" ",
+		"I",
+		" ",
+		"help",
+		" ",
+		"you",
+		" ",
+		"today",
+		"?",
+	];
+
+	for (const chunk of chunks) {
+		// Random delay between 20ms and 120ms
+		await new Promise((resolve) =>
+			setTimeout(resolve, 20 + Math.random() * 100),
+		);
+
+		yield chunk;
+	}
 }
