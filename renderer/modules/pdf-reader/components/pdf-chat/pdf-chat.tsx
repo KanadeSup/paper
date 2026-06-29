@@ -62,7 +62,7 @@ export function PdfChat(props: PdfChatProps) {
 				className="flex-1 bg-sidebar rounded-md overflow-auto"
 			>
 				<ChatMessageList
-					className="px-2 pr-2"
+					className="p-2 pr-2"
 					messages={messages}
 					scrollContainer={scrollContainerRef.current}
 				/>

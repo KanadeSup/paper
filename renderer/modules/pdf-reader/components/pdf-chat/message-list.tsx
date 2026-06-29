@@ -1,6 +1,6 @@
 import { cn } from "@renderer/modules/design-system";
 import { MarkdownRenderer } from "@renderer/modules/design-system/components/markdown/markdown-renderer";
-import { GhostIcon, Loader2Icon } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type {
 	DisplayedAssistantChatMessage,
@@ -42,12 +42,7 @@ export function ChatMessageList(props: ChatMessageListProps) {
 	}, [isLastMessageStreaming, scrollToBottom]);
 
 	return (
-		<div
-			className={cn(
-				"flex flex-col gap-2 h-full overflow-y-auto dark-lean-scrollbar scroll-smooth",
-				props.className,
-			)}
-		>
+		<div className={cn("flex flex-col gap-2 h-full", props.className)}>
 			{props.askAIText && (
 				<div className="px-5 py-2 bg-[#2c394d] rounded-md border border-default-400">
 					<p className="text-center font-bold"> Ask AI </p>
@@ -72,7 +67,7 @@ export function ChatMessageList(props: ChatMessageListProps) {
 			{props.messages.length > 0 && (
 				<div
 					style={{
-						minHeight: useMinHeightWrapper ? "calc(100vh - 205px)" : "auto",
+						minHeight: useMinHeightWrapper ? "calc(100vh - 370px)" : "auto",
 					}}
 				>
 					<MessageItem message={props.messages[props.messages.length - 1]} />
@@ -95,8 +90,10 @@ type UserMessageProps = {
 };
 function UserMessage(props: UserMessageProps) {
 	return (
-		<div className="border-b border-gray-700 py-4 mb-3">
-			<MarkdownRenderer content={props.message.content} />
+		<div className="flex justify-end pl-3  mb-3">
+			<div className="p-2 px-3 text-sm bg-accent rounded-xl">
+				<MarkdownRenderer content={props.message.content} />
+			</div>
 		</div>
 	);
 }
@@ -257,17 +254,11 @@ function AssistantMessage({ message }: AssistantMessageProps) {
 	}, []);
 
 	return (
-		<div className="border-b border-gray-700 pb-2">
-			<div className="flex items-start gap-2 mb-3">
-				<div className="w-10 h-10 bg-accent flex items-center justify-center rounded-md">
-					<GhostIcon className="w-6 h-6" />
-				</div>
-				<div className="flex flex-col gap-1">
-					<p className="text-sm text-gray-300 font-bold">OpenAI</p>
-					<p className="text-xs text-gray-400">OpenAI o4 mini</p>
-				</div>
+		<div className="mb-3 border-b border-accent">
+			<div className="flex items-start gap-2">
+				<p className="text-xs text-gray-300 font-bold">OpenAI</p>
 			</div>
-			<div className="prose prose-invert prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-p:text-base prose-a:underline">
+			<div className="prose prose-invert prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-p:text-sm prose-a:underline">
 				{renderMessage()}
 			</div>
 		</div>
