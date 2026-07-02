@@ -67,7 +67,7 @@ export function ChatMessageList(props: ChatMessageListProps) {
 			{props.messages.length > 0 && (
 				<div
 					style={{
-						minHeight: useMinHeightWrapper ? "calc(100vh - 370px)" : "auto",
+						minHeight: useMinHeightWrapper ? "calc(100vh - 270px)" : "auto",
 					}}
 				>
 					<MessageItem message={props.messages[props.messages.length - 1]} />
@@ -90,8 +90,8 @@ type UserMessageProps = {
 };
 function UserMessage(props: UserMessageProps) {
 	return (
-		<div className="flex justify-end pl-3  mb-3">
-			<div className="p-2 px-3 text-sm bg-accent rounded-xl">
+		<div className="flex justify-end pl-3 mb-3">
+			<div className="p-2 px-3 text-sm bg-accent rounded-xl min-w-0 break-all">
 				<MarkdownRenderer content={props.message.content} />
 			</div>
 		</div>
