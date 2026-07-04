@@ -51,6 +51,20 @@ export const storageDefinition = {
 			records: [],
 		},
 	}),
+	documentVectorStore: defineCollectionStorage({
+		schema: z.object({
+			records: z
+				.object({
+					id: z.string(),
+					vectorStoreId: z.string(),
+					lastUsedAt: z.coerce.date().optional(),
+				})
+				.array(),
+		}),
+		defaultData: {
+			records: [],
+		},
+	}),
 };
 
 export type StorageDefinition = typeof storageDefinition;

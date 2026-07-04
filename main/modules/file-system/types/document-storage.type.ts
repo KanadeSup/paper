@@ -16,3 +16,7 @@ export type ChatSessionRecord = StorageData<"chatSessions">["records"][number];
 export type ChatMessageRecord = ChatSessionRecord["messages"][number];
 export type ChatModelConfigurationRecord =
 	ChatSessionRecord["modelConfiguration"];
+
+// Document vector stores
+export type DocumentVectorStoreRecord =
+	StorageData<"documentVectorStores">["records"][number];

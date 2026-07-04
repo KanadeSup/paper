@@ -1,10 +1,5 @@
-import { existsSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
-import { AppConfigService } from "@main/modules/app-config/services/app-config.service";
-import {
-	NotFoundError,
-	UnprocessableEntityError,
-} from "@main/modules/common/errors/common.error";
+import { NotFoundError } from "@main/modules/common/errors/common.error";
+import { DocumentService, type ScannedFile } from "@main/modules/document";
 import {
 	DOCUMENT_THUMBNAIL_CATEGORY,
 	FileStorageService,
@@ -16,14 +11,8 @@ import { LOCAL_ASSET_PROTOCOL } from "@shared/common/constants/local-asset.const
 import type { GetDocumentResponse } from "@shared/library/ipc/get-document.contract";
 import type { ResponseDocument } from "@shared/library/ipc/get-document-list.contract";
 
-type ScannedDocument = {
-	id: string;
-	filePath: string;
-	fileName: string;
-};
-
 export class LibraryService {
-	private readonly appConfigService = new AppConfigService();
+	private readonly documentService = new DocumentService();
 	private readonly fileStorageService = new FileStorageService();
 	private readonly imageStorageService = new ImageStorageService();
 	private readonly pdfService = new PdfService();
@@ -102,12 +91,7 @@ export class LibraryService {
 	}
 
 	resolveDocumentPath(documentId: string): string {
-		const scannedDocument = this.findScannedDocument(documentId);
-		if (!scannedDocument) {
-			throw new NotFoundError("Document not found");
-		}
-
-		return scannedDocument.filePath;
+		return this.documentService.resolveFilePath(documentId);
 	}
 
 	async getDocumentList(): Promise<ResponseDocument[]> {
@@ -139,49 +123,19 @@ export class LibraryService {
 		});
 	}
 
-	private findScannedDocument(documentId: string): ScannedDocument | null {
-		const storagePath = this.getStoragePath();
-		const scannedDocuments = this.scanPdfDocuments(storagePath);
-
-		return (
-			scannedDocuments.find((document) => document.id === documentId) ?? null
-		);
+	private findScannedDocument(documentId: string) {
+		return this.documentService.findFileByDocumentId(documentId);
 	}
 
 	getStoragePath() {
-		const { storagePath } = this.appConfigService.getConfig();
-
-		if (!storagePath) {
-			throw new UnprocessableEntityError("Storage path is not configured");
-		}
-
-		return storagePath;
+		return this.documentService.getStoragePath();
 	}
 
-	private scanPdfDocuments(storagePath: string): ScannedDocument[] {
-		if (!existsSync(storagePath)) {
-			throw new UnprocessableEntityError("Storage directory does not exist");
-		}
-
-		const entries = readdirSync(storagePath, { withFileTypes: true });
-
-		return entries
-			.filter(
-				(entry) => entry.isFile() && entry.name.toLowerCase().endsWith(".pdf"),
-			)
-			.map((entry) => {
-				const filePath = join(storagePath, entry.name);
-				const { ino } = statSync(filePath);
-
-				return {
-					id: ino.toString(),
-					filePath,
-					fileName: entry.name,
-				};
-			});
+	private scanPdfDocuments(storagePath: string) {
+		return this.documentService.scanPdfFiles(storagePath);
 	}
 
-	private async ensureThumbnail(document: ScannedDocument) {
+	private async ensureThumbnail(document: ScannedFile) {
 		const thumbnailFilename = `${document.id}.png`;
 
 		const isThumbnailExists = this.imageStorageService.imageExists(
@@ -205,7 +159,7 @@ export class LibraryService {
 	}
 
 	private async buildDocumentRecord(
-		document: ScannedDocument,
+		document: ScannedFile,
 	): Promise<DocumentRecord> {
 		const metadata = await this.pdfService.extractMetadata(
 			document.filePath,
