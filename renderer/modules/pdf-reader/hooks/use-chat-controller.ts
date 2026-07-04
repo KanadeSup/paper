@@ -121,7 +121,7 @@ export function useChatController(props: UseChatControllerProps) {
 				// Send the actual user message to the backend language model for response
 				await sendMessage({
 					sessionId: sesionId,
-					model: "gpt-4o-mini",
+					model: "grok-4.3",
 					message: messageContent,
 				});
 			} catch (error) {

@@ -41,7 +41,7 @@ export const storageDefinition = {
 							content: z.string(),
 							role: z.enum(["user", "assistant"]),
 							model: z.string().optional(),
-							createdAt: z.date(),
+							createdAt: z.coerce.date(),
 						})
 						.array(),
 				})

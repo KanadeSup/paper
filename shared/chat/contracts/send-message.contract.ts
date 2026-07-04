@@ -37,6 +37,7 @@ export type SendMessageUserMessage = {
 export type SendMessageAssistantMessage = {
 	id: string;
 	role: "assistant";
+	model: string;
 	content: string;
 	isError?: boolean;
 	errorMessage?: string;

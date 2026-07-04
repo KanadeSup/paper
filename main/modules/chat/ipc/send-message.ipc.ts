@@ -103,22 +103,20 @@ export class SendMessageChannel extends BaseChannel<
 			const responseMessage: SendMessageAssistantMessage = {
 				id: randomUUID(),
 				role: "assistant",
+				model: request.model,
 				content: messageBuffer,
 				createdAt: new Date(),
 			};
 
 			await this.chatService.appendMessages(request.sessionId, [
-				{
-					...responseMessage,
-					model: request.model,
-				},
+				responseMessage,
 			]);
 
 			sender.send(SEND_CHAT_MESSAGE_FINISH_CHANNEL_NAME, {
 				assistantMessage: responseMessage,
 			});
 		} catch (error) {
-			const errorMessage = this.toAssistantErrorMessage(error);
+			const errorMessage = this.toAssistantErrorMessage(error, request.model);
 			Logger.error(`Failed during running send message ipc: ${error}`);
 			sender.send(SEND_CHAT_MESSAGE_ERROR_CHANNEL_NAME, {
 				assistantMessage: errorMessage,
@@ -128,10 +126,14 @@ export class SendMessageChannel extends BaseChannel<
 		return null;
 	}
 
-	private toAssistantErrorMessage(error: unknown): SendMessageAssistantMessage {
+	private toAssistantErrorMessage(
+		error: unknown,
+		model: string,
+	): SendMessageAssistantMessage {
 		return {
 			id: randomUUID(),
 			role: "assistant",
+			model: model,
 			content: "",
 			isError: true,
 			errorMessage:
