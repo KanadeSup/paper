@@ -85,12 +85,14 @@ export class SendMessageChannel extends BaseChannel<
 				topP: chatSession.modelConfiguration.topP ?? undefined,
 			};
 
-			let messageBuffer = "";
-
-			for await (const chunk of textGenerateService.generateTextStream(
+			const stream = textGenerateService.generateTextStream(
 				input,
 				generateOptions,
-			)) {
+			);
+
+			let messageBuffer = "";
+
+			for await (const chunk of stream) {
 				messageBuffer += chunk;
 				sender.send(SEND_CHAT_MESSAGE_CHUNK_CHANNEL_NAME, {
 					chunk: chunk,
