@@ -1,6 +1,7 @@
 import { LlmProviderFactory } from "../factories/provider.factory";
 import type { LlmProvider } from "../providers/llm-provider.interface";
 import type {
+	GenerateTextInput,
 	GenerateTextOptions,
 	LlmProviderName,
 	ProviderOptions,
@@ -18,14 +19,17 @@ export class TextGenerateService {
 		);
 	}
 
-	generateText(prompt: string, options: GenerateTextOptions): Promise<string> {
-		return this.provider.generateText(prompt, options);
+	generateText(
+		input: GenerateTextInput,
+		options: GenerateTextOptions,
+	): Promise<string> {
+		return this.provider.generateText(input, options);
 	}
 
 	generateTextStream(
-		prompt: string,
+		input: GenerateTextInput,
 		options: GenerateTextOptions,
 	): AsyncGenerator<string> {
-		return this.provider.generateTextStream(prompt, options);
+		return this.provider.generateTextStream(input, options);
 	}
 }

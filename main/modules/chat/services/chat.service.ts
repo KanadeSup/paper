@@ -1,6 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { FileStorageService } from "@main/modules/file-system";
-import type { ChatModelConfiguration, ChatSession } from "../types/chat.type";
+import type {
+	ChatMessage,
+	ChatModelConfiguration,
+	ChatSession,
+} from "../types/chat.type";
 
 export class ChatService {
 	private readonly fileStorageService = new FileStorageService();
@@ -37,5 +41,33 @@ export class ChatService {
 			sessionId,
 		);
 		return chatSession;
+	}
+
+	async appendMessages(
+		sessionId: string,
+		messages: ChatMessage[],
+	): Promise<ChatSession | null> {
+		const chatSession = await this.getChatSession(sessionId);
+		if (!chatSession) {
+			return null;
+		}
+
+		const updatedMessages = [...chatSession.messages, ...messages];
+		const { records } = this.fileStorageService.getStorageData("chatSessions");
+		const updatedRecords = records.map((record) =>
+			record.id === sessionId
+				? { ...record, messages: updatedMessages }
+				: record,
+		);
+
+		this.fileStorageService.setCollectionRecords(
+			"chatSessions",
+			updatedRecords,
+		);
+
+		return {
+			...chatSession,
+			messages: updatedMessages,
+		};
 	}
 }
