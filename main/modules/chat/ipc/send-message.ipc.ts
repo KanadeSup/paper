@@ -4,6 +4,7 @@ import { NotFoundError } from "@main/modules/common/errors/common.error";
 import { BaseChannel } from "@main/modules/common/ipc/channel.ipc";
 import {
 	ChatGenerateService,
+	RagService,
 	resolveProviderNameFromModel,
 	TextGenerateService,
 } from "@main/modules/llm";
@@ -68,13 +69,35 @@ export class SendMessageChannel extends BaseChannel<
 				apiKey: process.env.GROK_API_KEY ?? "",
 			});
 
+			// Query document context using RAG
+			console.log(process.env.OPENAI_API_KEY);
+			const ragService = new RagService(process.env.OPENAI_API_KEY ?? "");
+			const vectorStoreId = await ragService.getOrCreateVectorStoreId(
+				chatSession.documentId,
+			);
+			const searchResults = await ragService.query(
+				vectorStoreId,
+				request.message,
+				{
+					maxNumResults: 50,
+				},
+			);
+			const documentContext = this.formatDocumentContext(searchResults);
+
+			// Build user input message with document context
+			const enrichedUserMessage = this.buildUserMessageWithContext(
+				documentContext,
+				request.message,
+			);
+
 			// Build input (conversation messages) for the text generation
+			const systemPrompt =
+				chatSession.modelConfiguration.systemPromptWithPlaceholders;
+
 			const input = await this.chatGenerateService.buildInput({
-				userMessage: request.message,
+				userMessage: enrichedUserMessage,
 				previousMessages: chatSession.messages,
-				systemPrompt:
-					chatSession.modelConfiguration.systemPromptWithPlaceholders ??
-					undefined,
+				systemPrompt,
 			});
 
 			// Streaming text generation
@@ -124,6 +147,25 @@ export class SendMessageChannel extends BaseChannel<
 		}
 
 		return null;
+	}
+
+	private formatDocumentContext(searchResults: {
+		data: Array<{ content: Array<{ text: string }> }>;
+	}): string {
+		if (!searchResults.data.length) {
+			return "No relevant information found in the document.";
+		}
+
+		return searchResults.data
+			.flatMap((result) => result.content.map((chunk) => `- ${chunk.text}`))
+			.join("\n");
+	}
+
+	private buildUserMessageWithContext(
+		documentContext: string,
+		userQuery: string,
+	): string {
+		return `Document context:\n${documentContext}\n\nUser query: ${userQuery}`;
 	}
 
 	private toAssistantErrorMessage(

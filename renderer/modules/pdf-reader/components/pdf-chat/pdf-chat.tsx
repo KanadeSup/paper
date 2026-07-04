@@ -1,4 +1,5 @@
 import { cn, IconButton, ScrollArea } from "@renderer/modules/design-system";
+import { DEFAULT_CHAT_SYSTEM_PROMPT } from "@shared/chat/constants/default-system-prompt.constant";
 import Logger from "electron-log/renderer.js";
 import { HistoryIcon, PlusIcon } from "lucide-react";
 import { useRef } from "react";
@@ -30,7 +31,8 @@ export function PdfChat(props: PdfChatProps) {
 		let sessionId = session?.id ?? null;
 		if (!sessionId) {
 			sessionId = await createSession(documentId, {
-				systemPromptWithPlaceholders: "",
+				systemPromptWithPlaceholders:
+					"You are a helpful assistant that answers questions about PDF documents. Use the provided document context to answer accurately. If the context does not contain enough information, say so clearly.",
 			});
 			if (!sessionId) {
 				Logger.error("Error when creating chat session");

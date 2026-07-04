@@ -8,6 +8,10 @@ import OpenAI, { NotFoundError } from "openai";
 const MAX_OPENAI_VECTOR_STORAGE_BYTES = 1024 * 1024 * 1024;
 const MAX_DOCUMENT_FILE_BYTES = 1024 * 1024 * 1024;
 
+export interface QueryOptions {
+	maxNumResults?: number;
+}
+
 export class RagService {
 	private readonly documentService = new DocumentService();
 	private readonly fileStorageService = new FileStorageService();
@@ -48,11 +52,16 @@ export class RagService {
 	 * @param query - The query to search the vector store.
 	 * @returns The result of the query.
 	 */
-	async query(vector_store_id: string, query: string) {
+	async query(
+		vector_store_id: string,
+		query: string,
+		options: QueryOptions = {},
+	) {
 		this.updateLastUsedAt(vector_store_id);
 
 		const result = await this.client.vectorStores.search(vector_store_id, {
 			query: query,
+			max_num_results: options.maxNumResults,
 		});
 		return result;
 	}
