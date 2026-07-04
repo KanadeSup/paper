@@ -5,14 +5,19 @@ import { DocumentService } from "@main/modules/document";
 import { FileStorageService } from "@main/modules/file-system";
 import OpenAI, { NotFoundError } from "openai";
 
-const client = new OpenAI();
-
 const MAX_OPENAI_VECTOR_STORAGE_BYTES = 1024 * 1024 * 1024;
 const MAX_DOCUMENT_FILE_BYTES = 1024 * 1024 * 1024;
 
 export class RagService {
 	private readonly documentService = new DocumentService();
 	private readonly fileStorageService = new FileStorageService();
+	private readonly client: OpenAI;
+
+	constructor(apiKey: string) {
+		this.client = new OpenAI({
+			apiKey: apiKey,
+		});
+	}
 
 	/**
 	 * Get or create a vector store ID for a document.
@@ -46,7 +51,7 @@ export class RagService {
 	async query(vector_store_id: string, query: string) {
 		this.updateLastUsedAt(vector_store_id);
 
-		const result = await client.vectorStores.search(vector_store_id, {
+		const result = await this.client.vectorStores.search(vector_store_id, {
 			query: query,
 		});
 		return result;
@@ -54,7 +59,7 @@ export class RagService {
 
 	private async vectorStoreExists(vectorStoreId: string): Promise<boolean> {
 		try {
-			await client.vectorStores.retrieve(vectorStoreId);
+			await this.client.vectorStores.retrieve(vectorStoreId);
 			return true;
 		} catch (error) {
 			if (error instanceof NotFoundError) {
@@ -78,10 +83,10 @@ export class RagService {
 
 		await this.ensureStorageCapacity(fileSizeBytes, documentId);
 
-		const vectorStore = await client.vectorStores.create({
+		const vectorStore = await this.client.vectorStores.create({
 			name: fileName,
 		});
-		await client.vectorStores.files.uploadAndPoll(
+		await this.client.vectorStores.files.uploadAndPoll(
 			vectorStore.id,
 			fs.createReadStream(filePath),
 		);
@@ -124,7 +129,7 @@ export class RagService {
 	private async getTotalVectorStoreUsageBytes(): Promise<number> {
 		let totalUsageBytes = 0;
 
-		for await (const vectorStore of client.vectorStores.list()) {
+		for await (const vectorStore of this.client.vectorStores.list()) {
 			totalUsageBytes += vectorStore.usage_bytes;
 		}
 
@@ -135,7 +140,8 @@ export class RagService {
 		vectorStoreId: string,
 	): Promise<number> {
 		try {
-			const vectorStore = await client.vectorStores.retrieve(vectorStoreId);
+			const vectorStore =
+				await this.client.vectorStores.retrieve(vectorStoreId);
 			return vectorStore.usage_bytes;
 		} catch (error) {
 			if (error instanceof NotFoundError) {
@@ -164,7 +170,7 @@ export class RagService {
 		vectorStoreId: string;
 	}): Promise<void> {
 		try {
-			await client.vectorStores.delete(record.vectorStoreId);
+			await this.client.vectorStores.delete(record.vectorStoreId);
 		} catch (error) {
 			if (!(error instanceof NotFoundError)) {
 				throw error;
