@@ -18,6 +18,5 @@
 			"@shared/*": ["./shared/*"]
 		},
 		"resolveJsonModule": true
-	},
-	"include": ["renderer/*.tsx", "renderer/*.ts", "main/*.ts", "shared/*.ts"]
+	}
 }

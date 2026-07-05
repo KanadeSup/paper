@@ -14,6 +14,7 @@ import {
 } from "./components/pdf-layout/pdf-reader-layout";
 import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
+import { SelectionMenu } from "./components/selection-menu/selection-menu";
 import { Toolbar } from "./components/tool-bar/tool-bar";
 import { ZoomGesture } from "./components/zoom-gesture/zoom-gesture";
 import { PdfReaderProvider } from "./provider/pdf-reader-provider";
@@ -61,6 +62,12 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 													<SelectionLayer
 														documentId={documentId}
 														pageIndex={pageIndex}
+														selectionMenu={(selection) => (
+															<SelectionMenu
+																selection={selection}
+																documentId={documentId}
+															/>
+														)}
 													/>
 												</div>
 											</PagePointerProvider>
