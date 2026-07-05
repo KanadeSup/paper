@@ -40,7 +40,7 @@ const appSidebarNavItems = [
 	},
 	{
 		label: "Settings",
-		href: "/settings",
+		href: "/setting",
 		icon: SettingsIcon,
 	},
 ];
