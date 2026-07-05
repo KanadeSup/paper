@@ -19,4 +19,4 @@ export type ChatModelConfigurationRecord =
 
 // Document vector stores
 export type DocumentVectorStoreRecord =
-	StorageData<"documentVectorStores">["records"][number];
+	StorageData<"documentVectorStore">["records"][number];

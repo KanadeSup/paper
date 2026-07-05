@@ -8,6 +8,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "electron-forge start",
+		"typecheck": "tsc --noEmit",
 		"package": "electron-forge package",
 		"make": "electron-forge make",
 		"publish": "electron-forge publish",

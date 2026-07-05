@@ -1,5 +1,4 @@
 import { cn, IconButton, ScrollArea } from "@renderer/modules/design-system";
-import { DEFAULT_CHAT_SYSTEM_PROMPT } from "@shared/chat/constants/default-system-prompt.constant";
 import Logger from "electron-log/renderer.js";
 import { HistoryIcon, PlusIcon } from "lucide-react";
 import { useRef } from "react";
@@ -15,7 +14,6 @@ export function PdfChat(props: PdfChatProps) {
 	const { documentId, className } = props;
 
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
-
 	const {
 		session,
 		messages,

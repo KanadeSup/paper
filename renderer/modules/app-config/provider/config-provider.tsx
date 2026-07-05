@@ -31,7 +31,7 @@ export function ConfigProvider(props: ConfigProviderProps) {
 				setError("Unexpected error while loading config");
 			}
 		} catch (error) {
-			setError(error.message);
+			setError(error instanceof Error ? error.message : "Unknown error");
 		} finally {
 			setIsLoading(false);
 		}
