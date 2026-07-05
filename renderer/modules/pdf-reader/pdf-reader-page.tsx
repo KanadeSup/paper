@@ -1,5 +1,7 @@
+import { PagePointerProvider } from "@embedpdf/plugin-interaction-manager/react";
 import { RenderLayer } from "@embedpdf/plugin-render/react";
 import { Scroller } from "@embedpdf/plugin-scroll/react";
+import { SelectionLayer } from "@embedpdf/plugin-selection/react";
 import { Viewport } from "@embedpdf/plugin-viewport/react";
 import { useState } from "react";
 import { PdfChat } from "./components/pdf-chat/pdf-chat";
@@ -47,12 +49,21 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 									<Scroller
 										documentId={documentId}
 										renderPage={({ width, height, pageIndex }) => (
-											<div style={{ width, height }}>
-												<RenderLayer
-													documentId={documentId}
-													pageIndex={pageIndex}
-												/>
-											</div>
+											<PagePointerProvider
+												documentId={documentId}
+												pageIndex={pageIndex}
+											>
+												<div style={{ width, height }}>
+													<RenderLayer
+														documentId={documentId}
+														pageIndex={pageIndex}
+													/>
+													<SelectionLayer
+														documentId={documentId}
+														pageIndex={pageIndex}
+													/>
+												</div>
+											</PagePointerProvider>
 										)}
 									/>
 								</ZoomGesture>

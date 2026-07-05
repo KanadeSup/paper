@@ -6,8 +6,10 @@ import {
 	DocumentContent,
 	DocumentManagerPluginPackage,
 } from "@embedpdf/plugin-document-manager/react";
+import { InteractionManagerPluginPackage } from "@embedpdf/plugin-interaction-manager/react";
 import { RenderPluginPackage } from "@embedpdf/plugin-render/react";
 import { ScrollPluginPackage } from "@embedpdf/plugin-scroll/react";
+import { SelectionPluginPackage } from "@embedpdf/plugin-selection/react";
 import { SpreadPluginPackage } from "@embedpdf/plugin-spread/react";
 import { ViewportPluginPackage } from "@embedpdf/plugin-viewport";
 import { ZoomPluginPackage } from "@embedpdf/plugin-zoom/react";
@@ -22,6 +24,8 @@ const basePlugins = [
 	createPluginRegistration(ZoomPluginPackage),
 	createPluginRegistration(SpreadPluginPackage),
 	createPluginRegistration(BookmarkPluginPackage),
+	createPluginRegistration(InteractionManagerPluginPackage),
+	createPluginRegistration(SelectionPluginPackage),
 ];
 
 type PDFLoaderProps = {

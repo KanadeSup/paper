@@ -14,7 +14,13 @@ export type ReaderLayoutProps = {
 export function ReaderLayout({ children }: ReaderLayoutProps) {
 	return (
 		<PdfReaderLayoutProvider>
-			<div className="h-screen w-screen p-3 flex select-none">{children}</div>
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: draggable make the pdf image draggable lead to unexpected behavior for text selection */}
+			<div
+				className="h-screen w-screen p-3 flex select-none"
+				onDragStart={(e) => e.preventDefault()}
+			>
+				{children}
+			</div>
 		</PdfReaderLayoutProvider>
 	);
 }
