@@ -70,7 +70,6 @@ export class SendMessageChannel extends BaseChannel<
 			});
 
 			// Query document context using RAG
-			console.log(process.env.OPENAI_API_KEY);
 			const ragService = new RagService(process.env.OPENAI_API_KEY ?? "");
 			const vectorStoreId = await ragService.getOrCreateVectorStoreId(
 				chatSession.documentId,

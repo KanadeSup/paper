@@ -29,15 +29,13 @@ export function useStreamMessage(params: UseStreamMessageParams) {
 		};
 
 		const handleMessageFinish = (
-			responseMessage: ChatSessionMessage & { role: "assistant" },
+			responseMessage: ChatSessionAssistantMessage,
 		) => {
 			onFinish?.(responseMessage);
 		};
 
-		const handleMessageError = (
-			error: ChatSessionMessage & { role: "assistant" },
-		) => {
-			onError?.(error);
+		const handleMessageError = (errorMessage: ChatSessionAssistantMessage) => {
+			onError?.(errorMessage);
 		};
 
 		const handleMessageStart = (
@@ -70,6 +68,7 @@ export function useStreamMessage(params: UseStreamMessageParams) {
 					id: assistantMessage.id,
 					role: "assistant",
 					content: assistantMessage.content,
+					model: assistantMessage.model,
 					isError: true,
 					errorMessage: assistantMessage.errorMessage,
 					errorCode: assistantMessage.errorCode,
@@ -85,6 +84,7 @@ export function useStreamMessage(params: UseStreamMessageParams) {
 					id: assistantMessage.id,
 					role: "assistant",
 					content: assistantMessage.content,
+					model: assistantMessage.model,
 					createdAt: assistantMessage.createdAt,
 				});
 			},

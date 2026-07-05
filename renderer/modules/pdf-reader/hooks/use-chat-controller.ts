@@ -59,6 +59,7 @@ export function useChatController(props: UseChatControllerProps) {
 				...errorMessage,
 				isError: true,
 				isStreaming: false,
+				model: errorMessage.model,
 				errorMessage: "Some error occurred, please try again",
 			});
 		},
@@ -71,6 +72,7 @@ export function useChatController(props: UseChatControllerProps) {
 			updateMessage(null, "assistant", {
 				...responseMessage,
 				isStreaming: false,
+				model: responseMessage.model,
 			});
 			setIsStreamingMessage(false);
 		},
@@ -110,6 +112,7 @@ export function useChatController(props: UseChatControllerProps) {
 				// Prepare a placeholder streaming message from the assistant
 				const streamingMessage: DisplayedAssistantChatMessage = {
 					role: "assistant",
+					model: "grok-4.3",
 					content: "",
 					isStreaming: true,
 				};
@@ -166,6 +169,7 @@ export function useChatController(props: UseChatControllerProps) {
 						role: message.role,
 						content: message.content,
 						isStreaming: false,
+						model: message.model,
 						createdAt: message.createdAt,
 					};
 				}),

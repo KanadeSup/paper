@@ -256,7 +256,7 @@ function AssistantMessage({ message }: AssistantMessageProps) {
 	return (
 		<div className="mb-3 border-b border-accent">
 			<div className="flex items-start gap-2">
-				<p className="text-xs text-gray-300 font-bold">OpenAI</p>
+				<p className="text-xs text-gray-300 font-bold">{message.model}</p>
 			</div>
 			<div className="prose prose-invert prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-p:text-sm prose-a:underline">
 				{renderMessage()}

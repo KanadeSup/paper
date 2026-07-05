@@ -30,6 +30,7 @@ export type ChatSessionUserMessage = ChatSessionMessage & {
 
 export type ChatSessionAssistantMessage = ChatSessionMessage & {
 	role: "assistant";
+	model: string;
 };
 
 /* Displayed message */
