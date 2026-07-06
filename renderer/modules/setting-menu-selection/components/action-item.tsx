@@ -2,14 +2,6 @@ import { cn, IconButton } from "@renderer/modules/design-system";
 import { PencilIcon, PowerIcon, Trash2Icon } from "lucide-react";
 import type { MenuAction } from "../types/menu-action.type";
 
-function formatDate(date: Date): string {
-	return date.toLocaleDateString("en-US", {
-		month: "short",
-		day: "numeric",
-		year: "numeric",
-	});
-}
-
 export type ActionItemProps = {
 	action: MenuAction;
 	onEdit: () => void;

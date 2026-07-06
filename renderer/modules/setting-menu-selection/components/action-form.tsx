@@ -69,7 +69,6 @@ export function ActionForm({
 	};
 
 	const onFormSubmit = handleSubmit((data) => {
-		console.log(`[MenuAction:${mode}] Form submitted:`, data);
 		onSubmit(data);
 	});
 

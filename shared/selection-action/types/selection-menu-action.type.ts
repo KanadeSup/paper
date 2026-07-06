@@ -4,4 +4,5 @@ export type SelectionMenuAction = {
 	description: string;
 	promptWithPlaceholder: string;
 	order: number;
+	disabled: boolean;
 };

@@ -5,12 +5,7 @@ export const UPDATE_SELECTION_MENU_ACTION_CHANNEL_NAME =
 
 export type UpdateSelectionMenuActionRequest = {
 	actionId: string;
-	action: Partial<
-		Pick<
-			SelectionMenuAction,
-			"name" | "description" | "promptWithPlaceholder" | "order"
-		>
-	>;
+	action: Partial<SelectionMenuAction>;
 };
 
 export type UpdateSelectionMenuActionResponse = {

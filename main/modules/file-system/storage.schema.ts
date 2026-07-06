@@ -60,6 +60,7 @@ export const storageDefinition = {
 					description: z.string(),
 					promptWithPlaceholder: z.string(),
 					order: z.number().int(),
+					disabled: z.boolean().default(false),
 				})
 				.array(),
 		}),
