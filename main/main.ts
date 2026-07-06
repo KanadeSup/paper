@@ -9,7 +9,9 @@ import {
 	UpdateAppConfigChannel,
 } from "./modules/app-config";
 import { CreateChatSessionChannel } from "./modules/chat/ipc/create-chat-session.ipc";
+import { DeleteChatSessionChannel } from "./modules/chat/ipc/delete-chat-session.ipc";
 import { GetChatSessionChannel } from "./modules/chat/ipc/get-chat-session.ipc";
+import { GetChatSessionsChannel } from "./modules/chat/ipc/get-chat-sessions.ipc";
 import { SendMessageChannel } from "./modules/chat/ipc/send-message.ipc";
 import { IpcResponseStatusCodes } from "./modules/common/constants/ipc-channel.constant";
 import { BaseError } from "./modules/common/errors/base.error";
@@ -152,4 +154,6 @@ new Main().init([
 	new SendMessageChannel(),
 	new CreateChatSessionChannel(),
 	new GetChatSessionChannel(),
+	new GetChatSessionsChannel(),
+	new DeleteChatSessionChannel(),
 ]);

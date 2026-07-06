@@ -9,10 +9,20 @@ import {
 	SEND_CHAT_MESSAGE_START_CHANNEL_NAME,
 } from "@shared/chat/contracts/create-chat-session.contract";
 import {
+	DELETE_CHAT_SESSION_CHANNEL_NAME,
+	type DeleteChatSessionRequest,
+	type DeleteChatSessionResponse,
+} from "@shared/chat/contracts/delete-chat-session.contract";
+import {
 	GET_CHAT_SESSION_CHANNEL_NAME,
 	type GetChatSessionRequest,
 	type GetChatSessionResponse,
 } from "@shared/chat/contracts/get-chat-session.contract";
+import {
+	GET_CHAT_SESSIONS_CHANNEL_NAME,
+	type GetChatSessionsRequest,
+	type GetChatSessionsResponse,
+} from "@shared/chat/contracts/get-chat-sessions.contract";
 import {
 	type OnSendMessageChunkResponse,
 	type OnSendMessageErrorResponse,
@@ -58,6 +68,20 @@ export function getChatSession(sessionId: string) {
 	return invoke<GetChatSessionRequest, GetChatSessionResponse>(
 		GET_CHAT_SESSION_CHANNEL_NAME,
 		{ sessionId: sessionId },
+	);
+}
+
+export function getChatSessions(documentId: string) {
+	return invoke<GetChatSessionsRequest, GetChatSessionsResponse>(
+		GET_CHAT_SESSIONS_CHANNEL_NAME,
+		{ documentId },
+	);
+}
+
+export function deleteChatSession(sessionId: string) {
+	return invoke<DeleteChatSessionRequest, DeleteChatSessionResponse>(
+		DELETE_CHAT_SESSION_CHANNEL_NAME,
+		{ sessionId },
 	);
 }
 

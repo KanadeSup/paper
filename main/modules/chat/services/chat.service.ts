@@ -43,31 +43,43 @@ export class ChatService {
 		return chatSession;
 	}
 
+	async getChatSessionsByDocument(documentId: string): Promise<ChatSession[]> {
+		const { records } = this.fileStorageService.getStorageData("chatSessions");
+		return records.filter((session) => session.documentId === documentId);
+	}
+
 	async appendMessages(
 		sessionId: string,
 		messages: ChatMessage[],
 	): Promise<ChatSession | null> {
-		const chatSession = await this.getChatSession(sessionId);
-		if (!chatSession) {
+		const { records } = this.fileStorageService.getStorageData("chatSessions");
+		const targetSessionIndex = records.findIndex(
+			(session) => session.id === sessionId,
+		);
+		if (targetSessionIndex === -1) {
 			return null;
 		}
 
-		const updatedMessages = [...chatSession.messages, ...messages];
-		const { records } = this.fileStorageService.getStorageData("chatSessions");
-		const updatedRecords = records.map((record) =>
-			record.id === sessionId
-				? { ...record, messages: updatedMessages }
-				: record,
-		);
-
-		this.fileStorageService.setCollectionRecords(
-			"chatSessions",
-			updatedRecords,
-		);
-
-		return {
-			...chatSession,
-			messages: updatedMessages,
+		const targetSession = records[targetSessionIndex];
+		const updatedSession = {
+			...targetSession,
+			messages: [...targetSession.messages, ...messages],
 		};
+
+		records[targetSessionIndex] = updatedSession;
+		this.fileStorageService.setCollectionRecords("chatSessions", records);
+
+		return updatedSession;
+	}
+
+	async deleteChatSession(sessionId: string): Promise<boolean> {
+		const { records } = this.fileStorageService.getStorageData("chatSessions");
+		const nextRecords = records.filter((session) => session.id !== sessionId);
+		if (nextRecords.length === records.length) {
+			return false;
+		}
+
+		this.fileStorageService.setCollectionRecords("chatSessions", nextRecords);
+		return true;
 	}
 }
