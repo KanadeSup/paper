@@ -1,6 +1,7 @@
-import { cn } from "@renderer/modules/design-system";
+import { Button, cn } from "@renderer/modules/design-system";
+import { ErrorAlert } from "@renderer/modules/design-system/components/alert/error-alert";
 import { MarkdownRenderer } from "@renderer/modules/design-system/components/markdown/markdown-renderer";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, RefreshCcwIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type {
 	DisplayedAssistantChatMessage,
@@ -113,65 +114,29 @@ function AssistantMessage({ message }: AssistantMessageProps) {
 	const hasContent = content.trim().length > 0;
 
 	function renderMessage() {
-		// if (isError) {
-		// 	return (
-		// 		<Alert
-		// 			hideIcon
-		// 			variant="faded"
-		// 			color="warning"
-		// 			className="py-3 px-2 flex flex-col gap-2"
-		// 			classNames={{
-		// 				mainWrapper: "w-full",
-		// 			}}
-		// 		>
-		// 			<p className="mt-0">
-		// 				{errorCode === AiErrorCodes.API_KEY_NOT_FOUND
-		// 					? "API key not found. Please set your API key in the settings."
-		// 					: errorMessage}
-		// 			</p>
-		// 			<div className="flex flex-col gap-2 w-full">
-		// 				<Button
-		// 					color="default"
-		// 					variant="solid"
-		// 					radius="md"
-		// 					className="w-full"
-		// 					onPress={() =>
-		// 						observerActions.dispatch(
-		// 							ObserverEventType.OPEN_CHAT_SETTING,
-		// 							{},
-		// 						)
-		// 					}
-		// 				>
-		// 					<IconSettings className="w-4 h-4" />
-		// 					Settings
-		// 				</Button>
-		// 				<Button
-		// 					variant="default"
-		// 					color="success"
-		// 					className="w-full"
-		// 					onClick={() => {
-		// 						// observerActions.dispatch(
-		// 						// 	ObserverEventType.RETRY_ERROR_MESSAGE,
-		// 						// 	{},
-		// 						// )
-		// 					}}
-		// 				>
-		// 					<RefreshCcwIcon className="w-4 h-4" />
-		// 					Retry
-		// 				</Button>
-		// 			</div>
-		// 		</Alert>
-		// 	);
-		// }
-
-		// // if the message is error, display the error message
-		// if (isError) {
-		// 	return (
-		// 		<Alert variant="faded" color="danger" hideIconWrapper className="py-0">
-		// 			{errorMessage}
-		// 		</Alert>
-		// 	);
-		// }
+		if (isError) {
+			return (
+				<ErrorAlert className="mt-2">
+					<ErrorAlert.Title>
+						<ErrorAlert.Indicator />
+						{errorCode === "API_KEY_NOT_FOUND"
+							? "Unable to find api key"
+							: "Something went wrong"}
+					</ErrorAlert.Title>
+					<ErrorAlert.Description>
+						{errorCode === "API_KEY_NOT_FOUND"
+							? "API key not found. Please set your API key in the settings."
+							: errorMessage}
+					</ErrorAlert.Description>
+					<ErrorAlert.Footer>
+						<Button variant="default" className="w-full">
+							<RefreshCcwIcon className="w-4 h-4" />
+							Retry
+						</Button>
+					</ErrorAlert.Footer>
+				</ErrorAlert>
+			);
+		}
 
 		// if the message is streaming and has no content, display the loading message
 		if (isStreaming && !hasContent) {
