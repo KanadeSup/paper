@@ -51,6 +51,22 @@ export const storageDefinition = {
 			records: [],
 		},
 	}),
+	selectionMenuActions: defineCollectionStorage({
+		schema: z.object({
+			records: z
+				.object({
+					id: z.string(),
+					name: z.string(),
+					description: z.string(),
+					promptWithPlaceholder: z.string(),
+					order: z.number().int(),
+				})
+				.array(),
+		}),
+		defaultData: {
+			records: [],
+		},
+	}),
 	documentVectorStore: defineCollectionStorage({
 		schema: z.object({
 			records: z

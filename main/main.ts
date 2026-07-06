@@ -23,6 +23,12 @@ import {
 } from "./modules/common/protocol/local-asset.protocol";
 import type { IpcChannelResponse } from "./modules/common/types/ip-channel.type";
 import { GetDocumentChannel, GetDocumentListChannel } from "./modules/library";
+import {
+	DeleteSelectionMenuActionChannel,
+	GetSelectionMenuActionDetailChannel,
+	GetSelectionMenuActionListChannel,
+	UpdateSelectionMenuActionChannel,
+} from "./modules/selection-action";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -156,4 +162,8 @@ new Main().init([
 	new GetChatSessionChannel(),
 	new GetChatSessionsChannel(),
 	new DeleteChatSessionChannel(),
+	new GetSelectionMenuActionListChannel(),
+	new GetSelectionMenuActionDetailChannel(),
+	new UpdateSelectionMenuActionChannel(),
+	new DeleteSelectionMenuActionChannel(),
 ]);

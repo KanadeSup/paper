@@ -17,6 +17,10 @@ export type ChatMessageRecord = ChatSessionRecord["messages"][number];
 export type ChatModelConfigurationRecord =
 	ChatSessionRecord["modelConfiguration"];
 
+// Selection menu actions
+export type SelectionMenuActionRecord =
+	StorageData<"selectionMenuActions">["records"][number];
+
 // Document vector stores
 export type DocumentVectorStoreRecord =
 	StorageData<"documentVectorStore">["records"][number];
