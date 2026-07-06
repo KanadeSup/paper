@@ -1,26 +1,37 @@
-import type { PdfBookmarkObject } from "@embedpdf/models";
 import { cn } from "@renderer/modules/design-system";
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { getBookmarkPageNumber } from "./get-bookmark-page";
+import type { PdfOutlineObject } from "../../types/pdf.type";
+import { getBookmarkPageNumber } from "../../utils/pdf.utils";
 
-type PdfOutlineItemProps = {
-	bookmark: PdfBookmarkObject;
+export type PdfOutlineItemProps = {
+	outline: PdfOutlineObject;
 	depth: number;
 	itemKey: string;
+	currentPage: number;
 	onNavigate: (pageNumber: number) => void;
 };
 
 export function PdfOutlineItem({
-	bookmark,
+	outline,
 	depth,
 	itemKey,
+	currentPage,
 	onNavigate,
 }: PdfOutlineItemProps) {
 	const [expanded, setExpanded] = useState(false);
-	const children = bookmark.children ?? [];
+	const children: PdfOutlineObject[] =
+		outline.children?.map((child) => ({
+			...child,
+			targetPage: getBookmarkPageNumber(child),
+		})) ?? [];
 	const hasChildren = children.length > 0;
-	const pageNumber = getBookmarkPageNumber(bookmark);
+	const pageNumber = getBookmarkPageNumber(outline);
+	const isInCurrentPage =
+		outline.startPage &&
+		outline.endPage &&
+		currentPage >= outline.startPage &&
+		currentPage <= outline.endPage;
 
 	const handleNavigate = () => {
 		if (pageNumber === null) {
@@ -60,10 +71,14 @@ export function PdfOutlineItem({
 				)}
 				<button
 					type="button"
-					className={cn("min-w-0 text-left text-sm", "cursor-pointer")}
+					className={cn(
+						"min-w-0 text-left text-sm",
+						"cursor-pointer",
+						isInCurrentPage && "text-primary",
+					)}
 					onClick={handleNavigate}
 				>
-					{bookmark.title}
+					{outline.title}
 				</button>
 			</div>
 
@@ -72,8 +87,9 @@ export function PdfOutlineItem({
 					{children.map((child, index) => (
 						<PdfOutlineItem
 							key={child.title}
+							currentPage={currentPage}
 							itemKey={`${itemKey}-${index}`}
-							bookmark={child}
+							outline={child}
 							depth={depth + 1}
 							onNavigate={onNavigate}
 						/>

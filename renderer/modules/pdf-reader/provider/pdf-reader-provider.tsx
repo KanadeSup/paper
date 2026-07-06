@@ -1,14 +1,16 @@
+import type { PdfBookmarkObject } from "@embedpdf/models";
 import { createContext, useContext, useState } from "react";
 import { createStore, type StoreApi, useStore } from "zustand";
+import type { PdfOutlineObject } from "../types/pdf.type";
 
 export type PdfReaderProviderProps = {
 	children: React.ReactNode;
 };
 
 type PdfReaderContext = {
-	isSidebarOpen: boolean;
+	outline: PdfOutlineObject[];
 	actions: {
-		toggleSidebar: (open?: boolean) => void;
+		setOutline: (outline: PdfBookmarkObject[]) => void;
 	};
 };
 
@@ -19,12 +21,10 @@ export function PdfReaderProvider(props: PdfReaderProviderProps) {
 
 	const [store] = useState(() =>
 		createStore<PdfReaderContext>(() => ({
-			isSidebarOpen: true,
+			outline: [],
 			actions: {
-				toggleSidebar: (open?: boolean) => {
-					store.setState({
-						isSidebarOpen: open ?? !store.getState().isSidebarOpen,
-					});
+				setOutline: (outline: PdfOutlineObject[]) => {
+					store.setState({ outline });
 				},
 			},
 		})),
