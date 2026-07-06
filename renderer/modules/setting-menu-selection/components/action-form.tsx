@@ -1,4 +1,11 @@
 import { Button, cn, Input, ScrollArea } from "@renderer/modules/design-system";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@renderer/modules/design-system/components/ui/select";
 import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
@@ -130,20 +137,24 @@ export function ActionForm({
 						hint="The LLM used when this action is triggered."
 						error={errors.model?.message}
 					>
-						<select
+						<Select
 							{...register("model", { required: "Model is required" })}
-							className={cn(
-								"h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none",
-								"focus-visible:border-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50",
-								"md:text-sm dark:bg-input/30 dark:disabled:bg-input/80",
-							)}
+							value={watch("model")}
+							onValueChange={(value) =>
+								setValue("model", value, { shouldDirty: true })
+							}
 						>
-							{LLM_MODEL_OPTIONS.map((option) => (
-								<option key={option.value} value={option.value}>
-									{option.label}
-								</option>
-							))}
-						</select>
+							<SelectTrigger className="min-w-48">
+								<SelectValue placeholder="Select a model" />
+							</SelectTrigger>
+							<SelectContent>
+								{LLM_MODEL_OPTIONS.map((option) => (
+									<SelectItem key={option.value} value={option.value}>
+										{option.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
 					</FormField>
 
 					{/* Prompt */}
