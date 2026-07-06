@@ -1,5 +1,5 @@
-import { ScrollArea } from "@renderer/modules/design-system";
-import { Loader2, MousePointerClick } from "lucide-react";
+import { Button, ScrollArea } from "@renderer/modules/design-system";
+import { Loader2, MousePointerClick, PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
 	SettingLayout,
@@ -10,7 +10,10 @@ import { ActionItem } from "./components/action-item";
 import { useMenuActions } from "./hooks/useMenuActions";
 import type { MenuActionFormValues } from "./types/menu-action.type";
 
-type View = { type: "list" } | { type: "edit"; actionId: string };
+type View =
+	| { type: "list" }
+	| { type: "create" }
+	| { type: "edit"; actionId: string };
 
 export function SelectionSettingPage() {
 	const {
@@ -19,6 +22,7 @@ export function SelectionSettingPage() {
 		error,
 		toggleAction,
 		saveActionForm,
+		createActionForm,
 		removeAction,
 	} = useMenuActions();
 	const [view, setView] = useState<View>({ type: "list" });
@@ -30,6 +34,13 @@ export function SelectionSettingPage() {
 	const handleDelete = async (id: string) => {
 		const isDeleted = await removeAction(id);
 		if (isDeleted && view.type === "edit" && view.actionId === id) {
+			setView({ type: "list" });
+		}
+	};
+
+	const handleCreateSubmit = async (data: MenuActionFormValues) => {
+		const isCreated = await createActionForm(data);
+		if (isCreated) {
 			setView({ type: "list" });
 		}
 	};
@@ -52,6 +63,17 @@ export function SelectionSettingPage() {
 		}
 	}, [actions, isLoading, view]);
 
+	if (view.type === "create") {
+		return (
+			<ActionForm
+				mode="create"
+				title="New Action"
+				onSubmit={handleCreateSubmit}
+				onCancel={() => setView({ type: "list" })}
+			/>
+		);
+	}
+
 	if (view.type === "edit") {
 		const action = actions.find((item) => item.id === view.actionId);
 		if (!action) return null;
@@ -73,12 +95,18 @@ export function SelectionSettingPage() {
 
 	return (
 		<SettingLayout>
-			<div className="flex flex-col gap-1">
-				<SettingTitle title="Menu Selection" />
-				<p className="text-sm text-muted-foreground">
-					Manage actions that appear when text is selected in a PDF. Disable or
-					remove them as needed.
-				</p>
+			<div className="flex items-center justify-between">
+				<div className="flex flex-col gap-1">
+					<SettingTitle title="Menu Selection" />
+					<p className="text-sm text-muted-foreground">
+						Manage actions that appear when text is selected in a PDF. Disable
+						or remove them as needed.
+					</p>
+				</div>
+				<Button onClick={() => setView({ type: "create" })}>
+					<PlusIcon className="size-4" />
+					Add Action
+				</Button>
 			</div>
 
 			{error && (

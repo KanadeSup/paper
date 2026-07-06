@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { FileStorageService } from "@main/modules/file-system";
 import type { SelectionMenuActionRecord } from "@main/modules/file-system/types/document-storage.type";
 
@@ -18,6 +19,33 @@ export class SelectionActionService {
 			"selectionMenuActions",
 			actionId,
 		);
+	}
+
+	async createAction(
+		actionData: Omit<SelectionMenuActionRecord, "id" | "order" | "disabled">,
+	): Promise<SelectionMenuActionRecord> {
+		const { records } = this.fileStorageService.getStorageData(
+			"selectionMenuActions",
+		);
+		const nextOrder =
+			records.length === 0
+				? 0
+				: Math.max(...records.map((record) => record.order)) + 1;
+
+		const newAction: SelectionMenuActionRecord = {
+			id: randomUUID(),
+			name: actionData.name,
+			description: actionData.description,
+			promptWithPlaceholder: actionData.promptWithPlaceholder,
+			order: nextOrder,
+			disabled: false,
+		};
+
+		this.fileStorageService.createCollectionRecord(
+			"selectionMenuActions",
+			newAction,
+		);
+		return newAction;
 	}
 
 	async updateAction(

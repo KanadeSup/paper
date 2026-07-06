@@ -1,6 +1,7 @@
 import type { SelectionMenuAction } from "@shared/selection-action/types/selection-menu-action.type";
 import { useCallback, useEffect, useState } from "react";
 import {
+	createSelectionMenuAction,
 	deleteSelectionMenuAction,
 	getSelectionMenuActionList,
 	updateSelectionMenuAction,
@@ -79,6 +80,22 @@ export function useMenuActions() {
 		[updateAction],
 	);
 
+	const createActionForm = useCallback(async (data: MenuActionFormValues) => {
+		const response = await createSelectionMenuAction({
+			name: data.name,
+			description: data.description,
+			promptWithPlaceholder: data.prompt,
+		});
+
+		if (!response.success) {
+			setError(response.errorMessage ?? "Failed to create action");
+			return false;
+		}
+
+		setActions((prev) => [...prev, toMenuAction(response.data.action)]);
+		return true;
+	}, []);
+
 	const removeAction = useCallback(async (actionId: string) => {
 		const response = await deleteSelectionMenuAction(actionId);
 
@@ -98,6 +115,7 @@ export function useMenuActions() {
 		refresh: fetchActions,
 		toggleAction,
 		saveActionForm,
+		createActionForm,
 		removeAction,
 	};
 }

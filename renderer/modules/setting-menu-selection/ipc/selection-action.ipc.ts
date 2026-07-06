@@ -1,5 +1,10 @@
 import { invoke } from "@renderer/modules/design-system/ipc/base.ipc";
 import {
+	CREATE_SELECTION_MENU_ACTION_CHANNEL_NAME,
+	type CreateSelectionMenuActionRequest,
+	type CreateSelectionMenuActionResponse,
+} from "@shared/selection-action/ipc/create-selection-menu-action.contract";
+import {
 	DELETE_SELECTION_MENU_ACTION_CHANNEL_NAME,
 	type DeleteSelectionMenuActionRequest,
 	type DeleteSelectionMenuActionResponse,
@@ -18,6 +23,15 @@ import {
 	type UpdateSelectionMenuActionRequest,
 	type UpdateSelectionMenuActionResponse,
 } from "@shared/selection-action/ipc/update-selection-menu-action.contract";
+
+export function createSelectionMenuAction(
+	request: CreateSelectionMenuActionRequest,
+) {
+	return invoke<
+		CreateSelectionMenuActionRequest,
+		CreateSelectionMenuActionResponse
+	>(CREATE_SELECTION_MENU_ACTION_CHANNEL_NAME, request);
+}
 
 export function getSelectionMenuActionList() {
 	return invoke<undefined, GetSelectionMenuActionListResponse>(

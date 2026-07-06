@@ -1,3 +1,4 @@
+export * from "./ipc/create-selection-menu-action.ipc";
 export * from "./ipc/delete-selection-menu-action.ipc";
 export * from "./ipc/get-selection-menu-action-detail.ipc";
 export * from "./ipc/get-selection-menu-action-list.ipc";

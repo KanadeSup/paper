@@ -24,6 +24,7 @@ import {
 import type { IpcChannelResponse } from "./modules/common/types/ip-channel.type";
 import { GetDocumentChannel, GetDocumentListChannel } from "./modules/library";
 import {
+	CreateSelectionMenuActionChannel,
 	DeleteSelectionMenuActionChannel,
 	GetSelectionMenuActionDetailChannel,
 	GetSelectionMenuActionListChannel,
@@ -164,6 +165,7 @@ new Main().init([
 	new DeleteChatSessionChannel(),
 	new GetSelectionMenuActionListChannel(),
 	new GetSelectionMenuActionDetailChannel(),
+	new CreateSelectionMenuActionChannel(),
 	new UpdateSelectionMenuActionChannel(),
 	new DeleteSelectionMenuActionChannel(),
 ]);
