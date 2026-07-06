@@ -7,6 +7,7 @@ export type MenuAction = {
 	name: string;
 	description: string;
 	prompt: string;
+	model: string;
 	icon: React.ElementType;
 	enabled: boolean;
 };
@@ -15,6 +16,7 @@ export type MenuActionFormValues = {
 	name: string;
 	description: string;
 	prompt: string;
+	model: string;
 };
 
 export type SystemPlaceholder = {

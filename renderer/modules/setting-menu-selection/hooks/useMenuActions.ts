@@ -75,6 +75,7 @@ export function useMenuActions() {
 				name: data.name,
 				description: data.description,
 				promptWithPlaceholder: data.prompt,
+				model: data.model,
 			});
 		},
 		[updateAction],
@@ -85,6 +86,7 @@ export function useMenuActions() {
 			name: data.name,
 			description: data.description,
 			promptWithPlaceholder: data.prompt,
+			model: data.model,
 		});
 
 		if (!response.success) {

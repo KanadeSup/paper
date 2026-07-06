@@ -59,6 +59,7 @@ export const storageDefinition = {
 					name: z.string(),
 					description: z.string(),
 					promptWithPlaceholder: z.string(),
+					model: z.string(),
 					order: z.number().int(),
 					disabled: z.boolean().default(false),
 				})

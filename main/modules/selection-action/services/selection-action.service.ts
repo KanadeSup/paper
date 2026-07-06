@@ -37,6 +37,7 @@ export class SelectionActionService {
 			name: actionData.name,
 			description: actionData.description,
 			promptWithPlaceholder: actionData.promptWithPlaceholder,
+			model: actionData.model,
 			order: nextOrder,
 			disabled: false,
 		};

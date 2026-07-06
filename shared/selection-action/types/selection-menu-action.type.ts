@@ -3,6 +3,7 @@ export type SelectionMenuAction = {
 	name: string;
 	description: string;
 	promptWithPlaceholder: string;
+	model: string;
 	order: number;
 	disabled: boolean;
 };

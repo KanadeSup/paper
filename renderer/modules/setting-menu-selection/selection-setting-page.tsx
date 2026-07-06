@@ -86,6 +86,7 @@ export function SelectionSettingPage() {
 					name: action.name,
 					description: action.description,
 					prompt: action.prompt,
+					model: action.model,
 				}}
 				onSubmit={handleEditSubmit}
 				onCancel={() => setView({ type: "list" })}

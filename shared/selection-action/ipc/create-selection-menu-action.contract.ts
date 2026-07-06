@@ -7,6 +7,7 @@ export type CreateSelectionMenuActionRequest = {
 	name: string;
 	description: string;
 	promptWithPlaceholder: string;
+	model: string;
 };
 
 export type CreateSelectionMenuActionResponse = {

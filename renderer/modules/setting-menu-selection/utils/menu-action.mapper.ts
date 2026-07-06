@@ -10,6 +10,7 @@ export function toMenuAction(action: SelectionMenuAction): MenuAction {
 		name: action.name,
 		description: action.description,
 		prompt: action.promptWithPlaceholder,
+		model: action.model,
 		icon: DEFAULT_ACTION_ICON,
 		enabled: !action.disabled,
 	};

@@ -2,6 +2,7 @@ import { Button, cn, Input, ScrollArea } from "@renderer/modules/design-system";
 import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { DEFAULT_LLM_MODEL, LLM_MODEL_OPTIONS } from "../constants/llm-models";
 import {
 	type MenuActionFormValues,
 	SYSTEM_PLACEHOLDERS,
@@ -33,6 +34,7 @@ export function ActionForm({
 			name: defaultValues?.name ?? "",
 			description: defaultValues?.description ?? "",
 			prompt: defaultValues?.prompt ?? "",
+			model: defaultValues?.model ?? DEFAULT_LLM_MODEL,
 		},
 		mode: "onChange",
 	});
@@ -119,6 +121,29 @@ export function ActionForm({
 							placeholder="Briefly describe what this action does"
 							maxLength={255}
 						/>
+					</FormField>
+
+					{/* Model */}
+					<FormField
+						label="Model"
+						required
+						hint="The LLM used when this action is triggered."
+						error={errors.model?.message}
+					>
+						<select
+							{...register("model", { required: "Model is required" })}
+							className={cn(
+								"h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none",
+								"focus-visible:border-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50",
+								"md:text-sm dark:bg-input/30 dark:disabled:bg-input/80",
+							)}
+						>
+							{LLM_MODEL_OPTIONS.map((option) => (
+								<option key={option.value} value={option.value}>
+									{option.label}
+								</option>
+							))}
+						</select>
 					</FormField>
 
 					{/* Prompt */}
