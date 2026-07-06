@@ -196,15 +196,10 @@ export function ActionForm({
 
 			{/* Footer */}
 			<div className="flex items-center justify-end gap-2 pt-1 border-t border-border">
-				<Button variant="ghost" size="sm" type="button" onClick={onCancel}>
+				<Button variant="ghost" type="button" onClick={onCancel}>
 					Cancel
 				</Button>
-				<Button
-					size="sm"
-					type="submit"
-					form="action-form"
-					disabled={isSubmitDisabled}
-				>
+				<Button type="submit" form="action-form" disabled={isSubmitDisabled}>
 					{submitLabel}
 				</Button>
 			</div>
