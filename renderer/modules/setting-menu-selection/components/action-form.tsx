@@ -106,6 +106,7 @@ export function ActionForm({
 							{...register("name", { required: "Action name is required" })}
 							placeholder="e.g. Summarize"
 							aria-invalid={!!errors.name}
+							maxLength={50}
 						/>
 					</FormField>
 
@@ -117,6 +118,7 @@ export function ActionForm({
 						<Input
 							{...register("description")}
 							placeholder="Briefly describe what this action does"
+							maxLength={255}
 						/>
 					</FormField>
 
@@ -210,8 +212,6 @@ export function ActionForm({
 		</div>
 	);
 }
-
-// ─── Field Wrapper ────────────────────────────────────────────────────────────
 
 type FormFieldProps = {
 	label: string;
