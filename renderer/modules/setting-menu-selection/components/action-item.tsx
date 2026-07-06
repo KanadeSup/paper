@@ -30,8 +30,8 @@ export function ActionItem({
 			className={cn(
 				"group flex items-center gap-3 p-3 rounded-lg",
 				"border border-border bg-card",
-				"transition-colors duration-150",
-				"hover:bg-accent/20 hover:border-border/80",
+				"transition-colors",
+				"hover:bg-card/80 hover:border-border/80",
 				!action.enabled && "opacity-55",
 			)}
 		>
@@ -53,32 +53,27 @@ export function ActionItem({
 				<p className="text-xs text-muted-foreground mt-1 truncate">
 					{action.description}
 				</p>
-				<p className="text-[11px] text-muted-foreground/50 mt-1">
-					Created {formatDate(action.createdAt)}
-				</p>
 			</div>
 
-			<div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+			<div className="flex items-center gap-0.5 shrink-0 transition-opacity duration-150">
 				<IconButton
 					onClick={onEdit}
 					size="icon-sm"
 					className="text-muted-foreground hover:text-foreground transition-colors duration-150"
 					title="Edit action"
 				>
-					<PencilIcon className="size-3.5" />
+					<PencilIcon className="size-4" />
 				</IconButton>
 				<IconButton
 					onClick={onToggle}
 					size="icon-sm"
 					className={cn(
 						"transition-colors duration-150",
-						action.enabled
-							? "text-primary hover:text-primary/80 hover:bg-primary/10"
-							: "text-muted-foreground",
+						action.enabled ? "text-primary" : "text-muted-foreground",
 					)}
 					title={action.enabled ? "Disable action" : "Enable action"}
 				>
-					<PowerIcon className="size-3.5" />
+					<PowerIcon className="size-4" />
 				</IconButton>
 				<IconButton
 					onClick={onDelete}
@@ -86,7 +81,7 @@ export function ActionItem({
 					className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors duration-150"
 					title="Delete action"
 				>
-					<Trash2Icon className="size-3.5" />
+					<Trash2Icon className="size-4 text-red-500" />
 				</IconButton>
 			</div>
 		</div>

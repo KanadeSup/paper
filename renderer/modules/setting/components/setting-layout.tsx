@@ -4,7 +4,7 @@ export type SettingLayoutProps = {
 
 export function SettingLayout(props: SettingLayoutProps) {
 	const { children } = props;
-	return <div className="flex flex-col gap-4 p-3">{children}</div>;
+	return <div className="flex flex-col gap-4 p-3 w-full">{children}</div>;
 }
 
 export type SettingTitleProps = {

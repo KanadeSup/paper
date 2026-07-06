@@ -9,7 +9,6 @@ import {
 
 export type ActionFormProps = {
 	mode: "create" | "edit";
-	/** Breadcrumb label — action name for edit, "New Action" for create */
 	title: string;
 	defaultValues?: Partial<MenuActionFormValues>;
 	onSubmit: (data: MenuActionFormValues) => void;
@@ -78,7 +77,7 @@ export function ActionForm({
 	const submitLabel = mode === "create" ? "Create Action" : "Save Changes";
 
 	return (
-		<div className="flex flex-col gap-4 p-3 h-full">
+		<div className="flex flex-col gap-4 p-3 h-full overflow-hidden w-full">
 			{/* Breadcrumb */}
 			<div className="flex items-center gap-1.5 text-sm">
 				<button
@@ -95,7 +94,7 @@ export function ActionForm({
 				</span>
 			</div>
 
-			<ScrollArea className="flex-1 min-h-0">
+			<ScrollArea className="flex-1 min-h-0 overflow-auto pr-3">
 				<form
 					id="action-form"
 					onSubmit={onFormSubmit}
@@ -164,7 +163,7 @@ export function ActionForm({
 									"w-full min-h-72 resize-y rounded-lg border border-input",
 									"bg-transparent px-3 py-2.5 text-sm leading-relaxed",
 									"placeholder:text-muted-foreground/50",
-									"focus-visible:outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
+									"focus-visible:outline-none focus-visible:border-ring",
 									"transition-colors duration-150 font-mono",
 									"dark:bg-input/30",
 								)}
