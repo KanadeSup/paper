@@ -17,6 +17,7 @@ import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
 import { SelectionMenu } from "./components/selection-menu/selection-menu";
 import { Toolbar } from "./components/tool-bar/tool-bar";
 import { ZoomGesture } from "./components/zoom-gesture/zoom-gesture";
+import { useSelectionMenuActions } from "./hooks/use-selection-menu-actions";
 import { PdfReaderProvider } from "./provider/pdf-reader-provider";
 
 type PDFReaderPageProps = {
@@ -25,6 +26,7 @@ type PDFReaderPageProps = {
 
 export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 	const [isToolbarPopupOpen, setIsToolbarPopupOpen] = useState(false);
+	const { actions } = useSelectionMenuActions();
 
 	return (
 		<PdfReaderProvider>
@@ -66,6 +68,7 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 															<SelectionMenu
 																selection={selection}
 																documentId={documentId}
+																actions={actions}
 															/>
 														)}
 													/>
