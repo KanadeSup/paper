@@ -1,8 +1,8 @@
 import { cn, ScrollArea } from "@renderer/modules/design-system";
+import { usePdfReaderStore } from "@renderer/modules/pdf-reader/provider/pdf-reader-provider";
+import type { PdfOutlineObject } from "@renderer/modules/pdf-reader/types/pdf.type";
 import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
-import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
-import type { PdfOutlineObject } from "../../types/pdf.type";
 
 type OutlineSelectionScreenProps = {
 	onBack: () => void;

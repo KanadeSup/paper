@@ -1,15 +1,15 @@
 import { useEffect, useRef } from "react";
+import type {
+	ChatSessionAssistantMessage,
+	ChatSessionMessage,
+	ChatSessionUserMessage,
+} from "../../pdf-chat/types/chat.type";
 import {
 	onSendChatMessageChunk,
 	onSendChatMessageError,
 	onSendChatMessageFinish,
 	onSendChatMessageStart,
 } from "../ipc/chat.ipc";
-import type {
-	ChatSessionAssistantMessage,
-	ChatSessionMessage,
-	ChatSessionUserMessage,
-} from "../types/chat.type";
 
 export type UseStreamMessageParams = {
 	onStreaming?: (streamingMessage: string) => void;

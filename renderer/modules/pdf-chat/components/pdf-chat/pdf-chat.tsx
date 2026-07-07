@@ -4,10 +4,10 @@ import { HistoryIcon, MessageCircleIcon, PlusIcon } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { useChatController } from "../../hooks/use-chat-controller";
 import useDefaultContext from "../../hooks/use-default-context";
-import { ChatHistoryPanel } from "./chat-history-panel";
-import { ChatInput } from "./chat-input";
-import { ContextEngineSetup } from "./context-engine-setup";
-import { ChatMessageList } from "./message-list";
+import { ChatHistoryPanel } from "../chat-history/chat-history-panel";
+import { ChatInput } from "../chat-input/chat-input";
+import { ContextEngineSetup } from "../context-engine-setup/context-engine-setup";
+import { ChatMessageList } from "../message-list/message-list";
 
 type View = "context-setup" | "chat" | "history";
 

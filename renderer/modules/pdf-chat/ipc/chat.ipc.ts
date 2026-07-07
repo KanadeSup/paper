@@ -32,7 +32,7 @@ import {
 	type SendMessageRequest,
 	type SendMessageResponse,
 } from "@shared/chat/contracts/send-message.contract";
-import type { ChatModelConfiguration } from "../types/chat.type";
+import type { ChatModelConfiguration } from "../../pdf-chat/types/chat.type";
 
 type SendMessageParams = {
 	sessionId: string;

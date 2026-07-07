@@ -4,7 +4,7 @@ import { Scroller } from "@embedpdf/plugin-scroll/react";
 import { SelectionLayer } from "@embedpdf/plugin-selection/react";
 import { Viewport } from "@embedpdf/plugin-viewport/react";
 import { useState } from "react";
-import { PdfChat } from "./components/pdf-chat/pdf-chat";
+import { PdfChat } from "../pdf-chat/components/pdf-chat/pdf-chat";
 import {
 	ReaderFloatTop,
 	ReaderLayout,

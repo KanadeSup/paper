@@ -1,4 +1,4 @@
-import type { PdfOutlineObject } from "./pdf.type";
+import type { PdfOutlineObject } from "@renderer/modules/pdf-reader/types/pdf.type";
 
 export type RagEngine = "openai" | "builtin";
 
