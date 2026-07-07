@@ -1,7 +1,7 @@
 import { Button, cn } from "@renderer/modules/design-system";
 import { ErrorAlert } from "@renderer/modules/design-system/components/alert/error-alert";
 import { MarkdownRenderer } from "@renderer/modules/design-system/components/markdown/markdown-renderer";
-import { Loader2Icon, RefreshCcwIcon } from "lucide-react";
+import { Loader2Icon, MessageCircleIcon, RefreshCcwIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type {
 	DisplayedAssistantChatMessage,
@@ -18,6 +18,7 @@ type ChatMessageListProps = {
 	className?: string;
 	scrollContainer?: HTMLDivElement | null;
 	onReselectContext?: () => void;
+	onSuggestedPrompt?: (prompt: string) => void;
 };
 
 export function ChatMessageList(props: ChatMessageListProps) {
@@ -46,6 +47,8 @@ export function ChatMessageList(props: ChatMessageListProps) {
 		}
 	}, [isLastMessageStreaming, scrollToBottom]);
 
+	const isEmpty = props.messages.length === 0;
+
 	return (
 		<div className={cn("flex flex-col gap-2 h-full", props.className)}>
 			{props.contextEngine && (
@@ -62,8 +65,17 @@ export function ChatMessageList(props: ChatMessageListProps) {
 					</p>
 				</div>
 			)}
+
+			{/* Empty state when context is set but no messages yet */}
+			{isEmpty && props.contextEngine && (
+				<EmptyState
+					contextEngine={props.contextEngine}
+					onSuggestedPrompt={props.onSuggestedPrompt}
+				/>
+			)}
+
 			{/* display the messages except the last one */}
-			{props.messages.length > 0 &&
+			{!isEmpty &&
 				props.messages.slice(0, -1).map((message, index) => {
 					let uniqueKey: string;
 					if ("id" in message) {
@@ -75,7 +87,7 @@ export function ChatMessageList(props: ChatMessageListProps) {
 				})}
 
 			{/* display the last message with min height wrapper */}
-			{props.messages.length > 0 && (
+			{!isEmpty && (
 				<div
 					style={{
 						minHeight: useMinHeightWrapper ? "calc(100vh - 270px)" : "auto",
@@ -84,6 +96,69 @@ export function ChatMessageList(props: ChatMessageListProps) {
 					<MessageItem message={props.messages[props.messages.length - 1]} />
 				</div>
 			)}
+		</div>
+	);
+}
+
+const RAG_SUGGESTIONS = [
+	"Summarize the key points of this document",
+	"What are the main conclusions?",
+	"Explain the most important concepts",
+	"What questions does this document answer?",
+];
+
+const OUTLINE_SUGGESTIONS = [
+	"Summarize this chapter",
+	"What are the key takeaways?",
+	"Explain the main ideas in simple terms",
+	"What does this section cover?",
+];
+
+type EmptyStateProps = {
+	contextEngine: NonNullable<ContextEngine>;
+	onSuggestedPrompt?: (prompt: string) => void;
+};
+
+function EmptyState({ contextEngine, onSuggestedPrompt }: EmptyStateProps) {
+	const suggestions =
+		contextEngine.type === "outline" ? OUTLINE_SUGGESTIONS : RAG_SUGGESTIONS;
+
+	return (
+		<div className="flex flex-col items-center gap-4 py-6 px-1">
+			<div className="flex flex-col items-center gap-2 text-center">
+				<div className="flex items-center justify-center size-10 rounded-full bg-white/5 border border-white/10">
+					<MessageCircleIcon className="size-5 text-white/40" />
+				</div>
+				<p className="text-sm font-medium text-white/70">
+					Ready to chat about your document
+				</p>
+				<p className="text-xs text-white/40 leading-relaxed">
+					Ask anything about the content — I'll use the selected context to
+					answer accurately.
+				</p>
+			</div>
+
+			<div className="w-full flex flex-col gap-1.5">
+				<p className="text-xs font-semibold uppercase tracking-wide text-white/30 mb-0.5">
+					Suggestions
+				</p>
+				{suggestions.map((prompt) => (
+					<button
+						key={prompt}
+						type="button"
+						onClick={() => onSuggestedPrompt?.(prompt)}
+						className={cn(
+							"w-full text-left px-3 py-2 rounded-lg text-xs text-white/60",
+							"bg-white/3 border border-white/[0.07]",
+							"hover:bg-white/[0.07] hover:text-white/90 hover:border-white/15",
+							"transition-all duration-150",
+							onSuggestedPrompt ? "cursor-pointer" : "cursor-default",
+						)}
+					>
+						{prompt}
+					</button>
+				))}
+			</div>
 		</div>
 	);
 }

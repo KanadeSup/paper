@@ -131,6 +131,7 @@ export function PdfChat(props: PdfChatProps) {
 					<ChatMessageList
 						contextEngine={contextEngine}
 						onReselectContext={() => actions.setContextEngine(null)}
+						onSuggestedPrompt={handleSubmit}
 						className="p-2 pr-2"
 						messages={messages}
 						scrollContainer={scrollContainerRef.current}
