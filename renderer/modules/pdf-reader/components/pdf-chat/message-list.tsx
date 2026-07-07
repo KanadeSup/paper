@@ -8,12 +8,16 @@ import type {
 	DisplayedChatMessage,
 	DisplayedUserChatMessage,
 } from "../../types/chat.type";
+import type { ContextEngine } from "../../types/context-engine.type";
+import { ChatContextCard } from "./chat-context-card";
 
 type ChatMessageListProps = {
 	messages: DisplayedChatMessage[];
+	contextEngine?: ContextEngine;
 	askAIText?: string | null;
 	className?: string;
 	scrollContainer?: HTMLDivElement | null;
+	onReselectContext?: () => void;
 };
 
 export function ChatMessageList(props: ChatMessageListProps) {
@@ -44,6 +48,12 @@ export function ChatMessageList(props: ChatMessageListProps) {
 
 	return (
 		<div className={cn("flex flex-col gap-2 h-full", props.className)}>
+			{props.contextEngine && (
+				<ChatContextCard
+					contextEngine={props.contextEngine}
+					onReselect={props.onReselectContext ?? (() => {})}
+				/>
+			)}
 			{props.askAIText && (
 				<div className="px-5 py-2 bg-[#2c394d] rounded-md border border-default-400">
 					<p className="text-center font-bold"> Ask AI </p>

@@ -1,11 +1,15 @@
 import { cn, IconButton, ScrollArea } from "@renderer/modules/design-system";
 import Logger from "electron-log/renderer.js";
 import { HistoryIcon, MessageCircleIcon, PlusIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useChatController } from "../../hooks/use-chat-controller";
+import useDefaultContext from "../../hooks/use-default-context";
 import { ChatHistoryPanel } from "./chat-history-panel";
 import { ChatInput } from "./chat-input";
+import { ContextEngineSetup } from "./context-engine-setup";
 import { ChatMessageList } from "./message-list";
+
+type View = "context-setup" | "chat" | "history";
 
 export type PdfChatProps = {
 	documentId: string;
@@ -20,6 +24,9 @@ export function PdfChat(props: PdfChatProps) {
 		null,
 	);
 
+	const actions = useDefaultContext((state) => state.actions);
+	const contextEngine = useDefaultContext((state) => state.contextEngine);
+
 	const {
 		session,
 		messages,
@@ -33,6 +40,15 @@ export function PdfChat(props: PdfChatProps) {
 		documentId: documentId,
 		sessionId: selectedSessionId ?? undefined,
 	});
+
+	const isNewChat = messages.length === 0;
+
+	// Determine the current view
+	const view: View = useMemo(() => {
+		if (isHistoryView) return "history";
+		if (!contextEngine && isNewChat) return "context-setup";
+		return "chat";
+	}, [contextEngine, isHistoryView, isNewChat]);
 
 	const handleSubmit = async (message: string) => {
 		let sessionId = session?.id ?? null;
@@ -90,7 +106,7 @@ export function PdfChat(props: PdfChatProps) {
 				</div>
 			</div>
 
-			{/* Chat history or chat messages */}
+			{/* Main content area */}
 			<ScrollArea
 				overflowAnchor="none"
 				ref={scrollContainerRef}
@@ -104,8 +120,17 @@ export function PdfChat(props: PdfChatProps) {
 						onDeleteSession={onDeleteHistorySession}
 					/>
 				)}
-				{!isHistoryView && (
+
+				{view === "context-setup" && (
+					<div className="p-2">
+						<ContextEngineSetup onConfirm={actions.setContextEngine} />
+					</div>
+				)}
+
+				{view === "chat" && (
 					<ChatMessageList
+						contextEngine={contextEngine}
+						onReselectContext={() => actions.setContextEngine(null)}
 						className="p-2 pr-2"
 						messages={messages}
 						scrollContainer={scrollContainerRef.current}
@@ -114,7 +139,7 @@ export function PdfChat(props: PdfChatProps) {
 			</ScrollArea>
 
 			{/* Chat input */}
-			{!isHistoryView && (
+			{view === "chat" && (
 				<div>
 					<ChatInput
 						className="mt-auto"
