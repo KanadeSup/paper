@@ -21,6 +21,7 @@ type ChatMessageListProps = {
 	onSuggestedPrompt?: (prompt: string) => void;
 };
 
+// ------------- Chat Message List Component -------------
 export function ChatMessageList(props: ChatMessageListProps) {
 	const lastMessage =
 		props.messages.length > 0
@@ -100,6 +101,7 @@ export function ChatMessageList(props: ChatMessageListProps) {
 	);
 }
 
+// ------------- Empty State Component -------------
 const RAG_SUGGESTIONS = [
 	"Summarize the key points of this document",
 	"What are the main conclusions?",
@@ -163,6 +165,7 @@ function EmptyState({ contextEngine, onSuggestedPrompt }: EmptyStateProps) {
 	);
 }
 
+// ------------- Message Item Component -------------
 function MessageItem(props: { message: DisplayedChatMessage }) {
 	if (props.message.role === "user") {
 		return <UserMessage message={props.message} />;
@@ -171,6 +174,7 @@ function MessageItem(props: { message: DisplayedChatMessage }) {
 	}
 }
 
+// ------------- User Message Component -------------
 type UserMessageProps = {
 	message: DisplayedUserChatMessage;
 };
@@ -184,6 +188,7 @@ function UserMessage(props: UserMessageProps) {
 	);
 }
 
+// ------------- Assistant Message Component -------------
 type AssistantMessageProps = {
 	message: DisplayedAssistantChatMessage;
 };
