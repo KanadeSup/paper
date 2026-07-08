@@ -1,5 +1,5 @@
 import { cn } from "@renderer/modules/design-system";
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link, useLocation, useRouter } from "@tanstack/react-router";
 
 export function SettingSidebar() {
 	const navItems = [
@@ -12,12 +12,15 @@ export function SettingSidebar() {
 			href: "/setting/appearance",
 		},
 		{
+			label: "API keys",
+			href: "/setting/api-keys",
+		},
+		{
 			label: "Menu selection",
 			href: "/setting/menu-selection",
 		},
 	];
-	const router = useRouter();
-	console.log(router.state.location.pathname);
+	const location = useLocation();
 	return (
 		<div className="flex flex-col gap-4 w-64 p-3">
 			<h1 className="font-semibold"> Settings </h1>
@@ -29,7 +32,7 @@ export function SettingSidebar() {
 						className={cn(
 							"flex items-center gap-2 cursor-pointer text-sm w-full",
 							"hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md p-2",
-							router.state.location.pathname === item.href &&
+							location.pathname === item.href &&
 								"bg-sidebar-accent text-sidebar-accent-foreground",
 						)}
 					>
