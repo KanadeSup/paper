@@ -61,8 +61,11 @@ function setupZoomGestures({
 	let currentScale = 1;
 
 	// Wheel state
+	const ZOOM_STEP = 0.5;
+	const ZOOM_THRESHOLD = 150;
 	let wheelZoomTimeout: ReturnType<typeof setTimeout> | null = null;
 	let accumulatedWheelScale = 1;
+	let scrollAmount = 0;
 
 	// Gesture state
 	let initialElementWidth = 0;
@@ -90,12 +93,13 @@ function setupZoomGestures({
 
 	// --- Margin calculation ---
 	const updateMargin = () => {
+		console.log("container", container.clientWidth, viewportGap);
 		const availableWidth = container.clientWidth - 2 * viewportGap;
 		const elementWidth = element.offsetWidth;
 
 		const newMargin =
 			elementWidth < availableWidth ? (availableWidth - elementWidth) / 2 : 0;
-		// element.style.marginLeft = `${newMargin}px`;
+		element.style.marginLeft = `${newMargin}px`;
 	};
 
 	const calculateTransform = (scale: number) => {
@@ -213,16 +217,24 @@ function setupZoomGestures({
 			clearTimeout(wheelZoomTimeout);
 		}
 
-		const zoomFactor = 1 - e.deltaY * 0.01;
-		accumulatedWheelScale *= zoomFactor;
-		accumulatedWheelScale = Math.max(0.2, Math.min(10, accumulatedWheelScale));
-		updateTransform(accumulatedWheelScale);
+		const isScrollDirectionChanged =
+			Math.sign(e.deltaY) !== Math.sign(scrollAmount);
+		scrollAmount = isScrollDirectionChanged
+			? e.deltaY
+			: scrollAmount + e.deltaY;
 
-		wheelZoomTimeout = setTimeout(() => {
-			wheelZoomTimeout = null;
-			commitZoom();
-			accumulatedWheelScale = 1;
-		}, 250);
+		if (Math.abs(scrollAmount) > ZOOM_THRESHOLD) {
+			accumulatedWheelScale += ZOOM_STEP * Math.sign(scrollAmount);
+			console.log(accumulatedWheelScale);
+			updateTransform(accumulatedWheelScale);
+			scrollAmount = 0;
+			wheelZoomTimeout = setTimeout(() => {
+				wheelZoomTimeout = null;
+				commitZoom();
+				accumulatedWheelScale = 1;
+			}, 1000);
+			return;
+		}
 	};
 
 	// Subscribe to zoom changes to update margin

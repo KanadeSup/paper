@@ -1,7 +1,4 @@
-import {
-	BadRequestError,
-	NotFoundError,
-} from "@main/modules/common/errors/common.error";
+import { NotFoundError } from "@main/modules/common/errors/common.error";
 import { BaseChannel } from "@main/modules/common/ipc/channel.ipc";
 import {
 	GET_SELECTION_MENU_ACTION_DETAIL_CHANNEL_NAME,

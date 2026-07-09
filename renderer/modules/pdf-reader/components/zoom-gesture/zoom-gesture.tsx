@@ -10,7 +10,7 @@ export function ZoomGesture(props: ZoomGestureProps) {
 	const { elementRef } = useZoomGesture(documentId);
 
 	return (
-		<div className="flex justify-center">
+		<div className="">
 			<div ref={elementRef}>{children}</div>
 		</div>
 	);
