@@ -1,12 +1,16 @@
-import type { LucideIcon } from "lucide-react";
-import { SparklesIcon, WandSparklesIcon, ZapIcon } from "lucide-react";
+import {
+	GeminiIcon,
+	GrokIcon,
+	OpenAIIcon,
+} from "@renderer/modules/icon/components/brand-icon";
+import type { IconProps } from "@renderer/modules/icon/types/icon.type";
 
 export type ApiKeyProviderMeta = {
 	id: string;
 	name: string;
 	description: string;
 	placeholder: string;
-	icon: LucideIcon;
+	icon: (props: IconProps) => React.ReactNode;
 };
 
 export const API_KEY_PROVIDERS: ApiKeyProviderMeta[] = [
@@ -15,20 +19,20 @@ export const API_KEY_PROVIDERS: ApiKeyProviderMeta[] = [
 		name: "Grok",
 		description: "xAI models for chat and selection actions.",
 		placeholder: "xai-...",
-		icon: ZapIcon,
+		icon: GrokIcon,
 	},
 	{
 		id: "gemini",
 		name: "Gemini",
 		description: "Google Gemini models for chat and selection actions.",
 		placeholder: "AIza...",
-		icon: SparklesIcon,
+		icon: GeminiIcon,
 	},
 	{
 		id: "openai",
 		name: "OpenAI",
 		description: "OpenAI models and embeddings for RAG.",
 		placeholder: "sk-...",
-		icon: WandSparklesIcon,
+		icon: OpenAIIcon,
 	},
 ];

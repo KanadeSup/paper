@@ -43,10 +43,10 @@ export function ApiKeyProviderCard({
 				<div
 					className={cn(
 						"flex size-9 shrink-0 items-center justify-center rounded-md",
-						"bg-primary/10 text-primary",
+						"text-foreground",
 					)}
 				>
-					<Icon className="size-4" />
+					<Icon className="size-6" />
 				</div>
 
 				<div className="min-w-0 flex-1">

@@ -1,6 +1,7 @@
 import { cn, ScrollArea } from "@renderer/modules/design-system";
 import { KeyRoundIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
 	SettingLayout,
 	SettingTitle,
@@ -12,6 +13,7 @@ export function SettingApiKeyPage() {
 	const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
 	const handleSaveApiKey = async (provider: string, apiKey: string) => {
 		console.log(provider, apiKey);
+		toast.success(`API key for ${provider} saved`);
 	};
 
 	return (
