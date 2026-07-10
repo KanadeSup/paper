@@ -1,6 +1,8 @@
-import { Button, cn } from "@renderer/modules/design-system";
+import { Button, cn, IconButton } from "@renderer/modules/design-system";
+import { Loader2Icon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import type { ApiKeyProviderMeta } from "../constants/providers";
+import { validateApiKey } from "../ipc/api-key.ipc";
 import { ApiKeySecretInput } from "./api-key-secret-input";
 
 export type ApiKeyProviderCardProps = {
@@ -10,6 +12,11 @@ export type ApiKeyProviderCardProps = {
 	onSave: (apiKey: string) => void;
 };
 
+type ConnectionStatus = {
+	valid: boolean;
+	message: string;
+};
+
 export function ApiKeyProviderCard({
 	defaultValue,
 	provider,
@@ -17,9 +24,12 @@ export function ApiKeyProviderCard({
 	onSave,
 }: ApiKeyProviderCardProps) {
 	const [internalValue, setInternalValue] = useState(defaultValue);
+	const [isChecking, setIsChecking] = useState(false);
+	const [connectionStatus, setConnectionStatus] =
+		useState<ConnectionStatus | null>(null);
 	const prevValueRef = useRef(defaultValue);
 	const Icon = provider.icon;
-	const canSave = internalValue.trim() !== defaultValue.trim();
+	const canSave = internalValue !== defaultValue;
 
 	// When the passed value changes, update the internal value
 	if (defaultValue !== prevValueRef.current) {
@@ -29,7 +39,44 @@ export function ApiKeyProviderCard({
 
 	const handleSave = async () => {
 		if (!canSave) return;
-		onSave(internalValue.trim());
+		onSave(internalValue);
+	};
+
+	const handleCheckConnection = async () => {
+		if (isChecking) return;
+
+		setIsChecking(true);
+
+		try {
+			const response = await validateApiKey({
+				provider: provider.id,
+				apiKey: internalValue,
+			});
+
+			if (!response.success) {
+				setConnectionStatus({
+					valid: false,
+					message: response.errorMessage ?? "Failed to check connection",
+				});
+				return;
+			}
+
+			// Set the connection status based on the response
+			const { valid, message } = response.data;
+			if (valid) {
+				setConnectionStatus({
+					valid: true,
+					message: "Connection successful",
+				});
+				return;
+			}
+			setConnectionStatus({
+				valid: false,
+				message: message ?? "Connection failed",
+			});
+		} finally {
+			setIsChecking(false);
+		}
 	};
 
 	return (
@@ -66,15 +113,32 @@ export function ApiKeyProviderCard({
 				<ApiKeySecretInput
 					value={internalValue}
 					placeholder={provider.placeholder}
-					onChange={setInternalValue}
+					onChange={(value) => setInternalValue(value.trim())}
 					onSubmit={handleSave}
 				/>
 
 				<div className="flex items-center justify-end gap-2">
+					<Button
+						variant="outline"
+						disabled={!isConfigured || isChecking}
+						onClick={handleCheckConnection}
+						className="px-4"
+					>
+						{isChecking && <Loader2Icon className="animate-spin" />}
+						Check connection
+					</Button>
 					<Button disabled={!canSave} onClick={handleSave} className="px-5">
 						Save
 					</Button>
 				</div>
+
+				{connectionStatus && (
+					<ConnectionStatusBox
+						valid={connectionStatus.valid}
+						message={connectionStatus.message}
+						onDismiss={() => setConnectionStatus(null)}
+					/>
+				)}
 			</div>
 		</div>
 	);
@@ -106,5 +170,38 @@ function StatusBadge({ isConfigured }: StatusBadgeProps) {
 		>
 			Not set
 		</span>
+	);
+}
+
+type ConnectionStatusBoxProps = {
+	valid: boolean;
+	message: string;
+	onDismiss: () => void;
+};
+
+function ConnectionStatusBox({
+	valid,
+	message,
+	onDismiss,
+}: ConnectionStatusBoxProps) {
+	return (
+		<div
+			className={cn(
+				"flex items-start gap-2 rounded-lg border px-3 py-2.5 text-sm",
+				valid
+					? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+					: "border-destructive/30 bg-destructive/10 text-destructive",
+			)}
+		>
+			<p className="min-w-0 flex-1 leading-relaxed">{message}</p>
+			<IconButton
+				size="icon-xs"
+				aria-label="Dismiss"
+				onClick={onDismiss}
+				className={cn("shrink-0 hover:stroke-white hover:bg-transparent")}
+			>
+				<XIcon />
+			</IconButton>
+		</div>
 	);
 }

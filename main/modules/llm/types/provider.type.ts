@@ -17,3 +17,8 @@ export type GenerateTextInput =
 			role: "system" | "user" | "assistant";
 			content: string;
 	  }[];
+
+export type ValidateApiKeyResponse = {
+	valid: boolean;
+	message: string | null;
+};

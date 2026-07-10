@@ -3,6 +3,7 @@ import type {
 	GenerateTextInput,
 	GenerateTextOptions,
 	ProviderOptions,
+	ValidateApiKeyResponse,
 } from "../types/provider.type";
 import type { LlmProvider } from "./llm-provider.interface";
 
@@ -54,6 +55,27 @@ export class GrokProvider implements LlmProvider {
 			if (event.type === "response.output_text.delta") {
 				yield event.delta;
 			}
+		}
+	}
+
+	async validateApiKey(apiKey: string): Promise<ValidateApiKeyResponse> {
+		const validateClient = new OpenAI({
+			apiKey,
+			baseURL: GROK_BASE_URL,
+			timeout: GROK_TIMEOUT_MS,
+		});
+
+		try {
+			await validateClient.models.list();
+			return {
+				valid: true,
+				message: null,
+			};
+		} catch (error) {
+			return {
+				valid: false,
+				message: error instanceof Error ? error.message : "Unknown error",
+			};
 		}
 	}
 }

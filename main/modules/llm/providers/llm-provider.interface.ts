@@ -2,6 +2,7 @@ import type {
 	GenerateTextInput,
 	GenerateTextOptions,
 	LlmProviderName,
+	ValidateApiKeyResponse,
 } from "../types/provider.type";
 
 export interface LlmProvider {
@@ -16,4 +17,6 @@ export interface LlmProvider {
 		input: GenerateTextInput,
 		options: GenerateTextOptions,
 	): AsyncGenerator<string>;
+
+	validateApiKey(apiKey: string): Promise<ValidateApiKeyResponse>;
 }

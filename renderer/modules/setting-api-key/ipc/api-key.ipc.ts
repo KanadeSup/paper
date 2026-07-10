@@ -8,6 +8,11 @@ import {
 	type SetApiKeyRequest,
 	type SetApiKeyResponse,
 } from "@shared/api-key/ipc/set-api-key.contract";
+import {
+	VALIDATE_API_KEY_CHANNEL_NAME,
+	type ValidateApiKeyRequest,
+	type ValidateApiKeyResponse,
+} from "@shared/api-key/ipc/validate-api-key.contract";
 
 export function getApiKeys() {
 	return invoke<undefined, GetApiKeysResponse>(
@@ -19,6 +24,13 @@ export function getApiKeys() {
 export function setApiKey(request: SetApiKeyRequest) {
 	return invoke<SetApiKeyRequest, SetApiKeyResponse>(
 		SET_API_KEY_CHANNEL_NAME,
+		request,
+	);
+}
+
+export function validateApiKey(request: ValidateApiKeyRequest) {
+	return invoke<ValidateApiKeyRequest, ValidateApiKeyResponse>(
+		VALIDATE_API_KEY_CHANNEL_NAME,
 		request,
 	);
 }

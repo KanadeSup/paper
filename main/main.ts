@@ -3,7 +3,11 @@ import path from "node:path";
 import { app, BrowserWindow, ipcMain } from "electron";
 import log from "electron-log/main";
 import started from "electron-squirrel-startup";
-import { GetApiKeysChannel, SetApiKeyChannel } from "./modules/api-key";
+import {
+	GetApiKeysChannel,
+	SetApiKeyChannel,
+	ValidateApiKeyChannel,
+} from "./modules/api-key";
 import {
 	GetAppConfigChannel,
 	SelectStorageDirectoryChannel,
@@ -172,4 +176,5 @@ new Main().init([
 	new DeleteSelectionMenuActionChannel(),
 	new GetApiKeysChannel(),
 	new SetApiKeyChannel(),
+	new ValidateApiKeyChannel(),
 ]);
