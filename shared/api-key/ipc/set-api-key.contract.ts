@@ -7,4 +7,4 @@ export type SetApiKeyRequest = {
 	apiKey: string;
 };
 
-export type SetApiKeyResponse = boolean;
+export type SetApiKeyResponse = null;

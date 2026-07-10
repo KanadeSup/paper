@@ -19,7 +19,7 @@ export function ApiKeyProviderCard({
 	const [internalValue, setInternalValue] = useState(defaultValue);
 	const prevValueRef = useRef(defaultValue);
 	const Icon = provider.icon;
-	const canSave = internalValue.trim().length !== defaultValue.trim().length;
+	const canSave = internalValue.trim() !== defaultValue.trim();
 
 	// When the passed value changes, update the internal value
 	if (defaultValue !== prevValueRef.current) {

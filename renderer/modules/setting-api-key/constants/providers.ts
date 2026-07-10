@@ -4,9 +4,10 @@ import {
 	OpenAIIcon,
 } from "@renderer/modules/icon/components/brand-icon";
 import type { IconProps } from "@renderer/modules/icon/types/icon.type";
+import type { ApiKeyProvider } from "@shared/api-key/types/api-key.type";
 
 export type ApiKeyProviderMeta = {
-	id: string;
+	id: ApiKeyProvider;
 	name: string;
 	description: string;
 	placeholder: string;

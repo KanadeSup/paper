@@ -21,6 +21,6 @@ export class SetApiKeyChannel extends BaseChannel<
 		request: SetApiKeyRequest,
 	): Promise<SetApiKeyResponse> {
 		this.apiKeyService.set(request.provider, request.apiKey);
-		return true;
+		return null;
 	}
 }

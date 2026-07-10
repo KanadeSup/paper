@@ -1,6 +1,7 @@
 import { cn, ScrollArea } from "@renderer/modules/design-system";
+import type { ApiKeys } from "@shared/api-key/types/api-key.type";
 import { KeyRoundIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
 	SettingLayout,
@@ -8,11 +9,47 @@ import {
 } from "../setting/components/setting-layout";
 import { ApiKeyProviderCard } from "./components/api-key-provider-card";
 import { API_KEY_PROVIDERS } from "./constants/providers";
+import { getApiKeys, setApiKey } from "./ipc/api-key.ipc";
 
 export function SettingApiKeyPage() {
-	const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
-	const handleSaveApiKey = async (provider: string, apiKey: string) => {
-		console.log(provider, apiKey);
+	const [apiKeys, setApiKeys] = useState<ApiKeys>({
+		grok: null,
+		gemini: null,
+		openai: null,
+	});
+
+	useEffect(() => {
+		async function loadApiKeys() {
+			const response = await getApiKeys();
+
+			if (!response.success) {
+				toast.error(response.errorMessage ?? "Failed to load API keys");
+				return;
+			}
+
+			setApiKeys(response.data.apiKeys);
+		}
+
+		loadApiKeys();
+	}, []);
+
+	const handleSaveApiKey = async (
+		provider: (typeof API_KEY_PROVIDERS)[number]["id"],
+		apiKey: string,
+	) => {
+		const response = await setApiKey({ provider, apiKey });
+
+		if (!response.success) {
+			toast.error(
+				response.errorMessage ?? `Failed to save ${provider} API key`,
+			);
+			return;
+		}
+
+		setApiKeys({
+			...apiKeys,
+			[provider]: apiKey,
+		});
 		toast.success(`API key for ${provider} saved`);
 	};
 
@@ -31,12 +68,13 @@ export function SettingApiKeyPage() {
 			<ScrollArea className="h-full">
 				<div className="flex flex-col gap-3 pr-1">
 					{API_KEY_PROVIDERS.map((provider) => {
+						const value = apiKeys[provider.id] ?? "";
 						return (
 							<ApiKeyProviderCard
 								key={provider.id}
 								provider={provider}
-								isConfigured={!!apiKeys[provider.id]}
-								defaultValue={apiKeys[provider.id] ?? ""}
+								isConfigured={!!value}
+								defaultValue={value}
 								onSave={(apiKey) => handleSaveApiKey(provider.id, apiKey)}
 							/>
 						);
