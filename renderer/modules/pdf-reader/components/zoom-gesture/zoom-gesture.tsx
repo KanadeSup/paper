@@ -10,8 +10,15 @@ export function ZoomGesture(props: ZoomGestureProps) {
 	const { elementRef } = useZoomGesture(documentId);
 
 	return (
-		<div className="">
-			<div ref={elementRef}>{children}</div>
+		<div
+			ref={elementRef}
+			style={{
+				display: "inline-block",
+				overflow: "visible",
+				boxSizing: "border-box",
+			}}
+		>
+			{children}
 		</div>
 	);
 }

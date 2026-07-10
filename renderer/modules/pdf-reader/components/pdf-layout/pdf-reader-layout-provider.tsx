@@ -19,8 +19,8 @@ type PdfReaderLayoutContext = {
 export function PdfReaderLayoutProvider(props: PdfReaderLayoutProviderProps) {
 	const [store] = useState(() =>
 		createStore<PdfReaderLayoutContext>(() => ({
-			isSidebarOpen: true,
-			isSidebarRightOpen: true,
+			isSidebarOpen: false,
+			isSidebarRightOpen: false,
 			actions: {
 				toggleSidebar: (open?: boolean) => {
 					store.setState({

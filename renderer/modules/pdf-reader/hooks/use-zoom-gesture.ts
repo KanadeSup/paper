@@ -7,6 +7,13 @@ import {
 } from "@embedpdf/plugin-zoom/react";
 import { useLayoutEffect, useRef } from "react";
 
+const ZOOM_STEP = 0.2;
+const ZOOM_THRESHOLD = 150;
+const ZOOM_COMMIT_DELAY = 250;
+
+const MAX_ZOOM_LEVEL = 5;
+const MIN_ZOOM_LEVEL = 0.2;
+
 export interface ZoomGestureDeps {
 	element: HTMLDivElement;
 	/** Viewport container element for attaching events */
@@ -61,11 +68,9 @@ function setupZoomGestures({
 	let currentScale = 1;
 
 	// Wheel state
-	const ZOOM_STEP = 0.5;
-	const ZOOM_THRESHOLD = 150;
 	let wheelZoomTimeout: ReturnType<typeof setTimeout> | null = null;
-	let accumulatedWheelScale = 1;
 	let scrollAmount = 0;
+	let nextZoomLevel: number = 1;
 
 	// Gesture state
 	let initialElementWidth = 0;
@@ -93,7 +98,6 @@ function setupZoomGestures({
 
 	// --- Margin calculation ---
 	const updateMargin = () => {
-		console.log("container", container.clientWidth, viewportGap);
 		const availableWidth = container.clientWidth - 2 * viewportGap;
 		const elementWidth = element.offsetWidth;
 
@@ -209,32 +213,40 @@ function setupZoomGestures({
 		if (!e.ctrlKey && !e.metaKey) return;
 		e.preventDefault();
 
-		if (wheelZoomTimeout === null) {
-			initialZoom = getState().currentZoomLevel;
-			accumulatedWheelScale = 1;
-			initializeGestureState(e.clientX, e.clientY);
-		} else {
-			clearTimeout(wheelZoomTimeout);
-		}
-
 		const isScrollDirectionChanged =
 			Math.sign(e.deltaY) !== Math.sign(scrollAmount);
 		scrollAmount = isScrollDirectionChanged
 			? e.deltaY
 			: scrollAmount + e.deltaY;
 
-		if (Math.abs(scrollAmount) > ZOOM_THRESHOLD) {
-			accumulatedWheelScale += ZOOM_STEP * Math.sign(scrollAmount);
-			console.log(accumulatedWheelScale);
-			updateTransform(accumulatedWheelScale);
-			scrollAmount = 0;
-			wheelZoomTimeout = setTimeout(() => {
-				wheelZoomTimeout = null;
-				commitZoom();
-				accumulatedWheelScale = 1;
-			}, 1000);
-			return;
+		// Wait for the scroll amount to be greater than the threshold before
+		// running the logic to zoom the document
+		if (Math.abs(scrollAmount) <= ZOOM_THRESHOLD) return;
+
+		if (wheelZoomTimeout === null) {
+			initialZoom = getState().currentZoomLevel;
+			nextZoomLevel = initialZoom;
+			initializeGestureState(e.clientX, e.clientY);
+		} else {
+			clearTimeout(wheelZoomTimeout);
+			wheelZoomTimeout = null;
 		}
+
+		nextZoomLevel -= ZOOM_STEP * Math.sign(scrollAmount);
+		const clampedNextZoomLevel = clamp(
+			nextZoomLevel,
+			MIN_ZOOM_LEVEL,
+			MAX_ZOOM_LEVEL,
+		);
+		updateTransform(clampedNextZoomLevel / initialZoom);
+		scrollAmount = 0;
+
+		// Delay the commit of the zoom to ensure the user has finished scrolling
+		// to avoid jittering and performance issues
+		wheelZoomTimeout = setTimeout(() => {
+			wheelZoomTimeout = null;
+			commitZoom();
+		}, ZOOM_COMMIT_DELAY);
 	};
 
 	// Subscribe to zoom changes to update margin
