@@ -3,11 +3,13 @@ import path from "node:path";
 import { app, BrowserWindow, ipcMain } from "electron";
 import log from "electron-log/main";
 import started from "electron-squirrel-startup";
+import { GetApiKeysChannel, SetApiKeyChannel } from "./modules/api-key";
 import {
 	GetAppConfigChannel,
 	SelectStorageDirectoryChannel,
 	UpdateAppConfigChannel,
 } from "./modules/app-config";
+
 import { CreateChatSessionChannel } from "./modules/chat/ipc/create-chat-session.ipc";
 import { DeleteChatSessionChannel } from "./modules/chat/ipc/delete-chat-session.ipc";
 import { GetChatSessionChannel } from "./modules/chat/ipc/get-chat-session.ipc";
@@ -168,4 +170,6 @@ new Main().init([
 	new CreateSelectionMenuActionChannel(),
 	new UpdateSelectionMenuActionChannel(),
 	new DeleteSelectionMenuActionChannel(),
+	new GetApiKeysChannel(),
+	new SetApiKeyChannel(),
 ]);

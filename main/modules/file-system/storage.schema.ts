@@ -7,6 +7,19 @@ export const storageDefinition = {
 			storagePath: null,
 		},
 	}),
+	apiKeys: defineStorage({
+		schema: z.object({
+			grok: z.string().nullable(),
+			gemini: z.string().nullable(),
+			openai: z.string().nullable(),
+		}),
+		defaultData: {
+			grok: null,
+			gemini: null,
+			openai: null,
+		},
+	}),
+
 	documents: defineCollectionStorage({
 		schema: z.object({
 			records: z
