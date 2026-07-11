@@ -17,7 +17,7 @@ export function PdfSidebar({ documentId }: PdfSidebarProps) {
 				</IconButton>
 				<h2 className="font-medium">Outline</h2>
 			</aside>
-			<aside className="flex-1 rounded-md bg-sidebar py-3 pl-3">
+			<aside className="flex-1 rounded-md bg-sidebar py-3 pl-3 flex flex-col h-full">
 				<PdfOutline documentId={documentId} />
 			</aside>
 		</div>
