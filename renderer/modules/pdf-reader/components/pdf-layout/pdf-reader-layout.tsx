@@ -14,7 +14,6 @@ export type ReaderLayoutProps = {
 export function ReaderLayout({ children }: ReaderLayoutProps) {
 	return (
 		<PdfReaderLayoutProvider>
-			{/* biome-ignore lint/a11y/noStaticElementInteractions: draggable make the pdf image draggable lead to unexpected behavior for text selection */}
 			<div
 				className="h-screen w-screen p-3 flex select-none"
 				onDragStart={(e) => e.preventDefault()}
@@ -137,7 +136,6 @@ export function ReaderFloatTop({
 	}, [visible, clearTimer, delayTimer]);
 
 	return (
-		// biome-ignore lint/a11y/noStaticElementInteractions: topbar wrapper uses mouse hover for show/hide
 		<div
 			className="absolute w-full z-10 pl-2 pr-6"
 			onMouseEnter={handleMouseEnter}
