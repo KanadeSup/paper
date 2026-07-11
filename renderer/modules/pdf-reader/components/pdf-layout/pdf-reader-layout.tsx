@@ -38,6 +38,7 @@ export function ReaderSideLeft(props: ReaderSideLeftProps) {
 
 	return (
 		<motion.aside
+			initial={false}
 			animate={{
 				width: isSidebarOpen ? width : 0,
 				marginRight: isSidebarOpen ? 12 : 0,
@@ -46,6 +47,7 @@ export function ReaderSideLeft(props: ReaderSideLeftProps) {
 			className="shrink-0 overflow-hidden"
 		>
 			<motion.div
+				initial={false}
 				animate={{
 					x: isSidebarOpen ? 0 : -(width + offset),
 				}}
@@ -173,6 +175,7 @@ export function ReaderSideRight(props: ReaderSideRightProps) {
 
 	return (
 		<motion.aside
+			initial={false}
 			animate={{
 				width: isSidebarRightOpen ? width : 0,
 				marginLeft: isSidebarRightOpen ? 12 : 0,
@@ -180,7 +183,11 @@ export function ReaderSideRight(props: ReaderSideRightProps) {
 			}}
 			className="shrink-0 overflow-hidden"
 		>
-			<motion.div className={cn("h-full", className)} style={{ width }}>
+			<motion.div
+				initial={false}
+				className={cn("h-full", className)}
+				style={{ width }}
+			>
 				{children}
 			</motion.div>
 		</motion.aside>
