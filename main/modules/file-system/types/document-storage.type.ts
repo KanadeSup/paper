@@ -24,3 +24,7 @@ export type SelectionMenuActionRecord =
 // Document vector stores
 export type DocumentVectorStoreRecord =
 	StorageData<"documentVectorStore">["records"][number];
+
+// Document states
+export type DocumentStateRecord =
+	StorageData<"documentStates">["records"][number];

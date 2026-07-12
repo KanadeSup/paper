@@ -1,10 +1,7 @@
 import { cn } from "@renderer/modules/design-system";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-	PdfReaderLayoutProvider,
-	usePdfReaderLayoutStore,
-} from "./pdf-reader-layout-provider";
+import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
 
 /* Layout */
 export type ReaderLayoutProps = {
@@ -13,14 +10,12 @@ export type ReaderLayoutProps = {
 
 export function ReaderLayout({ children }: ReaderLayoutProps) {
 	return (
-		<PdfReaderLayoutProvider>
-			<div
-				className="h-screen w-screen p-3 flex select-none"
-				onDragStart={(e) => e.preventDefault()}
-			>
-				{children}
-			</div>
-		</PdfReaderLayoutProvider>
+		<div
+			className="h-screen w-screen p-3 flex select-none"
+			onDragStart={(e) => e.preventDefault()}
+		>
+			{children}
+		</div>
 	);
 }
 
@@ -34,7 +29,9 @@ export type ReaderSideLeftProps = {
 export function ReaderSideLeft(props: ReaderSideLeftProps) {
 	const { children, width, className, offset = 16 } = props;
 
-	const isSidebarOpen = usePdfReaderLayoutStore((state) => state.isSidebarOpen);
+	const isSidebarOpen = usePdfReaderStore(
+		(state) => state.layout.isSidebarOpen,
+	);
 
 	return (
 		<motion.aside
@@ -169,8 +166,8 @@ export type ReaderSideRightProps = {
 export function ReaderSideRight(props: ReaderSideRightProps) {
 	const { children, width, className } = props;
 
-	const isSidebarRightOpen = usePdfReaderLayoutStore(
-		(state) => state.isSidebarRightOpen,
+	const isSidebarRightOpen = usePdfReaderStore(
+		(state) => state.layout.isPdfChatOpen,
 	);
 
 	return (

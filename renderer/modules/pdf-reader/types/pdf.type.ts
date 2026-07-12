@@ -4,3 +4,8 @@ export type PdfOutlineObject = PdfBookmarkObject & {
 	endPage?: number | null;
 	children?: PdfOutlineObject[];
 };
+
+export type LayoutState = {
+	isPdfChatOpen: boolean;
+	isSidebarOpen: boolean;
+};

@@ -28,6 +28,10 @@ import {
 	setupLocalAssetProtocol,
 } from "./modules/common/protocol/local-asset.protocol";
 import type { IpcChannelResponse } from "./modules/common/types/ip-channel.type";
+import {
+	GetDocumentStateChannel,
+	UpdateDocumentStateChannel,
+} from "./modules/document-state";
 import { GetDocumentChannel, GetDocumentListChannel } from "./modules/library";
 import {
 	CreateSelectionMenuActionChannel,
@@ -164,6 +168,8 @@ new Main().init([
 	new SelectStorageDirectoryChannel(),
 	new GetDocumentListChannel(),
 	new GetDocumentChannel(),
+	new GetDocumentStateChannel(),
+	new UpdateDocumentStateChannel(),
 	new SendMessageChannel(),
 	new CreateChatSessionChannel(),
 	new GetChatSessionChannel(),

@@ -12,7 +12,7 @@ import { ScrollPluginPackage } from "@embedpdf/plugin-scroll/react";
 import { SelectionPluginPackage } from "@embedpdf/plugin-selection/react";
 import { SpreadPluginPackage } from "@embedpdf/plugin-spread/react";
 import { ViewportPluginPackage } from "@embedpdf/plugin-viewport";
-import { ZoomPluginPackage } from "@embedpdf/plugin-zoom/react";
+import { ZoomMode, ZoomPluginPackage } from "@embedpdf/plugin-zoom/react";
 import { useDocument } from "@renderer/modules/library/hooks/useDocument";
 import { Loader2 } from "lucide-react";
 import { useMemo } from "react";
@@ -21,7 +21,9 @@ const basePlugins = [
 	createPluginRegistration(ViewportPluginPackage),
 	createPluginRegistration(ScrollPluginPackage),
 	createPluginRegistration(RenderPluginPackage),
-	createPluginRegistration(ZoomPluginPackage),
+	createPluginRegistration(ZoomPluginPackage, {
+		defaultZoomLevel: ZoomMode.FitPage,
+	}),
 	createPluginRegistration(SpreadPluginPackage),
 	createPluginRegistration(BookmarkPluginPackage),
 	createPluginRegistration(InteractionManagerPluginPackage),

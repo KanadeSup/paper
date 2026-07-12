@@ -96,6 +96,25 @@ export const storageDefinition = {
 			records: [],
 		},
 	}),
+	documentStates: defineCollectionStorage({
+		schema: z.object({
+			records: z
+				.object({
+					id: z.string(),
+					currentPage: z.number().int().min(1).default(1),
+					zoomLevel: z
+						.enum(["automatic", "fit-page", "fit-width"])
+						.or(z.number())
+						.default("automatic"),
+					isPdfChatOpen: z.boolean().default(false),
+					isSidebarOpen: z.boolean().default(false),
+				})
+				.array(),
+		}),
+		defaultData: {
+			records: [],
+		},
+	}),
 };
 
 export type StorageDefinition = typeof storageDefinition;

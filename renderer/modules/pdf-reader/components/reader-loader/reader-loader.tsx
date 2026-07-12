@@ -1,12 +1,9 @@
-import { useBookmarkCapability } from "@embedpdf/plugin-bookmark/react";
 import { Button } from "@renderer/modules/design-system";
 import { useRouter } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useOutlines } from "../../hooks/use-outline-load";
 import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
-import {
-	resolveBookmarkEndPage,
-	resolveBookmarkStartPage,
-} from "../../utils/pdf.utils";
+import { useReaderStateRestorer } from "../reader-state-restorer/reader-state-restorer";
 
 type ReaderLoaderProps = {
 	documentId: string;
@@ -14,51 +11,33 @@ type ReaderLoaderProps = {
 };
 
 export function ReaderLoader({ documentId, children }: ReaderLoaderProps) {
-	const pdfReaderActions = usePdfReaderStore((state) => state.actions);
-	const { provides: bookmarkProvides } = useBookmarkCapability();
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+	const {
+		outline,
+		isLoading: isOutlineLoading,
+		error,
+	} = useOutlines(documentId);
+	const [isFinished, setIsFinished] = useState(false);
 
-	const loadOutline = useCallback(() => {
-		if (!bookmarkProvides) {
-			return;
-		}
-
-		setIsLoading(true);
-		setError(null);
-
-		bookmarkProvides
-			.forDocument(documentId)
-			.getBookmarks()
-			.toPromise()
-			.then((result) => {
-				const bookmarks = result.bookmarks;
-				resolveBookmarkStartPage(bookmarks);
-				resolveBookmarkEndPage(bookmarks, null);
-				pdfReaderActions.setOutline(bookmarks);
-			})
-			.catch((loadError: unknown) => {
-				const message =
-					loadError instanceof Error
-						? loadError.message
-						: "Failed to load outline";
-				setError(message);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	}, [bookmarkProvides, pdfReaderActions, documentId]);
+	const readerActions = usePdfReaderStore((state) => state.actions);
+	const { isPdfChatOpen, isSidebarOpen } = useReaderStateRestorer();
 
 	useEffect(() => {
-		loadOutline();
-	}, [loadOutline]);
+		if (isOutlineLoading) return;
 
-	if (isLoading) {
-		return null;
-	}
-	if (error) {
-		return <LoadError error={error} />;
-	}
+		if (outline) {
+			readerActions.setOutline(outline);
+		}
+
+		readerActions.setLayout({
+			isPdfChatOpen,
+			isSidebarOpen,
+		});
+
+		setIsFinished(true);
+	}, [outline, isOutlineLoading, readerActions, isPdfChatOpen, isSidebarOpen]);
+
+	if (!isFinished) return null;
+	if (error) return <LoadError error={error} />;
 
 	return children;
 }
