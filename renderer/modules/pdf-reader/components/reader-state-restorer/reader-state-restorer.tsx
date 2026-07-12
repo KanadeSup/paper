@@ -8,7 +8,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { createStore, type StoreApi } from "zustand";
+import { createStore, type StoreApi, useStore } from "zustand";
 import { getDocumentState } from "../../ipc/document-state.ipc";
 
 const readerStateRestorerContext =
@@ -18,6 +18,7 @@ type ReaderStateRestorerContext = {
 	isSidebarOpen: boolean;
 	isPdfChatOpen: boolean;
 	zoomLevel: ZoomLevel;
+	currentPage: number;
 };
 
 export type ReaderStateRestorerProps = {
@@ -34,6 +35,7 @@ export function ReaderStateRestorer(props: ReaderStateRestorerProps) {
 			isSidebarOpen: false,
 			isPdfChatOpen: false,
 			zoomLevel: ZoomMode.FitPage,
+			currentPage: 1,
 		})),
 	);
 
@@ -51,6 +53,7 @@ export function ReaderStateRestorer(props: ReaderStateRestorerProps) {
 			isSidebarOpen: documentState.isSidebarOpen,
 			isPdfChatOpen: documentState.isPdfChatOpen,
 			zoomLevel: toEmbedPdfZoomLevel(documentState.zoomLevel),
+			currentPage: documentState.currentPage,
 		});
 	}, [documentId, store]);
 
@@ -69,15 +72,17 @@ export function ReaderStateRestorer(props: ReaderStateRestorerProps) {
 	);
 }
 
-export function useReaderStateRestorer() {
+export const useReaderStateRestorer = <T,>(
+	selector: (state: ReaderStateRestorerContext) => T,
+): T => {
 	const store = useContext(readerStateRestorerContext);
 	if (!store) {
 		throw new Error(
 			"useReaderStateRestorer must be used within a ReaderStateRestorer",
 		);
 	}
-	return store.getState();
-}
+	return useStore(store, selector);
+};
 
 function toEmbedPdfZoomLevel(zoomLevel: DocumentZoomLevel): ZoomLevel {
 	switch (zoomLevel) {

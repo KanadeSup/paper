@@ -19,7 +19,8 @@ export function ReaderLoader({ documentId, children }: ReaderLoaderProps) {
 	const [isFinished, setIsFinished] = useState(false);
 
 	const readerActions = usePdfReaderStore((state) => state.actions);
-	const { isPdfChatOpen, isSidebarOpen } = useReaderStateRestorer();
+	const isPdfChatOpen = useReaderStateRestorer((state) => state.isPdfChatOpen);
+	const isSidebarOpen = useReaderStateRestorer((state) => state.isSidebarOpen);
 
 	useEffect(() => {
 		if (isOutlineLoading) return;
