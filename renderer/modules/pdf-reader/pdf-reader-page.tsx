@@ -16,6 +16,7 @@ import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
 import { ReaderLoader } from "./components/reader-loader/reader-loader";
 import { ReaderStateRestorer } from "./components/reader-state-restorer/reader-state-restorer";
+import { ReaderZoomRestore } from "./components/reader-zoom-restore/reader-zoom-restore";
 import { SelectionMenu } from "./components/selection-menu/selection-menu";
 import { Toolbar } from "./components/tool-bar/tool-bar";
 import { Zoom } from "./components/zoom-gesture/zoom-gesture";
@@ -53,6 +54,7 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 										className="h-full bg-background"
 									>
 										<Zoom documentId={documentId}>
+											<ReaderZoomRestore documentId={documentId} />
 											<Scroller
 												documentId={documentId}
 												renderPage={({ width, height, pageIndex }) => (
