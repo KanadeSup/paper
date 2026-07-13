@@ -3,7 +3,7 @@ import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useOutlines } from "../../hooks/use-outline-load";
 import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
-import { useReaderStateRestorer } from "../reader-state-restorer/reader-state-restorer";
+import { useReaderStateRestorer } from "../../provider/persisted-reader-state-provider";
 
 type ReaderLoaderProps = {
 	documentId: string;

@@ -2,13 +2,13 @@ import { useScrollCapability } from "@embedpdf/plugin-scroll/react";
 import { debounce } from "lodash";
 import { useEffect, useMemo } from "react";
 import { updateDocumentState } from "../../ipc/document-state.ipc";
-import { useReaderStateRestorer } from "../reader-state-restorer/reader-state-restorer";
+import { useReaderStateRestorer } from "../../provider/persisted-reader-state-provider";
 
-export type ReaderScrollRestoreProps = {
+export type ReaderScrollPersistanceProps = {
 	documentId: string;
 };
 
-export function ReaderScrollRestore(props: ReaderScrollRestoreProps) {
+export function ReaderScrollPersistance(props: ReaderScrollPersistanceProps) {
 	const { documentId } = props;
 	const { provides: scrollProvides } = useScrollCapability();
 	const currentPage = useReaderStateRestorer((state) => state.currentPage);

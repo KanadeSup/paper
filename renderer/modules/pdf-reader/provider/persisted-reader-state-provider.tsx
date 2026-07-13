@@ -9,29 +9,33 @@ import {
 	useState,
 } from "react";
 import { createStore, type StoreApi, useStore } from "zustand";
-import { getDocumentState } from "../../ipc/document-state.ipc";
+import { getDocumentState } from "../ipc/document-state.ipc";
 
-const readerStateRestorerContext =
-	createContext<StoreApi<ReaderStateRestorerContext> | null>(null);
-
-type ReaderStateRestorerContext = {
+/** Context */
+type PersistedReaderStateContext = {
 	isSidebarOpen: boolean;
 	isPdfChatOpen: boolean;
 	zoomLevel: ZoomLevel;
 	currentPage: number;
 };
 
-export type ReaderStateRestorerProps = {
+const readerStateRestorerContext =
+	createContext<StoreApi<PersistedReaderStateContext> | null>(null);
+
+/** Provider component */
+export type PersistedReaderStateProviderProps = {
 	documentId: string;
 	children?: React.ReactNode;
 };
 
-export function ReaderStateRestorer(props: ReaderStateRestorerProps) {
+export function PersistedReaderStateProvider(
+	props: PersistedReaderStateProviderProps,
+) {
 	const { documentId, children } = props;
 	const [isLoading, setIsLoading] = useState(true);
 
 	const [store] = useState(() =>
-		createStore<ReaderStateRestorerContext>(() => ({
+		createStore<PersistedReaderStateContext>(() => ({
 			isSidebarOpen: false,
 			isPdfChatOpen: false,
 			zoomLevel: ZoomMode.FitPage,
@@ -72,13 +76,14 @@ export function ReaderStateRestorer(props: ReaderStateRestorerProps) {
 	);
 }
 
+/** Hook */
 export const useReaderStateRestorer = <T,>(
-	selector: (state: ReaderStateRestorerContext) => T,
+	selector: (state: PersistedReaderStateContext) => T,
 ): T => {
 	const store = useContext(readerStateRestorerContext);
 	if (!store) {
 		throw new Error(
-			"useReaderStateRestorer must be used within a ReaderStateRestorer",
+			"useReaderStateRestorer must be used within a PersistedReaderStateProvider",
 		);
 	}
 	return useStore(store, selector);

@@ -15,14 +15,14 @@ import {
 import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
 import { ReaderLoader } from "./components/reader-loader/reader-loader";
-import { ReaderScrollRestore } from "./components/reader-scroll-restore/reader-scroll-restore";
-import { ReaderStateRestorer } from "./components/reader-state-restorer/reader-state-restorer";
-import { ReaderZoomRestore } from "./components/reader-zoom-restore/reader-zoom-restore";
+import { ReaderScrollPersistance } from "./components/reader-scroll-persistance/reader-scroll-persistance";
+import { ReaderZoomPersistance } from "./components/reader-zoom-persistance/reader-zoom-persistance";
 import { SelectionMenu } from "./components/selection-menu/selection-menu";
 import { Toolbar } from "./components/tool-bar/tool-bar";
 import { Zoom } from "./components/zoom-gesture/zoom-gesture";
 import { useSelectionMenuActions } from "./hooks/use-selection-menu-actions";
 import { PdfReaderProvider } from "./provider/pdf-reader-provider";
+import { PersistedReaderStateProvider } from "./provider/persisted-reader-state-provider";
 
 type PDFReaderPageProps = {
 	documentId: string;
@@ -33,7 +33,7 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 	const { actions } = useSelectionMenuActions();
 
 	return (
-		<ReaderStateRestorer documentId={documentId}>
+		<PersistedReaderStateProvider documentId={documentId}>
 			<PdfReaderProvider documentId={documentId}>
 				<PDFLoader documentId={documentId}>
 					{({ documentId }) => (
@@ -54,8 +54,8 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 										documentId={documentId}
 										className="h-full bg-background"
 									>
-										<ReaderScrollRestore documentId={documentId} />
-										<ReaderZoomRestore documentId={documentId} />
+										<ReaderScrollPersistance documentId={documentId} />
+										<ReaderZoomPersistance documentId={documentId} />
 										<Zoom documentId={documentId}>
 											<Scroller
 												documentId={documentId}
@@ -95,6 +95,6 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 					)}
 				</PDFLoader>
 			</PdfReaderProvider>
-		</ReaderStateRestorer>
+		</PersistedReaderStateProvider>
 	);
 }

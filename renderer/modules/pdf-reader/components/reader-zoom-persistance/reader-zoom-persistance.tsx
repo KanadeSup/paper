@@ -3,12 +3,12 @@ import type { DocumentZoomLevel } from "@shared/document-state/types/document-st
 import { debounce } from "lodash";
 import { useEffect, useMemo } from "react";
 import { updateDocumentState } from "../../ipc/document-state.ipc";
-import { useReaderStateRestorer } from "../reader-state-restorer/reader-state-restorer";
+import { useReaderStateRestorer } from "../../provider/persisted-reader-state-provider";
 
-export type ReaderZoomRestoreProps = {
+export type ReaderZoomPersistanceProps = {
 	documentId: string;
 };
-export function ReaderZoomRestore(props: ReaderZoomRestoreProps) {
+export function ReaderZoomPersistance(props: ReaderZoomPersistanceProps) {
 	const { documentId } = props;
 	const zoomLevel = useReaderStateRestorer((state) => state.zoomLevel);
 	const { provides } = useZoomCapability();
