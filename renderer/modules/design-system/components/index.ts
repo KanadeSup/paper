@@ -1,3 +1,4 @@
+export * from "./animated-message/animated-message";
 export * from "./button/icon-button";
 export * from "./input/search-input";
 export * from "./ui/button";

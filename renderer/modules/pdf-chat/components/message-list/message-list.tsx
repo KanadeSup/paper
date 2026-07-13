@@ -1,8 +1,8 @@
-import { Button, cn } from "@renderer/modules/design-system";
+import { AnimatedMessage, Button, cn } from "@renderer/modules/design-system";
 import { ErrorAlert } from "@renderer/modules/design-system/components/alert/error-alert";
 import { MarkdownRenderer } from "@renderer/modules/design-system/components/markdown/markdown-renderer";
 import { Loader2Icon, MessageCircleIcon, RefreshCcwIcon } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect } from "react";
 import type {
 	DisplayedAssistantChatMessage,
 	DisplayedChatMessage,
@@ -194,14 +194,6 @@ type AssistantMessageProps = {
 };
 function AssistantMessage({ message }: AssistantMessageProps) {
 	const { isStreaming, isError, errorCode, content, errorMessage } = message;
-	const [typingContent, setTypingContent] = useState("");
-	const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const currentIndexRef = useRef(0);
-	const lastContentRef = useRef("");
-
-	// const observerActions = useObserverAction();
-
-	const hasContent = content.trim().length > 0;
 
 	function renderMessage() {
 		if (isError) {
@@ -228,85 +220,12 @@ function AssistantMessage({ message }: AssistantMessageProps) {
 			);
 		}
 
-		// if the message is streaming and has no content, display the loading message
-		if (isStreaming && !hasContent) {
-			return (
-				<div className="flex items-center gap-2 text-gray-400">
-					<Loader2Icon className="w-4 h-4 animate-spin" />
-					<span>Thinking...</span>
-				</div>
-			);
-		}
-
-		// if the message is streaming and has content show typing animation
-		if (isStreaming && hasContent) {
-			return <MarkdownRenderer content={typingContent} />;
-		}
-
-		// if the message is not streaming or stop streaming, display the full message immediately
-		if (!isStreaming && hasContent) {
-			return <MarkdownRenderer content={content} />;
-		}
-
-		return null;
+		return (
+			<AnimatedMessage content={content} isStreaming={isStreaming}>
+				{(displayedContent) => <MarkdownRenderer content={displayedContent} />}
+			</AnimatedMessage>
+		);
 	}
-
-	const animateTyping = useCallback(() => {
-		const targetContent = content;
-		const currentIndex = currentIndexRef.current;
-
-		if (currentIndex < targetContent.length) {
-			setTypingContent(targetContent.slice(0, currentIndex + 1));
-			currentIndexRef.current++;
-
-			// Use requestAnimationFrame for smooth animation
-			animationTimeoutRef.current = setTimeout(animateTyping, 5);
-		}
-	}, [content]);
-
-	useEffect(() => {
-		// Cancel previous animation
-		if (animationTimeoutRef.current) {
-			clearTimeout(animationTimeoutRef.current);
-			animationTimeoutRef.current = null;
-		}
-
-		// If not streaming, reset typing animation state and return early
-		if (!isStreaming) {
-			setTypingContent("");
-			currentIndexRef.current = 0;
-			lastContentRef.current = "";
-			return;
-		}
-
-		// Only start new animation if content has changed
-		const isContentChanged = content !== lastContentRef.current;
-		if (!isContentChanged) return;
-
-		const isContentIncreased = content.startsWith(lastContentRef.current);
-
-		// Continue from where we left off if the content has increased
-		if (isContentIncreased) {
-			lastContentRef.current = content;
-			animateTyping();
-			return;
-		}
-
-		// Reset and start fresh if the content is not from the previous one
-		currentIndexRef.current = 0;
-		lastContentRef.current = content;
-		setTypingContent("");
-		animateTyping();
-	}, [isStreaming, content, animateTyping]);
-
-	// Cleanup on unmount
-	useEffect(() => {
-		return () => {
-			if (animationTimeoutRef.current) {
-				clearTimeout(animationTimeoutRef.current);
-			}
-		};
-	}, []);
 
 	return (
 		<div className="mb-3 border-b border-accent">
