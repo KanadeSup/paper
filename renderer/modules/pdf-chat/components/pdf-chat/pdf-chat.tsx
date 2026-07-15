@@ -85,7 +85,7 @@ export function PdfChat(props: PdfChatProps) {
 
 	return (
 		<aside
-			className={cn("flex flex-col h-full w-72 shrink-0 gap-3", className)}
+			className={cn("flex h-full min-w-0 w-full flex-col gap-3", className)}
 		>
 			{/* Header */}
 			<div className="rounded-md bg-sidebar px-2 h-10 flex items-center justify-between">

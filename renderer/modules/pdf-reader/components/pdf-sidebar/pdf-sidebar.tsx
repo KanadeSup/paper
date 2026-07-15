@@ -10,7 +10,7 @@ type PdfSidebarProps = {
 export function PdfSidebar({ documentId }: PdfSidebarProps) {
 	const router = useRouter();
 	return (
-		<div className="flex flex-col gap-2 h-full w-72 shrink-0">
+		<div className="flex h-full min-w-0 w-full flex-col gap-2">
 			<aside className="flex items-center gap-2 rounded-md bg-sidebar px-2 py-1">
 				<IconButton onClick={() => router.navigate({ to: "/" })}>
 					<ChevronLeft className="size-4" />

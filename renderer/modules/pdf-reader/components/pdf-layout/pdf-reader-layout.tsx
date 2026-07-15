@@ -1,4 +1,4 @@
-import { cn } from "@renderer/modules/design-system";
+import { cn, HorizontalResizable } from "@renderer/modules/design-system";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
@@ -22,42 +22,46 @@ export function ReaderLayout({ children }: ReaderLayoutProps) {
 /* Sidebar */
 export type ReaderSideLeftProps = {
 	children?: React.ReactNode;
-	width: number;
-	offset?: number;
+	initialWidth?: number;
+	minWidth?: number;
+	maxWidth?: number;
 	className?: string;
+	onResizeFinish?: (width: number) => void;
 };
+
 export function ReaderSideLeft(props: ReaderSideLeftProps) {
-	const { children, width, className, offset = 16 } = props;
+	const {
+		children,
+		initialWidth = 288,
+		minWidth = 220,
+		maxWidth = 420,
+		className,
+		onResizeFinish,
+	} = props;
 
 	const isSidebarOpen = usePdfReaderStore(
 		(state) => state.layout.isSidebarOpen,
 	);
 
 	return (
-		<motion.aside
-			initial={false}
-			animate={{
-				width: isSidebarOpen ? width : 0,
-				marginRight: isSidebarOpen ? 12 : 0,
-				opacity: isSidebarOpen ? 1 : 1,
-			}}
-			className="shrink-0 overflow-hidden"
+		<HorizontalResizable
+			isCollapsed={!isSidebarOpen}
+			initialWidth={initialWidth}
+			minWidth={minWidth}
+			maxWidth={maxWidth}
+			handlerPosition="right"
+			onResizeFinish={onResizeFinish}
+			className={className}
 		>
 			<motion.div
 				initial={false}
-				animate={{
-					x: isSidebarOpen ? 0 : -(width + offset),
-				}}
-				transition={{
-					duration: 0.2,
-					ease: "easeInOut",
-				}}
-				className={cn("h-full", className)}
-				style={{ width }}
+				animate={{ x: isSidebarOpen ? 0 : "-100%" }}
+				transition={{ duration: 0.2, ease: "easeInOut" }}
+				className="h-full w-full"
 			>
 				{children}
 			</motion.div>
-		</motion.aside>
+		</HorizontalResizable>
 	);
 }
 
@@ -66,13 +70,14 @@ export type ReaderMainProps = {
 	children?: React.ReactNode;
 	className?: string;
 };
+
 export function ReaderMain({ children, className }: ReaderMainProps) {
 	return (
 		<motion.main
 			layout
 			transition={{ duration: 0.2, ease: "easeInOut" }}
 			className={cn(
-				"flex-1 flex flex-col relative",
+				"flex-1 flex flex-col relative min-w-0",
 				"overflow-auto",
 				className,
 			)}
@@ -88,6 +93,7 @@ export type ReaderFloatTopProps = {
 	className?: string;
 	visible?: boolean;
 };
+
 export function ReaderFloatTop({
 	children,
 	className,
@@ -159,34 +165,38 @@ export function ReaderFloatTop({
 /* Side right */
 export type ReaderSideRightProps = {
 	children?: React.ReactNode;
-	width: number;
-	offset?: number;
+	initialWidth?: number;
+	minWidth?: number;
+	maxWidth?: number;
 	className?: string;
+	onResizeFinish?: (width: number) => void;
 };
+
 export function ReaderSideRight(props: ReaderSideRightProps) {
-	const { children, width, className } = props;
+	const {
+		children,
+		initialWidth = 384,
+		minWidth = 280,
+		maxWidth = 560,
+		className,
+		onResizeFinish,
+	} = props;
 
 	const isSidebarRightOpen = usePdfReaderStore(
 		(state) => state.layout.isPdfChatOpen,
 	);
 
 	return (
-		<motion.aside
-			initial={false}
-			animate={{
-				width: isSidebarRightOpen ? width : 0,
-				marginLeft: isSidebarRightOpen ? 12 : 0,
-				opacity: isSidebarRightOpen ? 1 : 1,
-			}}
-			className="shrink-0 overflow-hidden"
+		<HorizontalResizable
+			isCollapsed={!isSidebarRightOpen}
+			initialWidth={initialWidth}
+			minWidth={minWidth}
+			maxWidth={maxWidth}
+			handlerPosition="left"
+			onResizeFinish={onResizeFinish}
+			className={className}
 		>
-			<motion.div
-				initial={false}
-				className={cn("h-full", className)}
-				style={{ width }}
-			>
-				{children}
-			</motion.div>
-		</motion.aside>
+			<div className="h-full w-full">{children}</div>
+		</HorizontalResizable>
 	);
 }

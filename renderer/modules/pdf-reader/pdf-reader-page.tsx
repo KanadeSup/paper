@@ -39,7 +39,7 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 					{({ documentId }) => (
 						<ReaderLoader documentId={documentId}>
 							<ReaderLayout>
-								<ReaderSideLeft width={288}>
+								<ReaderSideLeft>
 									<PdfSidebar documentId={documentId} />
 								</ReaderSideLeft>
 								<ReaderMain>
@@ -87,8 +87,8 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 										</Zoom>
 									</Viewport>
 								</ReaderMain>
-								<ReaderSideRight width={384}>
-									<PdfChat documentId={documentId} className="w-96" />
+								<ReaderSideRight>
+									<PdfChat documentId={documentId} />
 								</ReaderSideRight>
 							</ReaderLayout>
 						</ReaderLoader>

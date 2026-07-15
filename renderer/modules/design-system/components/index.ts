@@ -1,5 +1,6 @@
 export * from "./animated-message/animated-message";
 export * from "./button/icon-button";
+export * from "./horizontal-resizable/horizontal-resizable";
 export * from "./input/search-input";
 export * from "./ui/button";
 export * from "./ui/dropdown-menu";
