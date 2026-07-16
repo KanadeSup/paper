@@ -2,7 +2,7 @@ import { useScrollCapability } from "@embedpdf/plugin-scroll/react";
 import { debounce } from "lodash";
 import { useEffect, useMemo } from "react";
 import { updateDocumentState } from "../../ipc/document-state.ipc";
-import { useReaderStateRestorer } from "../../provider/persisted-reader-state-provider";
+import { useReaderStateRestorer } from "./persisted-reader-state-provider";
 
 export type ReaderScrollPersistanceProps = {
 	documentId: string;

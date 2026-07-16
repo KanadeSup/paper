@@ -9,7 +9,7 @@ import {
 	useState,
 } from "react";
 import { createStore, type StoreApi, useStore } from "zustand";
-import { getDocumentState } from "../ipc/document-state.ipc";
+import { getDocumentState } from "../../ipc/document-state.ipc";
 
 /** Context */
 type PersistedReaderStateContext = {

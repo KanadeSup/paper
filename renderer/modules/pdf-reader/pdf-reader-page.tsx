@@ -14,16 +14,16 @@ import {
 } from "./components/pdf-layout/pdf-reader-layout";
 import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
+import { PersistedReaderStateProvider } from "./components/persistance/persisted-reader-state-provider";
+import { ReaderScrollPersistance } from "./components/persistance/reader-scroll-persistance";
 import { ReaderSidebarPersistance } from "./components/persistance/reader-sidebar-persistance";
+import { ReaderZoomPersistance } from "./components/persistance/reader-zoom-persistance";
 import { ReaderLoader } from "./components/reader-loader/reader-loader";
-import { ReaderScrollPersistance } from "./components/reader-scroll-persistance/reader-scroll-persistance";
-import { ReaderZoomPersistance } from "./components/reader-zoom-persistance/reader-zoom-persistance";
 import { SelectionMenu } from "./components/selection-menu/selection-menu";
 import { Toolbar } from "./components/tool-bar/tool-bar";
 import { Zoom } from "./components/zoom-gesture/zoom-gesture";
 import { useSelectionMenuActions } from "./hooks/use-selection-menu-actions";
 import { PdfReaderProvider } from "./provider/pdf-reader-provider";
-import { PersistedReaderStateProvider } from "./provider/persisted-reader-state-provider";
 
 type PDFReaderPageProps = {
 	documentId: string;

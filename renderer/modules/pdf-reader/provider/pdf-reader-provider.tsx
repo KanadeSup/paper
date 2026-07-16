@@ -2,8 +2,8 @@ import type { PdfBookmarkObject } from "@embedpdf/models";
 import { createContext, useContext, useState } from "react";
 import { createStore, type StoreApi, useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import { useReaderStateRestorer } from "../components/persistance/persisted-reader-state-provider";
 import type { PdfOutlineObject } from "../types/pdf.type";
-import { useReaderStateRestorer } from "./persisted-reader-state-provider";
 
 export type LayoutState = {
 	isPdfChatOpen: boolean;

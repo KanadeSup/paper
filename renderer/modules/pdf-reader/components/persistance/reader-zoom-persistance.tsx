@@ -3,7 +3,7 @@ import type { DocumentZoomLevel } from "@shared/document-state/types/document-st
 import { debounce } from "lodash";
 import { useEffect, useMemo } from "react";
 import { updateDocumentState } from "../../ipc/document-state.ipc";
-import { useReaderStateRestorer } from "../../provider/persisted-reader-state-provider";
+import { useReaderStateRestorer } from "./persisted-reader-state-provider";
 
 export type ReaderZoomPersistanceProps = {
 	documentId: string;
