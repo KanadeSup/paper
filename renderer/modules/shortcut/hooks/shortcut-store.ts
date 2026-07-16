@@ -4,10 +4,10 @@ import { create } from "zustand";
 export type ShortcutName =
 	| "pdf-reader.toggle-sidebar"
 	| "pdfreader.toggle-pdf-chat"
-	| "pdfreader.increase-zoom"
-	| "pdfreader.decrease-zoom"
-	| "pdfreader.scroll-up"
-	| "pdfreader.scroll-down";
+	| "pdf-reader.increase-zoom"
+	| "pdf-reader.decrease-zoom"
+	| "pdf-reader.scroll-up"
+	| "pdf-reader.scroll-down";
 
 export type ShortcutHandler = {
 	shortcutType: ShortcutName;
@@ -57,7 +57,7 @@ export const useRegisterShortcut = (
 		return () => {
 			actions.unregister(shortcutType);
 		};
-	}, [shortcutType, handler, actions]);
+	}, [shortcutType, actions, handler]);
 };
 
 export const useRegisteredShortcuts = () => {

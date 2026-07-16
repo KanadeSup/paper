@@ -8,7 +8,11 @@ import {
 export function ShortcutProvider({ children }: { children: React.ReactNode }) {
 	const registeredShortcuts = useRegisteredShortcuts();
 	const configShortcuts = useMemo(
-		() => [{ keys: ["ctrl", "b"], type: "pdf-reader.toggle-sidebar" }],
+		() => [
+			{ keys: ["ctrl", "b"], type: "pdf-reader.toggle-sidebar" },
+			{ keys: ["j"], type: "pdf-reader.scroll-up" },
+			{ keys: ["k"], type: "pdf-reader.scroll-down" },
+		],
 		[],
 	);
 	const handleShortcut = useCallback(

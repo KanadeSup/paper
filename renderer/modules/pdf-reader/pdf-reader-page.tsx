@@ -2,8 +2,7 @@ import { PagePointerProvider } from "@embedpdf/plugin-interaction-manager/react"
 import { RenderLayer } from "@embedpdf/plugin-render/react";
 import { Scroller } from "@embedpdf/plugin-scroll/react";
 import { SelectionLayer } from "@embedpdf/plugin-selection/react";
-import { Viewport } from "@embedpdf/plugin-viewport/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { PdfChat } from "../pdf-chat/components/pdf-chat/pdf-chat";
 import { useRegisterShortcut } from "../shortcut/hooks/shortcut-store";
 import {
@@ -15,6 +14,7 @@ import {
 } from "./components/pdf-layout/pdf-reader-layout";
 import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
+import { PDFViewport } from "./components/pdf-viewport/pdf-viewport";
 import { PersistedReaderStateProvider } from "./components/persistance/persisted-reader-state-provider";
 import { ReaderScrollPersistance } from "./components/persistance/reader-scroll-persistance";
 import { ReaderSidebarPersistance } from "./components/persistance/reader-sidebar-persistance";
@@ -54,6 +54,8 @@ function PDFReaderPageContent({ documentId }: PDFReaderPageProps) {
 	const { actions } = useSelectionMenuActions();
 	const readerActions = usePdfReaderStore((state) => state.actions);
 
+	const viewportRef = useRef<HTMLDivElement>(null);
+
 	useRegisterShortcut("pdf-reader.toggle-sidebar", () => {
 		readerActions.toggleSidebarOpen();
 	});
@@ -71,7 +73,11 @@ function PDFReaderPageContent({ documentId }: PDFReaderPageProps) {
 						onPopupClose={() => setIsToolbarPopupOpen(false)}
 					/>
 				</ReaderFloatTop>
-				<Viewport documentId={documentId} className="h-full bg-background">
+				<PDFViewport
+					documentId={documentId}
+					className="h-full bg-background"
+					ref={viewportRef}
+				>
 					<ReaderScrollPersistance documentId={documentId} />
 					<ReaderZoomPersistance documentId={documentId} />
 					<ReaderSidebarPersistance documentId={documentId} />
@@ -104,7 +110,7 @@ function PDFReaderPageContent({ documentId }: PDFReaderPageProps) {
 							)}
 						/>
 					</Zoom>
-				</Viewport>
+				</PDFViewport>
 			</ReaderMain>
 			<ReaderSideRight>
 				<PdfChat documentId={documentId} />
