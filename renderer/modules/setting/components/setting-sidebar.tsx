@@ -12,6 +12,10 @@ export function SettingSidebar() {
 			href: "/setting/appearance",
 		},
 		{
+			label: "Shortcuts",
+			href: "/setting/shortcut",
+		},
+		{
 			label: "API keys",
 			href: "/setting/api-keys",
 		},

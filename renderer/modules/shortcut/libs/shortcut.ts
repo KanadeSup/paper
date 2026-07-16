@@ -13,6 +13,9 @@ export const SPECIAL_KEYS = [
 	"arrowleft",
 	"arrowright",
 	"tab",
+	"=",
+	"-",
+	"+",
 ];
 
 export const ALLOWED_KEYS = [...MODIFIER_KEYS, ...SPECIAL_KEYS];
@@ -33,10 +36,10 @@ export function getShortcutKeyFromEvent(event: KeyboardEvent): string[] | null {
 	if (event.metaKey) keys.push("meta");
 
 	// Add normal key
-	const rawKey = event.key;
+	const rawKey = event.key.toLowerCase();
 
 	if (!MODIFIER_KEYS.includes(rawKey) && isKeyAllowed(rawKey)) {
-		keys.push(rawKey.toLowerCase());
+		keys.push(rawKey);
 	}
 
 	if (keys.length === 0) return null;
@@ -53,17 +56,19 @@ export function getShortcutKeyFromEvent(event: KeyboardEvent): string[] | null {
  * - 0-9
  */
 export function isKeyAllowed(key: string): boolean {
-	if (ALLOWED_KEYS.includes(key)) {
+	const normalized = key.toLowerCase();
+
+	if (ALLOWED_KEYS.includes(normalized)) {
 		return true;
 	}
 
 	// Whether is A-Z
-	if (/^[A-Z]$/.test(key.toUpperCase())) {
+	if (/^[a-z]$/.test(normalized)) {
 		return true;
 	}
 
 	// Whether is 0-9
-	if (/^[0-9]$/.test(key)) {
+	if (/^[0-9]$/.test(normalized)) {
 		return true;
 	}
 

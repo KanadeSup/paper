@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { create } from "zustand";
 
 export type ShortcutName =
+	| "global.toggle-app-sidebar"
 	| "pdf-reader.toggle-sidebar"
 	| "pdfreader.toggle-pdf-chat"
 	| "pdf-reader.increase-zoom"
