@@ -3,7 +3,6 @@ import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useOutlines } from "../../hooks/use-outline-load";
 import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
-import { useReaderStateRestorer } from "../../provider/persisted-reader-state-provider";
 
 type ReaderLoaderProps = {
 	documentId: string;
@@ -13,14 +12,12 @@ type ReaderLoaderProps = {
 export function ReaderLoader({ documentId, children }: ReaderLoaderProps) {
 	const {
 		outline,
-		isLoading: isOutlineLoading,
 		error,
+		isLoading: isOutlineLoading,
 	} = useOutlines(documentId);
 	const [isFinished, setIsFinished] = useState(false);
 
 	const readerActions = usePdfReaderStore((state) => state.actions);
-	const isPdfChatOpen = useReaderStateRestorer((state) => state.isPdfChatOpen);
-	const isSidebarOpen = useReaderStateRestorer((state) => state.isSidebarOpen);
 
 	useEffect(() => {
 		if (isOutlineLoading) return;
@@ -28,14 +25,8 @@ export function ReaderLoader({ documentId, children }: ReaderLoaderProps) {
 		if (outline) {
 			readerActions.setOutline(outline);
 		}
-
-		readerActions.setLayout({
-			isPdfChatOpen,
-			isSidebarOpen,
-		});
-
 		setIsFinished(true);
-	}, [outline, isOutlineLoading, readerActions, isPdfChatOpen, isSidebarOpen]);
+	}, [outline, isOutlineLoading, readerActions]);
 
 	if (!isFinished) return null;
 	if (error) return <LoadError error={error} />;

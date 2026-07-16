@@ -108,6 +108,8 @@ export const storageDefinition = {
 						.default("automatic"),
 					isPdfChatOpen: z.boolean().default(false),
 					isSidebarOpen: z.boolean().default(false),
+					sidebarWidth: z.number().positive().optional().nullable(),
+					pdfChatWidth: z.number().positive().optional().nullable(),
 				})
 				.array(),
 		}),

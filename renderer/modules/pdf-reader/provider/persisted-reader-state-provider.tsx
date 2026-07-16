@@ -17,6 +17,8 @@ type PersistedReaderStateContext = {
 	isPdfChatOpen: boolean;
 	zoomLevel: ZoomLevel;
 	currentPage: number;
+	sidebarWidth: number | null;
+	pdfChatWidth: number | null;
 };
 
 const readerStateRestorerContext =
@@ -40,6 +42,8 @@ export function PersistedReaderStateProvider(
 			isPdfChatOpen: false,
 			zoomLevel: ZoomMode.FitPage,
 			currentPage: 1,
+			sidebarWidth: null,
+			pdfChatWidth: null,
 		})),
 	);
 
@@ -58,6 +62,8 @@ export function PersistedReaderStateProvider(
 			isPdfChatOpen: documentState.isPdfChatOpen,
 			zoomLevel: toEmbedPdfZoomLevel(documentState.zoomLevel),
 			currentPage: documentState.currentPage,
+			sidebarWidth: documentState.sidebarWidth,
+			pdfChatWidth: documentState.pdfChatWidth,
 		});
 	}, [documentId, store]);
 

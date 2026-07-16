@@ -1,13 +1,15 @@
 import type { PdfBookmarkObject } from "@embedpdf/models";
-import type { DocumentState } from "@shared/document-state/types/document-state.type";
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { createStore, type StoreApi, useStore } from "zustand";
-import { updateDocumentState } from "../ipc/document-state.ipc";
-import type { LayoutState, PdfOutlineObject } from "../types/pdf.type";
+import { useShallow } from "zustand/react/shallow";
+import type { PdfOutlineObject } from "../types/pdf.type";
+import { useReaderStateRestorer } from "./persisted-reader-state-provider";
 
-export type PdfReaderProviderProps = {
-	children: React.ReactNode;
-	documentId: string;
+export type LayoutState = {
+	isPdfChatOpen: boolean;
+	isSidebarOpen: boolean;
+	sidebarWidth: number;
+	pdfChatWidth: number;
 };
 
 type PdfReaderContext = {
@@ -16,24 +18,40 @@ type PdfReaderContext = {
 	actions: {
 		setOutline: (outline: PdfBookmarkObject[]) => void;
 		setLayout: (layout: LayoutState) => void;
+		updateLayout: (layout: Partial<LayoutState>) => void;
 		togglePdfChatOpen: (isPdfChatOpen?: boolean) => void;
 		toggleSidebarOpen: (isSidebarOpen?: boolean) => void;
+		setSidebarWidth: (sidebarWidth: number) => void;
+		setPdfChatWidth: (pdfChatWidth: number) => void;
 	};
 };
 
 const pdfReaderContext = createContext<StoreApi<PdfReaderContext> | null>(null);
 
+export type PdfReaderProviderProps = {
+	children: React.ReactNode;
+};
+
 export function PdfReaderProvider(props: PdfReaderProviderProps) {
-	const { children, documentId } = props;
-	const documentIdRef = useRef(documentId);
-	documentIdRef.current = documentId;
+	const { children } = props;
+	const { isPdfChatOpen, isSidebarOpen, sidebarWidth, pdfChatWidth } =
+		useReaderStateRestorer(
+			useShallow((state) => ({
+				isPdfChatOpen: state.isPdfChatOpen,
+				isSidebarOpen: state.isSidebarOpen,
+				sidebarWidth: state.sidebarWidth,
+				pdfChatWidth: state.pdfChatWidth,
+			})),
+		);
 
 	const [store] = useState(() =>
 		createStore<PdfReaderContext>(() => ({
 			outline: [],
 			layout: {
-				isPdfChatOpen: false,
-				isSidebarOpen: false,
+				isPdfChatOpen,
+				isSidebarOpen,
+				sidebarWidth: sidebarWidth ?? 280,
+				pdfChatWidth: pdfChatWidth ?? 280,
 			},
 			actions: {
 				setOutline: (outline: PdfOutlineObject[]) => {
@@ -41,6 +59,14 @@ export function PdfReaderProvider(props: PdfReaderProviderProps) {
 				},
 				setLayout: (layout: LayoutState) => {
 					store.setState({ layout });
+				},
+				updateLayout: (layout: Partial<LayoutState>) => {
+					store.setState({
+						layout: {
+							...store.getState().layout,
+							...layout,
+						},
+					});
 				},
 				togglePdfChatOpen: (isPdfChatOpen?: boolean) => {
 					const nextIsPdfChatOpen =
@@ -51,11 +77,6 @@ export function PdfReaderProvider(props: PdfReaderProviderProps) {
 							...store.getState().layout,
 							isPdfChatOpen: nextIsPdfChatOpen,
 						},
-					});
-
-					void updateDocumentState({
-						documentId: documentIdRef.current,
-						isPdfChatOpen: nextIsPdfChatOpen,
 					});
 				},
 				toggleSidebarOpen: (isSidebarOpen?: boolean) => {
@@ -68,10 +89,15 @@ export function PdfReaderProvider(props: PdfReaderProviderProps) {
 							isSidebarOpen: nextIsSidebarOpen,
 						},
 					});
-
-					updateDocumentState({
-						documentId: documentIdRef.current,
-						isSidebarOpen: nextIsSidebarOpen,
+				},
+				setSidebarWidth: (sidebarWidth: number) => {
+					store.setState({
+						layout: { ...store.getState().layout, sidebarWidth },
+					});
+				},
+				setPdfChatWidth: (pdfChatWidth: number) => {
+					store.setState({
+						layout: { ...store.getState().layout, pdfChatWidth },
 					});
 				},
 			},
@@ -95,4 +121,14 @@ export const usePdfReaderStore = <T,>(
 		);
 	}
 	return useStore(store, selector);
+};
+
+export const usePdfReaderStoreAPI = () => {
+	const store = useContext(pdfReaderContext);
+	if (!store) {
+		throw new Error(
+			"usePdfReaderStoreActions must be used within a PdfReaderProvider",
+		);
+	}
+	return store;
 };

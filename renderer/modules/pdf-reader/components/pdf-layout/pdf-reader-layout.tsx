@@ -1,6 +1,7 @@
 import { cn, HorizontalResizable } from "@renderer/modules/design-system";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
 
 /* Layout */
@@ -22,7 +23,6 @@ export function ReaderLayout({ children }: ReaderLayoutProps) {
 /* Sidebar */
 export type ReaderSideLeftProps = {
 	children?: React.ReactNode;
-	initialWidth?: number;
 	minWidth?: number;
 	maxWidth?: number;
 	className?: string;
@@ -32,25 +32,35 @@ export type ReaderSideLeftProps = {
 export function ReaderSideLeft(props: ReaderSideLeftProps) {
 	const {
 		children,
-		initialWidth = 288,
 		minWidth = 220,
 		maxWidth = 420,
 		className,
 		onResizeFinish,
 	} = props;
 
-	const isSidebarOpen = usePdfReaderStore(
-		(state) => state.layout.isSidebarOpen,
+	const { isSidebarOpen, sidebarWidth, actions } = usePdfReaderStore(
+		useShallow((state) => ({
+			isSidebarOpen: state.layout.isSidebarOpen,
+			sidebarWidth: state.layout.sidebarWidth,
+			actions: state.actions,
+		})),
+	);
+	const handleResizeFinish = useCallback(
+		(width: number) => {
+			onResizeFinish?.(width);
+			actions.setSidebarWidth(width);
+		},
+		[onResizeFinish, actions],
 	);
 
 	return (
 		<HorizontalResizable
 			isCollapsed={!isSidebarOpen}
-			initialWidth={initialWidth}
+			initialWidth={sidebarWidth}
 			minWidth={minWidth}
 			maxWidth={maxWidth}
 			handlerPosition="right"
-			onResizeFinish={onResizeFinish}
+			onResizeFinish={handleResizeFinish}
 			className={className}
 		>
 			<motion.div
@@ -165,7 +175,6 @@ export function ReaderFloatTop({
 /* Side right */
 export type ReaderSideRightProps = {
 	children?: React.ReactNode;
-	initialWidth?: number;
 	minWidth?: number;
 	maxWidth?: number;
 	className?: string;
@@ -175,25 +184,36 @@ export type ReaderSideRightProps = {
 export function ReaderSideRight(props: ReaderSideRightProps) {
 	const {
 		children,
-		initialWidth = 384,
 		minWidth = 280,
 		maxWidth = 560,
 		className,
 		onResizeFinish,
 	} = props;
 
-	const isSidebarRightOpen = usePdfReaderStore(
-		(state) => state.layout.isPdfChatOpen,
+	const { isSidebarRightOpen, pdfChatWidth, actions } = usePdfReaderStore(
+		useShallow((state) => ({
+			isSidebarRightOpen: state.layout.isPdfChatOpen,
+			pdfChatWidth: state.layout.pdfChatWidth,
+			actions: state.actions,
+		})),
+	);
+
+	const handleResizeFinish = useCallback(
+		(width: number) => {
+			onResizeFinish?.(width);
+			actions.setPdfChatWidth(width);
+		},
+		[onResizeFinish, actions],
 	);
 
 	return (
 		<HorizontalResizable
 			isCollapsed={!isSidebarRightOpen}
-			initialWidth={initialWidth}
+			initialWidth={pdfChatWidth}
 			minWidth={minWidth}
 			maxWidth={maxWidth}
 			handlerPosition="left"
-			onResizeFinish={onResizeFinish}
+			onResizeFinish={handleResizeFinish}
 			className={className}
 		>
 			<div className="h-full w-full">{children}</div>

@@ -14,6 +14,7 @@ import {
 } from "./components/pdf-layout/pdf-reader-layout";
 import { PDFLoader } from "./components/pdf-loader/pdf-loader";
 import { PdfSidebar } from "./components/pdf-sidebar/pdf-sidebar";
+import { ReaderSidebarPersistance } from "./components/persistance/reader-sidebar-persistance";
 import { ReaderLoader } from "./components/reader-loader/reader-loader";
 import { ReaderScrollPersistance } from "./components/reader-scroll-persistance/reader-scroll-persistance";
 import { ReaderZoomPersistance } from "./components/reader-zoom-persistance/reader-zoom-persistance";
@@ -34,7 +35,7 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 
 	return (
 		<PersistedReaderStateProvider documentId={documentId}>
-			<PdfReaderProvider documentId={documentId}>
+			<PdfReaderProvider>
 				<PDFLoader documentId={documentId}>
 					{({ documentId }) => (
 						<ReaderLoader documentId={documentId}>
@@ -56,6 +57,7 @@ export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
 									>
 										<ReaderScrollPersistance documentId={documentId} />
 										<ReaderZoomPersistance documentId={documentId} />
+										<ReaderSidebarPersistance documentId={documentId} />
 										<Zoom documentId={documentId}>
 											<Scroller
 												documentId={documentId}

@@ -24,16 +24,19 @@ export function ReaderScrollPersistance(props: ReaderScrollPersistanceProps) {
 	);
 	useEffect(() => {
 		if (!scrollProvides) return;
-		const unsubscribe = scrollProvides.onLayoutReady((_) => {
+		const layoutReadyUnsubscribe = scrollProvides.onLayoutReady((_) => {
 			scrollProvides.scrollToPage({
 				pageNumber: currentPage,
 				behavior: "instant",
 			});
 		});
-		scrollProvides.onScroll((event) => {
+		const scrollUnsubscribe = scrollProvides.onScroll((event) => {
 			debouncedUpdateDocumentState(documentId, event.metrics.currentPage);
 		});
-		return () => unsubscribe();
+		return () => {
+			layoutReadyUnsubscribe();
+			scrollUnsubscribe();
+		};
 	}, [scrollProvides, debouncedUpdateDocumentState, documentId, currentPage]);
 	return null;
 }

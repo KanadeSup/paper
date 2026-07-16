@@ -7,6 +7,8 @@ const DEFAULT_DOCUMENT_STATE: DocumentState = {
 	zoomLevel: "automatic",
 	isPdfChatOpen: false,
 	isSidebarOpen: false,
+	sidebarWidth: null,
+	pdfChatWidth: null,
 };
 
 export class DocumentStateService {
@@ -63,6 +65,8 @@ export class DocumentStateService {
 			zoomLevel: record.zoomLevel,
 			isPdfChatOpen: record.isPdfChatOpen,
 			isSidebarOpen: record.isSidebarOpen,
+			sidebarWidth: record.sidebarWidth ?? null,
+			pdfChatWidth: record.pdfChatWidth ?? null,
 		};
 	}
 

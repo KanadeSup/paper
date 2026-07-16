@@ -27,9 +27,13 @@ export function ReaderZoomPersistance(props: ReaderZoomPersistanceProps) {
 	useEffect(() => {
 		if (!provides) return;
 		provides.requestZoom(zoomLevel);
-		provides.onZoomChange((zoomLevel) => {
+		const unsubscribe = provides.onZoomChange((zoomLevel) => {
 			debouncedUpdateDocumentState(documentId, zoomLevel.level);
 		});
+
+		return () => {
+			unsubscribe();
+		};
 	}, [provides, zoomLevel, debouncedUpdateDocumentState, documentId]);
 
 	return null;

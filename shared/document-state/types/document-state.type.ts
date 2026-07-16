@@ -6,4 +6,6 @@ export type DocumentState = {
 	zoomLevel: DocumentZoomLevel;
 	isPdfChatOpen: boolean;
 	isSidebarOpen: boolean;
+	sidebarWidth: number | null;
+	pdfChatWidth: number | null;
 };

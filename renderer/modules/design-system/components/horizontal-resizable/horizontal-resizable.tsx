@@ -31,6 +31,8 @@ export function HorizontalResizable(props: HorizontalResizableProps) {
 	} = props;
 
 	const [width, setWidth] = useState(initialWidth);
+	const prevInitialWidth = useRef(initialWidth);
+
 	const [isResizing, setIsResizing] = useState(false);
 
 	const panelRef = useRef<HTMLDivElement>(null);
@@ -38,6 +40,11 @@ export function HorizontalResizable(props: HorizontalResizableProps) {
 	const animationIdRef = useRef<number | null>(null);
 
 	widthRef.current = width;
+
+	if (prevInitialWidth.current !== initialWidth) {
+		prevInitialWidth.current = initialWidth;
+		setWidth(initialWidth);
+	}
 
 	const updateWidth = useCallback(
 		(nextWidth: number) => {
