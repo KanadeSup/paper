@@ -24,6 +24,7 @@ import { SelectionMenu } from "./components/selection-menu/selection-menu";
 import { Toolbar } from "./components/tool-bar/tool-bar";
 import { Zoom } from "./components/zoom-gesture/zoom-gesture";
 import { useSelectionMenuActions } from "./hooks/use-selection-menu-actions";
+import { useSmoothShortcutScroll } from "./hooks/use-smooth-shortcut-scroll";
 import {
 	PdfReaderProvider,
 	usePdfReaderStore,
@@ -55,10 +56,13 @@ function PDFReaderPageContent({ documentId }: PDFReaderPageProps) {
 	const readerActions = usePdfReaderStore((state) => state.actions);
 
 	const viewportRef = useRef<HTMLDivElement>(null);
+	const { scrollDown, scrollUp } = useSmoothShortcutScroll(viewportRef);
 
 	useRegisterShortcut("pdf-reader.toggle-sidebar", () => {
 		readerActions.toggleSidebarOpen();
 	});
+	useRegisterShortcut("pdf-reader.scroll-down", scrollDown);
+	useRegisterShortcut("pdf-reader.scroll-up", scrollUp);
 
 	return (
 		<ReaderLayout>

@@ -11,7 +11,7 @@ export type ShortcutName =
 
 export type ShortcutHandler = {
 	shortcutType: ShortcutName;
-	handler: () => void;
+	handler: (event: KeyboardEvent) => void;
 };
 
 export type ShortcutStore = {
@@ -49,7 +49,7 @@ const shortcutStore = create<ShortcutStore>((set) => ({
 
 export const useRegisterShortcut = (
 	shortcutType: ShortcutName,
-	handler: () => void,
+	handler: (event: KeyboardEvent) => void,
 ) => {
 	const actions = useShortcutActions();
 	useEffect(() => {

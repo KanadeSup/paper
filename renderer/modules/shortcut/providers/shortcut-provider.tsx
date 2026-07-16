@@ -10,8 +10,8 @@ export function ShortcutProvider({ children }: { children: React.ReactNode }) {
 	const configShortcuts = useMemo(
 		() => [
 			{ keys: ["ctrl", "b"], type: "pdf-reader.toggle-sidebar" },
-			{ keys: ["j"], type: "pdf-reader.scroll-up" },
-			{ keys: ["k"], type: "pdf-reader.scroll-down" },
+			{ keys: ["j"], type: "pdf-reader.scroll-down" },
+			{ keys: ["k"], type: "pdf-reader.scroll-up" },
 		],
 		[],
 	);
@@ -30,7 +30,7 @@ export function ShortcutProvider({ children }: { children: React.ReactNode }) {
 				(shortcut) => shortcut.shortcutType === triggerShortcutType,
 			);
 			if (!triggerShortcutHandler) return;
-			triggerShortcutHandler.handler();
+			triggerShortcutHandler.handler(event);
 			event.preventDefault();
 			event.stopPropagation();
 		},
