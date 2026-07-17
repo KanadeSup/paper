@@ -1,12 +1,8 @@
-import type { ShortcutName } from "@renderer/modules/shortcut/hooks/shortcut-store";
 import {
 	isKeyAllowed,
 	MODIFIER_KEYS,
-	stringifyShortcutKeys,
 } from "@renderer/modules/shortcut/libs/shortcut";
-import { getShortcutDefinition } from "@shared/shortcut/constants/shortcut.constant";
-import type { ShortcutValues } from "@shared/shortcut/types/shortcut.type";
-import type { ShortcutConflict } from "../types/shortcut-setting.type";
+import { stringifyShortcutKeys } from "@shared/shortcut/utils/shortcut.util";
 
 export function areShortcutKeysEqual(a: string[], b: string[]) {
 	return stringifyShortcutKeys(a) === stringifyShortcutKeys(b);
@@ -17,44 +13,6 @@ export function isValidShortcutKeys(keys: string[]) {
 	if (keys.every((key) => MODIFIER_KEYS.includes(key))) return false;
 	if (keys.every((key) => !isKeyAllowed(key))) return false;
 	return true;
-}
-
-export function findShortcutConflict(params: {
-	shortcutId: ShortcutName;
-	keys: string[];
-	values: ShortcutValues;
-}): ShortcutConflict | null {
-	const { shortcutId, keys, values } = params;
-
-	if (keys.length === 0) return null;
-
-	const definition = getShortcutDefinition(shortcutId);
-	if (!definition) return null;
-
-	const candidate = stringifyShortcutKeys(keys);
-
-	for (const [id, assignedKeys] of Object.entries(values) as [
-		ShortcutName,
-		string[],
-	][]) {
-		if (id === shortcutId) continue;
-		if (assignedKeys.length === 0) continue;
-
-		const otherDefinition = getShortcutDefinition(id);
-		if (!otherDefinition || otherDefinition.group !== definition.group) {
-			continue;
-		}
-
-		if (stringifyShortcutKeys(assignedKeys) === candidate) {
-			return {
-				shortcutId: id,
-				title: otherDefinition.title,
-				keys: assignedKeys,
-			};
-		}
-	}
-
-	return null;
 }
 
 const KEY_LABELS: Record<string, string> = {

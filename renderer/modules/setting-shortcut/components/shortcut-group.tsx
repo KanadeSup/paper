@@ -5,12 +5,14 @@ import type {
 } from "@shared/shortcut/types/shortcut.type";
 import { ShortcutItem } from "./shortcut-item";
 
+type ShortcutGroupItem = {
+	definition: ShortcutDefinition;
+	keys: string[];
+};
 export type ShortcutGroupProps = {
 	group: ShortcutGroupMeta;
-	shortcuts: Array<{
-		definition: ShortcutDefinition;
-		keys: string[];
-	}>;
+	shortcuts: ShortcutGroupItem[];
+	isLoading?: boolean;
 	onChange: (shortcutId: ShortcutDefinition["id"], keys: string[]) => void;
 	onReset: (shortcutId: ShortcutDefinition["id"]) => void;
 	onClear: (shortcutId: ShortcutDefinition["id"]) => void;
@@ -19,6 +21,7 @@ export type ShortcutGroupProps = {
 export function ShortcutGroup({
 	group,
 	shortcuts,
+	isLoading,
 	onChange,
 	onReset,
 	onClear,
@@ -45,6 +48,7 @@ export function ShortcutGroup({
 						key={definition.id}
 						definition={definition}
 						keys={keys}
+						isLoading={isLoading}
 						onChange={(nextKeys) => onChange(definition.id, nextKeys)}
 						onReset={() => onReset(definition.id)}
 						onClear={() => onClear(definition.id)}

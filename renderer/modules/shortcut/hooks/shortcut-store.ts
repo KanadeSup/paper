@@ -1,17 +1,11 @@
+import type { ShortcutId } from "@shared/shortcut/types/shortcut.type";
 import { useEffect } from "react";
 import { create } from "zustand";
 
-export type ShortcutName =
-	| "global.toggle-app-sidebar"
-	| "pdf-reader.toggle-sidebar"
-	| "pdfreader.toggle-pdf-chat"
-	| "pdf-reader.increase-zoom"
-	| "pdf-reader.decrease-zoom"
-	| "pdf-reader.scroll-up"
-	| "pdf-reader.scroll-down";
+export type { ShortcutId as ShortcutName };
 
 export type ShortcutHandler = {
-	shortcutType: ShortcutName;
+	shortcutId: ShortcutId;
 	handler: (event: KeyboardEvent) => void;
 };
 
@@ -19,7 +13,7 @@ export type ShortcutStore = {
 	handlers: ShortcutHandler[];
 	actions: {
 		register: (handler: ShortcutHandler) => void;
-		unregister: (shortcutType: ShortcutName) => void;
+		unregister: (shortcutType: ShortcutId) => void;
 	};
 };
 
@@ -29,32 +23,32 @@ const shortcutStore = create<ShortcutStore>((set) => ({
 		register: (registerHandler: ShortcutHandler) =>
 			set((state) => {
 				const matchedHandlers = state.handlers.find(
-					(handler) => handler.shortcutType === registerHandler.shortcutType,
+					(handler) => handler.shortcutId === registerHandler.shortcutId,
 				);
 				if (matchedHandlers) {
 					console.warn(
-						`Handler with id ${registerHandler.shortcutType} already registered. So it will be overridden.`,
+						`Handler with id ${registerHandler.shortcutId} already registered. So it will be overridden.`,
 					);
 					return { handlers: state.handlers };
 				}
 				return { handlers: [...state.handlers, registerHandler] };
 			}),
-		unregister: (shortcutType: ShortcutName) =>
+		unregister: (shortcutType: ShortcutId) =>
 			set((state) => ({
 				handlers: state.handlers.filter(
-					(handler) => handler.shortcutType !== shortcutType,
+					(handler) => handler.shortcutId !== shortcutType,
 				),
 			})),
 	},
 }));
 
 export const useRegisterShortcut = (
-	shortcutType: ShortcutName,
+	shortcutType: ShortcutId,
 	handler: (event: KeyboardEvent) => void,
 ) => {
 	const actions = useShortcutActions();
 	useEffect(() => {
-		actions.register({ shortcutType, handler });
+		actions.register({ shortcutId: shortcutType, handler });
 		return () => {
 			actions.unregister(shortcutType);
 		};

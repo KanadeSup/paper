@@ -1,7 +1,3 @@
-export function stringifyShortcutKeys(keys: string[]) {
-	return keys.join("+");
-}
-
 export const MODIFIER_KEYS = ["ctrl", "alt", "shift", "meta"];
 
 export const SPECIAL_KEYS = [

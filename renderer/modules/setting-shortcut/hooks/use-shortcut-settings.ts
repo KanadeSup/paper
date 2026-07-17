@@ -1,61 +1,72 @@
-import type { ShortcutName } from "@renderer/modules/shortcut/hooks/shortcut-store";
+import { SHORTCUT_GROUPS } from "@shared/shortcut/constants/shortcut.constant";
+import type {
+	ShortcutId,
+	ShortcutValues,
+} from "@shared/shortcut/types/shortcut.type";
 import {
 	createDefaultShortcutValues,
+	findShortcutKeyConflict,
 	getShortcutDefinition,
 	getShortcutsByGroup,
-	SHORTCUT_GROUPS,
-} from "@shared/shortcut/constants/shortcut.constant";
-import type { ShortcutValues } from "@shared/shortcut/types/shortcut.type";
-import { useCallback, useState } from "react";
+	stringifyShortcutKeys,
+} from "@shared/shortcut/utils/shortcut.util";
+import { useCallback, useEffect, useState } from "react";
+import { deleteShortcut, getShortcuts, setShortcut } from "../ipc/shortcut.ipc";
 import type { PendingShortcutChange } from "../types/shortcut-setting.type";
-import { findShortcutConflict } from "../utils/shortcut-keys";
-
-function persistShortcutChange(
-	shortcutId: ShortcutName,
-	keys: string[],
-	allValues: ShortcutValues,
-) {
-	// Persistence will be wired to the main process later.
-	console.log("[shortcut] save", {
-		shortcutId,
-		keys,
-		allShortcuts: allValues,
-	});
-}
 
 export function useShortcutSettings() {
 	const [values, setValues] = useState<ShortcutValues>(
 		createDefaultShortcutValues,
 	);
+	const [isInitializing, setIsInitializing] = useState(true);
 	const [pendingChange, setPendingChange] =
 		useState<PendingShortcutChange | null>(null);
 
-	const applyChange = useCallback(
-		(
-			shortcutId: ShortcutName,
-			keys: string[],
-			clearConflictId?: ShortcutName,
-		) => {
-			setValues((current) => {
-				const next: ShortcutValues = {
-					...current,
-					[shortcutId]: keys,
-				};
-
-				if (clearConflictId) {
-					next[clearConflictId] = [];
-				}
-
-				persistShortcutChange(shortcutId, keys, next);
-				return next;
+	useEffect(() => {
+		const response = getShortcuts();
+		response
+			.then((response) => {
+				if (!response.success) return;
+				setValues(response.data.shortcuts);
+			})
+			.finally(() => {
+				setIsInitializing(false);
 			});
+	}, []);
+
+	const applyChange = useCallback(
+		async (shortcutId: ShortcutId, keys: string[]) => {
+			let isSuccess = false;
+
+			if (keys.length === 0) {
+				// If the keys are empty, delete the shortcut
+				const response = await deleteShortcut({ shortcutId });
+				isSuccess = response.success;
+			} else {
+				// If the keys are not empty, set the shortcut
+				const response = await setShortcut({
+					shortcutId,
+					key: stringifyShortcutKeys(keys),
+				});
+				isSuccess = response.success;
+			}
+
+			if (!isSuccess) return false;
+
+			setValues((current) => ({
+				...current,
+				[shortcutId]: keys,
+			}));
+
+			return true;
 		},
 		[],
 	);
 
+	/** If the key is empty, delete the shortcut. Otherwise, set the shortcut. */
 	const requestChange = useCallback(
-		(shortcutId: ShortcutName, keys: string[]) => {
-			const conflict = findShortcutConflict({
+		(shortcutId: ShortcutId, keys: string[]) => {
+			const conflict = findShortcutKeyConflict({
 				shortcutId,
 				keys,
 				values,
@@ -72,7 +83,7 @@ export function useShortcutSettings() {
 	);
 
 	const resetShortcut = useCallback(
-		(shortcutId: ShortcutName) => {
+		(shortcutId: ShortcutId) => {
 			const definition = getShortcutDefinition(shortcutId);
 			if (!definition) return;
 			requestChange(shortcutId, [...definition.defaultKeys]);
@@ -81,8 +92,8 @@ export function useShortcutSettings() {
 	);
 
 	const clearShortcut = useCallback(
-		(shortcutId: ShortcutName) => {
-			applyChange(shortcutId, []);
+		(shortcutId: ShortcutId) => {
+			void applyChange(shortcutId, []);
 		},
 		[applyChange],
 	);
@@ -91,15 +102,18 @@ export function useShortcutSettings() {
 		setPendingChange(null);
 	}, []);
 
-	const confirmOverride = useCallback(() => {
+	const confirmOverride = useCallback(async () => {
 		if (!pendingChange) return;
 
-		applyChange(
-			pendingChange.shortcutId,
-			pendingChange.keys,
-			pendingChange.conflict.shortcutId,
-		);
+		const { shortcutId, keys, conflict } = pendingChange;
 		setPendingChange(null);
+
+		// Delete the conflicting shortcut before setting the new shortcut
+		const deleted = await applyChange(conflict.shortcutId, []);
+		if (!deleted) return;
+
+		// Set the new shortcut
+		await applyChange(shortcutId, keys);
 	}, [applyChange, pendingChange]);
 
 	const groupedShortcuts = SHORTCUT_GROUPS.map((group) => ({
@@ -111,6 +125,7 @@ export function useShortcutSettings() {
 	})).filter((entry) => entry.shortcuts.length > 0);
 
 	return {
+		isInitializing,
 		groupedShortcuts,
 		pendingChange,
 		requestChange,

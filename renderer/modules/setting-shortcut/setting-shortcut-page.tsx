@@ -10,6 +10,7 @@ import { useShortcutSettings } from "./hooks/use-shortcut-settings";
 export function SettingShortcutPage() {
 	const {
 		groupedShortcuts,
+		isInitializing,
 		pendingChange,
 		requestChange,
 		resetShortcut,
@@ -17,6 +18,7 @@ export function SettingShortcutPage() {
 		cancelPendingChange,
 		confirmOverride,
 	} = useShortcutSettings();
+	console.log("isInitializing", isInitializing);
 
 	return (
 		<SettingLayout>
@@ -35,6 +37,7 @@ export function SettingShortcutPage() {
 							key={group.id}
 							group={group}
 							shortcuts={shortcuts}
+							isLoading={isInitializing}
 							onChange={requestChange}
 							onReset={resetShortcut}
 							onClear={clearShortcut}

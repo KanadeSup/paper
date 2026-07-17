@@ -19,6 +19,19 @@ export const storageDefinition = {
 			openai: null,
 		},
 	}),
+	shortcuts: defineCollectionStorage({
+		schema: z.object({
+			records: z
+				.object({
+					id: z.string(),
+					key: z.string().nullable(),
+				})
+				.array(),
+		}),
+		defaultData: {
+			records: [],
+		},
+	}),
 
 	documents: defineCollectionStorage({
 		schema: z.object({

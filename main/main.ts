@@ -40,6 +40,11 @@ import {
 	GetSelectionMenuActionListChannel,
 	UpdateSelectionMenuActionChannel,
 } from "./modules/selection-action";
+import {
+	DeleteShortcutChannel,
+	GetShortcutsChannel,
+	SetShortcutChannel,
+} from "./modules/shortcut";
 import { GenerateTextWithPlaceholderChannel } from "./modules/text-generation";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -185,4 +190,7 @@ new Main().init([
 	new GetApiKeysChannel(),
 	new SetApiKeyChannel(),
 	new ValidateApiKeyChannel(),
+	new GetShortcutsChannel(),
+	new SetShortcutChannel(),
+	new DeleteShortcutChannel(),
 ]);

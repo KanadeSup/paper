@@ -5,6 +5,7 @@ import { SelectionLayer } from "@embedpdf/plugin-selection/react";
 import { useRef, useState } from "react";
 import { PdfChat } from "../pdf-chat/components/pdf-chat/pdf-chat";
 import { useRegisterShortcut } from "../shortcut/hooks/shortcut-store";
+import { useSubcribeShortcutGroup } from "../shortcut/providers/shortcut-provider";
 import {
 	ReaderFloatTop,
 	ReaderLayout,
@@ -35,6 +36,8 @@ type PDFReaderPageProps = {
 };
 
 export function PDFReaderPage({ documentId }: PDFReaderPageProps) {
+	useSubcribeShortcutGroup("pdf-reader");
+
 	return (
 		<PersistedReaderStateProvider documentId={documentId}>
 			<PdfReaderProvider>
@@ -58,11 +61,15 @@ function PDFReaderPageContent({ documentId }: PDFReaderPageProps) {
 	const viewportRef = useRef<HTMLDivElement>(null);
 	const { scrollDown, scrollUp } = useSmoothShortcutScroll(viewportRef);
 
+	// Register the shortcut handlers for the pdf reader
 	useRegisterShortcut("pdf-reader.toggle-sidebar", () => {
 		readerActions.toggleSidebarOpen();
 	});
 	useRegisterShortcut("pdf-reader.scroll-down", scrollDown);
 	useRegisterShortcut("pdf-reader.scroll-up", scrollUp);
+	useRegisterShortcut("pdf-reader.toggle-pdf-chat", () => {
+		readerActions.togglePdfChatOpen();
+	});
 
 	return (
 		<ReaderLayout>

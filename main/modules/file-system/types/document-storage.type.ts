@@ -28,3 +28,6 @@ export type DocumentVectorStoreRecord =
 // Document states
 export type DocumentStateRecord =
 	StorageData<"documentStates">["records"][number];
+
+// Shortcuts
+export type ShortcutBindingRecord = StorageData<"shortcuts">["records"][number];

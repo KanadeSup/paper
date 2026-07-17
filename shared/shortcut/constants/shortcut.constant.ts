@@ -1,8 +1,6 @@
 import type {
 	ShortcutDefinition,
-	ShortcutGroupId,
 	ShortcutGroupMeta,
-	ShortcutValues,
 } from "../types/shortcut.type";
 
 export const SHORTCUT_GROUPS: ShortcutGroupMeta[] = [
@@ -34,7 +32,7 @@ export const SHORTCUT_DEFINITIONS: ShortcutDefinition[] = [
 		defaultKeys: ["ctrl", "b"],
 	},
 	{
-		id: "pdfreader.toggle-pdf-chat",
+		id: "pdf-reader.toggle-pdf-chat",
 		group: "pdf-reader",
 		title: "Toggle chat",
 		description: "Show or hide the PDF chat panel",
@@ -69,20 +67,3 @@ export const SHORTCUT_DEFINITIONS: ShortcutDefinition[] = [
 		defaultKeys: ["j"],
 	},
 ];
-
-export function createDefaultShortcutValues(): ShortcutValues {
-	return SHORTCUT_DEFINITIONS.reduce((acc, definition) => {
-		acc[definition.id] = [...definition.defaultKeys];
-		return acc;
-	}, {} as ShortcutValues);
-}
-
-export function getShortcutsByGroup(groupId: ShortcutGroupId) {
-	return SHORTCUT_DEFINITIONS.filter(
-		(definition) => definition.group === groupId,
-	);
-}
-
-export function getShortcutDefinition(id: ShortcutDefinition["id"]) {
-	return SHORTCUT_DEFINITIONS.find((definition) => definition.id === id);
-}

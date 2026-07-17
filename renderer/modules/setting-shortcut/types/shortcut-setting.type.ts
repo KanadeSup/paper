@@ -1,13 +1,13 @@
-import type { ShortcutName } from "@renderer/modules/shortcut/hooks/shortcut-store";
+import type { ShortcutId } from "@shared/shortcut/types/shortcut.type";
 
 export type ShortcutConflict = {
-	shortcutId: ShortcutName;
+	shortcutId: ShortcutId;
 	title: string;
 	keys: string[];
 };
 
 export type PendingShortcutChange = {
-	shortcutId: ShortcutName;
+	shortcutId: ShortcutId;
 	keys: string[];
 	conflict: ShortcutConflict;
 };

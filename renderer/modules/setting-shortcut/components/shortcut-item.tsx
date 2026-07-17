@@ -5,6 +5,7 @@ import { areShortcutKeysEqual } from "../utils/shortcut-keys";
 import { KeyboardInput } from "./keyboard-input";
 
 export type ShortcutItemProps = {
+	isLoading?: boolean;
 	definition: ShortcutDefinition;
 	keys: string[];
 	onChange: (keys: string[]) => void;
@@ -13,6 +14,7 @@ export type ShortcutItemProps = {
 };
 
 export function ShortcutItem({
+	isLoading,
 	definition,
 	keys,
 	onChange,
@@ -37,7 +39,7 @@ export function ShortcutItem({
 			</div>
 
 			<div className="flex shrink-0 items-center gap-1">
-				<KeyboardInput value={keys} onChange={onChange} />
+				{!isLoading && <KeyboardInput value={keys} onChange={onChange} />}
 
 				<div
 					className={cn(
