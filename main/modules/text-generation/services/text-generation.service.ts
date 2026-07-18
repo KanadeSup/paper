@@ -23,9 +23,7 @@ export class TextGenerationService {
 		model: string,
 	): AsyncGenerator<string> {
 		const providerName = resolveProviderNameFromModel(model);
-		const textGenerateService = new TextGenerateService(providerName, {
-			apiKey: process.env.GROK_API_KEY ?? "",
-		});
+		const textGenerateService = new TextGenerateService(providerName, {});
 
 		return textGenerateService.generateTextStream(resolvedPrompt, {
 			model,

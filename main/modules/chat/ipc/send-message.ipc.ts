@@ -65,9 +65,7 @@ export class SendMessageChannel extends BaseChannel<
 		try {
 			// Initialize text generate service
 			const providerName = resolveProviderNameFromModel(request.model);
-			const textGenerateService = new TextGenerateService(providerName, {
-				apiKey: process.env.GROK_API_KEY ?? "",
-			});
+			const textGenerateService = new TextGenerateService(providerName, {});
 
 			// Query document context using RAG
 			const ragService = new RagService(process.env.OPENAI_API_KEY ?? "");

@@ -19,4 +19,6 @@ export interface LlmProvider {
 	): AsyncGenerator<string>;
 
 	validateApiKey(apiKey: string): Promise<ValidateApiKeyResponse>;
+
+	getApiKey(): string | null;
 }

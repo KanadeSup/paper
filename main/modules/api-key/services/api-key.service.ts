@@ -16,4 +16,12 @@ export class ApiKeyService {
 			[provider]: apiKey,
 		});
 	}
+
+	get(provider: ApiKeyProvider): string | null {
+		const apiKeys = this.fileStorageService.getStorageData("apiKeys");
+		if (apiKeys[provider] && apiKeys[provider].length > 0) {
+			return apiKeys[provider];
+		}
+		return null;
+	}
 }

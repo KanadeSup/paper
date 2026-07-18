@@ -1,7 +1,8 @@
 export type LlmProviderName = "openai" | "gemini" | "grok";
 
 export type ProviderOptions = {
-	apiKey: string;
+	/** If not provided, the API key will be retrieved from the API key storage */
+	apiKey?: string;
 };
 
 export type GenerateTextOptions = {

@@ -1,4 +1,6 @@
+import { ApiKeyService } from "@main/modules/api-key/services/api-key.service";
 import OpenAI from "openai";
+import { KeyNotFoundError } from "../errors/key-not-found.error";
 import type {
 	GenerateTextInput,
 	GenerateTextOptions,
@@ -14,10 +16,20 @@ export class GrokProvider implements LlmProvider {
 	readonly name = "grok" as const;
 
 	private readonly client: OpenAI;
+	private readonly apiKeyService = new ApiKeyService();
 
 	constructor(options: ProviderOptions) {
+		const apiKey =
+			options.apiKey && options.apiKey.length > 0
+				? options.apiKey
+				: this.getApiKey();
+
+		if (!apiKey) {
+			throw new KeyNotFoundError("Grok API key not found");
+		}
+
 		this.client = new OpenAI({
-			apiKey: options.apiKey,
+			apiKey,
 			baseURL: GROK_BASE_URL,
 			timeout: GROK_TIMEOUT_MS,
 		});
@@ -77,5 +89,9 @@ export class GrokProvider implements LlmProvider {
 				message: error instanceof Error ? error.message : "Unknown error",
 			};
 		}
+	}
+
+	getApiKey(): string | null {
+		return this.apiKeyService.get("grok");
 	}
 }
