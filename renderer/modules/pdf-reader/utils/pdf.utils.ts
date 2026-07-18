@@ -64,3 +64,42 @@ export function resolveBookmarkEndPage(
 		}
 	}
 }
+
+type OutlinePathValue = "current" | { [title: string]: OutlinePathValue };
+
+export function getOutlinePathStringByPageNumber(
+	outlines: PdfOutlineObject[],
+	pageNumber: number,
+) {
+	return JSON.stringify(buildOutlinePathByPageNumber(outlines, pageNumber));
+}
+
+function isPageInOutline(outline: PdfOutlineObject, pageNumber: number) {
+	if (outline.startPage == null) return false;
+	if (pageNumber < outline.startPage) return false;
+	if (outline.endPage == null) return true;
+	return pageNumber <= outline.endPage;
+}
+
+function buildOutlinePathByPageNumber(
+	outlines: PdfOutlineObject[],
+	pageNumber: number,
+): Record<string, OutlinePathValue> {
+	const result: Record<string, OutlinePathValue> = {};
+
+	for (const outline of outlines) {
+		if (!isPageInOutline(outline, pageNumber)) continue;
+
+		const children = outline.children ?? [];
+		if (children.length === 0) {
+			result[outline.title] = "current";
+			continue;
+		}
+
+		const childPath = buildOutlinePathByPageNumber(children, pageNumber);
+		result[outline.title] =
+			Object.keys(childPath).length > 0 ? childPath : "current";
+	}
+
+	return result;
+}

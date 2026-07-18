@@ -1,4 +1,7 @@
-import type { SelectionSelectionMenuProps } from "@embedpdf/plugin-selection/react";
+import {
+	type SelectionSelectionMenuProps,
+	useSelectionCapability,
+} from "@embedpdf/plugin-selection/react";
 import { cn } from "@renderer/modules/design-system";
 import type { MenuAction } from "@renderer/modules/setting-menu-selection/types/menu-action.type";
 import { AnimatePresence, motion } from "motion/react";
@@ -48,14 +51,19 @@ function SelectionMenuContent(props: SelectionMenuProps) {
 	const { content, isStreaming, errorMessage, generate } =
 		useGenerateTextWithPlaceholder();
 
+	const { provides: selectionProvides } = useSelectionCapability();
+
 	const anchorRef = useRef<HTMLDivElement | null>(null);
 	const popupRef = useRef<HTMLDivElement | null>(null);
 
 	const { ref: menuWrapperRef, ...menuWrapperProps } =
 		selection.menuWrapperProps;
 
-	const runGeneration = (action: MenuAction) => {
-		void generate({
+	const runGeneration = async (action: MenuAction) => {
+		const selectedText = await selectionProvides?.getSelectedText().toPromise();
+
+		generate({
+			selectedText: selectedText?.join("\n") ?? "",
 			prompt: action.prompt,
 			model: action.model,
 		});

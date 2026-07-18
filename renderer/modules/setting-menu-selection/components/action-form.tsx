@@ -10,10 +10,8 @@ import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { DEFAULT_LLM_MODEL, LLM_MODEL_OPTIONS } from "../constants/llm-models";
-import {
-	type MenuActionFormValues,
-	SYSTEM_PLACEHOLDERS,
-} from "../types/menu-action.type";
+import { SYSTEM_PLACEHOLDERS } from "../constants/prompt";
+import type { MenuActionFormValues } from "../types/menu-action.type";
 
 export type ActionFormProps = {
 	mode: "create" | "edit";
