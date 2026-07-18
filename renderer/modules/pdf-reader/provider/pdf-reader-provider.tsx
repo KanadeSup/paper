@@ -1,9 +1,8 @@
-import type { PdfBookmarkObject } from "@embedpdf/models";
 import { createContext, useContext, useState } from "react";
 import { createStore, type StoreApi, useStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { useReaderStateRestorer } from "../components/persistance/persisted-reader-state-provider";
-import type { PdfOutlineObject } from "../types/pdf.type";
+import type { PdfMetadata } from "../types/pdf.type";
 
 export type LayoutState = {
 	isPdfChatOpen: boolean;
@@ -13,11 +12,13 @@ export type LayoutState = {
 };
 
 type PdfReaderContext = {
-	outline: PdfOutlineObject[];
 	layout: LayoutState;
+	metadata: PdfMetadata | null;
+	currentPage: number | null;
 	actions: {
-		setOutline: (outline: PdfBookmarkObject[]) => void;
 		setLayout: (layout: LayoutState) => void;
+		setMetadata: (metadata: PdfMetadata) => void;
+		setCurrentPage: (currentPage: number) => void;
 		updateLayout: (layout: Partial<LayoutState>) => void;
 		togglePdfChatOpen: (isPdfChatOpen?: boolean) => void;
 		toggleSidebarOpen: (isSidebarOpen?: boolean) => void;
@@ -46,7 +47,9 @@ export function PdfReaderProvider(props: PdfReaderProviderProps) {
 
 	const [store] = useState(() =>
 		createStore<PdfReaderContext>(() => ({
-			outline: [],
+			metadata: null,
+			currentPage: null,
+			title: null,
 			layout: {
 				isPdfChatOpen,
 				isSidebarOpen,
@@ -54,11 +57,14 @@ export function PdfReaderProvider(props: PdfReaderProviderProps) {
 				pdfChatWidth: pdfChatWidth ?? 280,
 			},
 			actions: {
-				setOutline: (outline: PdfOutlineObject[]) => {
-					store.setState({ outline });
+				setMetadata: (metadata: PdfMetadata) => {
+					store.setState({ metadata });
 				},
 				setLayout: (layout: LayoutState) => {
 					store.setState({ layout });
+				},
+				setCurrentPage: (currentPage: number) => {
+					store.setState({ currentPage });
 				},
 				updateLayout: (layout: Partial<LayoutState>) => {
 					store.setState({

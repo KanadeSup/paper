@@ -37,13 +37,8 @@ export const SYSTEM_PLACEHOLDERS: SystemPlaceholder[] = [
 		description: "Title of the current PDF",
 	},
 	{
-		key: "{{page_number}}",
-		label: "Page Number",
-		description: "Current page number",
-	},
-	{
-		key: "{{author}}",
-		label: "Author",
-		description: "Document author",
+		key: "{{outline_title}}",
+		label: "Outline Title",
+		description: "Title of the current outline",
 	},
 ];

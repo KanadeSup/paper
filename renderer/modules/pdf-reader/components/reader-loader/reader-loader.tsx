@@ -1,7 +1,7 @@
 import { Button } from "@renderer/modules/design-system";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useOutlines } from "../../hooks/use-outline-load";
+import { usePdfMetadata } from "../../hooks/use-pdf-metadata";
 import { usePdfReaderStore } from "../../provider/pdf-reader-provider";
 
 type ReaderLoaderProps = {
@@ -10,23 +10,19 @@ type ReaderLoaderProps = {
 };
 
 export function ReaderLoader({ documentId, children }: ReaderLoaderProps) {
-	const {
-		outline,
-		error,
-		isLoading: isOutlineLoading,
-	} = useOutlines(documentId);
+	const { metadata, error, isLoading } = usePdfMetadata(documentId);
 	const [isFinished, setIsFinished] = useState(false);
 
 	const readerActions = usePdfReaderStore((state) => state.actions);
 
 	useEffect(() => {
-		if (isOutlineLoading) return;
+		if (isLoading) return;
 
-		if (outline) {
-			readerActions.setOutline(outline);
+		if (metadata) {
+			readerActions.setMetadata(metadata);
 		}
 		setIsFinished(true);
-	}, [outline, isOutlineLoading, readerActions]);
+	}, [metadata, isLoading, readerActions]);
 
 	if (!isFinished) return null;
 	if (error) return <LoadError error={error} />;

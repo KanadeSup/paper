@@ -12,7 +12,9 @@ export function PdfOutline({ documentId }: PdfOutlineProps) {
 	const { provides: scrollProvides } = useScroll(documentId);
 	const { state: scrollState } = useScroll(documentId);
 	const currentPage = scrollState.currentPage;
-	const pdfReaderOutline = usePdfReaderStore((state) => state.outline);
+	const pdfReaderOutline = usePdfReaderStore(
+		(state) => state.metadata?.outlines,
+	);
 	const handleNavigate = useCallback(
 		(pageNumber: number) => {
 			scrollProvides?.scrollToPage({
@@ -26,7 +28,7 @@ export function PdfOutline({ documentId }: PdfOutlineProps) {
 	return (
 		<ScrollArea className="min-h-0 flex-1 pr-3">
 			<div>
-				{pdfReaderOutline.map((outline, index) => (
+				{pdfReaderOutline?.map((outline, index) => (
 					<PdfOutlineItem
 						currentPage={currentPage}
 						key={outline.title}

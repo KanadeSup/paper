@@ -13,12 +13,12 @@ export function OutlineSelectionScreen({
 	onBack,
 	onConfirm,
 }: OutlineSelectionScreenProps) {
-	const outline = usePdfReaderStore((state) => state.outline);
+	const outlines = usePdfReaderStore((state) => state.metadata?.outlines);
 	const [selectedItem, setSelectedItem] = useState<PdfOutlineObject | null>(
 		null,
 	);
 
-	const isEmpty = outline.length === 0;
+	const isEmpty = !outlines || outlines.length === 0;
 
 	return (
 		<div className="flex flex-col h-full px-3 py-4 gap-4">
@@ -48,7 +48,7 @@ export function OutlineSelectionScreen({
 					</div>
 				) : (
 					<div className="px-1">
-						{outline.map((item, index) => (
+						{outlines.map((item, index) => (
 							<SelectableOutlineItem
 								key={item.title ?? index}
 								outline={item}
