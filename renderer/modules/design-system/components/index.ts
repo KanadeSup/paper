@@ -2,6 +2,7 @@ export * from "./animated-message/animated-message";
 export * from "./button/icon-button";
 export * from "./horizontal-resizable/horizontal-resizable";
 export * from "./input/search-input";
+export * from "./input/tag-input";
 export * from "./ui/button";
 export * from "./ui/dialog";
 export * from "./ui/dropdown-menu";

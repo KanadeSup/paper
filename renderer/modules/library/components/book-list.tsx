@@ -8,11 +8,36 @@ import {
 } from "@renderer/modules/design-system";
 import { Link } from "@tanstack/react-router";
 import { ImportIcon, Loader2, RefreshCcw } from "lucide-react";
+import { useState } from "react";
 import { useDocumentList } from "../hooks/useDocumentList";
 import { DocumentCard } from "./document-card";
+import {
+	type EditableDocument,
+	EditDocumentDialog,
+	type EditDocumentFormValues,
+} from "./edit-document-dialog";
+
+/**
+ * Placeholder suggestions until a get-tags IPC channel exists.
+ * Replace with data from the main process when integrating.
+ */
+const TAG_SUGGESTIONS = [
+	"Research",
+	"Textbook",
+	"Fiction",
+	"Reference",
+	"Paper",
+];
 
 export function BookList() {
 	const { documents, isLoading, error, refresh } = useDocumentList();
+	const [editingDocument, setEditingDocument] =
+		useState<EditableDocument | null>(null);
+
+	const handleSave = (data: EditDocumentFormValues) => {
+		// TODO: call update-document IPC when available
+		console.log("edit-document", data);
+	};
 
 	return (
 		<div className="flex min-h-0 flex-1 flex-col gap-4">
@@ -61,12 +86,35 @@ export function BookList() {
 									author={document.author}
 									totalPages={document.totalPages}
 									thumbnail={document.thumbnail}
+									onEditClick={() =>
+										setEditingDocument({
+											id: document.id,
+											title: document.title ?? undefined,
+											author: document.author ?? undefined,
+											totalPages: document.totalPages ?? undefined,
+											thumbnail: document.thumbnail ?? undefined,
+											fileName: document.fileName ?? undefined,
+											tags: [],
+										})
+									}
 								/>
 							</Link>
 						))}
 					</div>
 				)}
 			</ScrollArea>
+
+			{editingDocument && (
+				<EditDocumentDialog
+					open={true}
+					document={editingDocument}
+					tagSuggestions={TAG_SUGGESTIONS}
+					onOpenChange={(open) => {
+						if (!open) setEditingDocument(null);
+					}}
+					onSave={handleSave}
+				/>
+			)}
 		</div>
 	);
 }
