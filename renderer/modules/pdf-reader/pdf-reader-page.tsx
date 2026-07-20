@@ -23,7 +23,7 @@ import { ReaderZoomPersistance } from "./components/persistance/reader-zoom-pers
 import { ReaderLoader } from "./components/reader-loader/reader-loader";
 import { SelectionMenu } from "./components/selection-menu/selection-menu";
 import { Toolbar } from "./components/tool-bar/tool-bar";
-import { Zoom } from "./components/zoom-gesture/zoom-gesture";
+import { ZoomGesture } from "./components/zoom-gesture/zoom-gesture";
 import { useSelectionMenuActions } from "./hooks/use-selection-menu-actions";
 import { useSmoothShortcutScroll } from "./hooks/use-smooth-shortcut-scroll";
 import {
@@ -92,7 +92,7 @@ function PDFReaderPageContent({ documentId }: PDFReaderPageProps) {
 					<ReaderScrollPersistance documentId={documentId} />
 					<ReaderZoomPersistance documentId={documentId} />
 					<ReaderSidebarPersistance documentId={documentId} />
-					<Zoom documentId={documentId}>
+					<ZoomGesture documentId={documentId}>
 						<Scroller
 							documentId={documentId}
 							renderPage={({ width, height, pageIndex }) => (
@@ -120,7 +120,7 @@ function PDFReaderPageContent({ documentId }: PDFReaderPageProps) {
 								</PagePointerProvider>
 							)}
 						/>
-					</Zoom>
+					</ZoomGesture>
 				</PDFViewport>
 			</ReaderMain>
 			<ReaderSideRight>
