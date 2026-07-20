@@ -6,6 +6,7 @@ import {
 	type ZoomCapability,
 } from "@embedpdf/plugin-zoom/react";
 import { useLayoutEffect, useRef } from "react";
+import { flushSync } from "react-dom";
 
 const ZOOM_STEP = 0.2;
 const ZOOM_THRESHOLD = 150;
@@ -173,8 +174,9 @@ function setupZoomGestures({
 					? initialElementLeft + tx / scaleDiff
 					: pointerContainerX;
 		}
-
-		zoomScope.requestZoomBy(delta, { vx: anchorX, vy: anchorY });
+		flushSync(() => {
+			zoomScope.requestZoomBy(delta, { vx: anchorX, vy: anchorY });
+		});
 		resetTransform();
 		initialZoom = 0;
 	};
