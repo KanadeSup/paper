@@ -36,6 +36,7 @@ export function BookList() {
 				) : (
 					<div
 						className={cn(
+							"pt-2",
 							"grid grid-cols-1 gap-4",
 							"@md:grid-cols-2",
 							"@2xl:grid-cols-3",
