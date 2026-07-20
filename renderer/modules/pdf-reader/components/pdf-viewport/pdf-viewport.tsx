@@ -4,6 +4,7 @@ import {
 	useViewportRef,
 	ViewportElementContext,
 } from "@embedpdf/plugin-viewport/react";
+import { ScrollArea, ScrollBar } from "@renderer/modules/design-system";
 import type { HTMLAttributes, ReactNode, Ref } from "react";
 import { useEffect, useImperativeHandle, useState } from "react";
 
@@ -32,11 +33,11 @@ export function PDFViewport({
 		}
 	}, [viewportProvides]);
 
-	const { style, ...restProps } = props;
+	const { style, dir, ...restProps } = props;
 
 	return (
 		<ViewportElementContext.Provider value={viewportRef}>
-			<div
+			<ScrollArea
 				{...restProps}
 				ref={viewportRef}
 				style={{
@@ -48,7 +49,8 @@ export function PDFViewport({
 				}}
 			>
 				{!isGated && children}
-			</div>
+				<ScrollBar orientation="horizontal" />
+			</ScrollArea>
 		</ViewportElementContext.Provider>
 	);
 }
