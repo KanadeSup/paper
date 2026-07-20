@@ -20,7 +20,7 @@ export class LibraryService {
 	async syncDocuments() {
 		const storagePath = this.getStoragePath();
 
-		const scannedDocuments = this.scanPdfDocuments(storagePath);
+		const scannedDocuments = this.documentService.scanPdfFiles(storagePath);
 		const scannedDocumentMap = new Map(
 			scannedDocuments.map((document) => [document.id, document]),
 		);
@@ -129,10 +129,6 @@ export class LibraryService {
 
 	getStoragePath() {
 		return this.documentService.getStoragePath();
-	}
-
-	private scanPdfDocuments(storagePath: string) {
-		return this.documentService.scanPdfFiles(storagePath);
 	}
 
 	private async ensureThumbnail(document: ScannedFile) {
