@@ -52,8 +52,6 @@ export function ShortcutProvider({ children }: { children: React.ReactNode }) {
 			const pressedKeys = getShortcutKeyFromEvent(event);
 			if (!pressedKeys) return;
 
-			console.log(activeShortcutGroups);
-
 			// Filter the shortcut bindings by the active shortcut groups
 			const filteredShortcutBindings = shortcutBindings.filter((shortcut) =>
 				activeShortcutGroups.includes(shortcut.group),

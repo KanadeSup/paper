@@ -18,7 +18,6 @@ export function SettingShortcutPage() {
 		cancelPendingChange,
 		confirmOverride,
 	} = useShortcutSettings();
-	console.log("isInitializing", isInitializing);
 
 	return (
 		<SettingLayout>
