@@ -120,7 +120,7 @@ export function ApiKeyProviderCard({
 				<div className="flex items-center justify-end gap-2">
 					<Button
 						variant="outline"
-						disabled={!isConfigured || isChecking}
+						disabled={internalValue.length === 0 || isChecking}
 						onClick={handleCheckConnection}
 						className="px-4"
 					>
