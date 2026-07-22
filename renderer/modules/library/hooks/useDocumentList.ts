@@ -7,8 +7,10 @@ export function useDocumentList() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	const fetchDocuments = useCallback(async () => {
-		setIsLoading(true);
+	const fetchDocuments = useCallback(async (disableLoading?: boolean) => {
+		if (!disableLoading) {
+			setIsLoading(true);
+		}
 		setError(null);
 
 		const response = await getDocumentList();

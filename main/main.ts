@@ -32,7 +32,11 @@ import {
 	GetDocumentStateChannel,
 	UpdateDocumentStateChannel,
 } from "./modules/document-state";
-import { GetDocumentChannel, GetDocumentListChannel } from "./modules/library";
+import {
+	GetDocumentChannel,
+	GetDocumentListChannel,
+	UpdateDocumentChannel,
+} from "./modules/library";
 import {
 	CreateSelectionMenuActionChannel,
 	DeleteSelectionMenuActionChannel,
@@ -174,6 +178,7 @@ new Main().init([
 	new SelectStorageDirectoryChannel(),
 	new GetDocumentListChannel(),
 	new GetDocumentChannel(),
+	new UpdateDocumentChannel(),
 	new GetDocumentStateChannel(),
 	new UpdateDocumentStateChannel(),
 	new SendMessageChannel(),

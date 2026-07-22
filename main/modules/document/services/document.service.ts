@@ -10,6 +10,7 @@ export type ScannedFile = {
 	id: string;
 	filePath: string;
 	fileName: string;
+	fileSize: number;
 };
 
 export class DocumentService {
@@ -58,12 +59,13 @@ export class DocumentService {
 			.filter((entry) => entry.isFile())
 			.map((entry) => {
 				const filePath = join(storagePath, entry.name);
-				const { ino } = statSync(filePath);
+				const { ino, size } = statSync(filePath);
 
 				return {
 					id: ino.toString(),
 					filePath,
 					fileName: entry.name,
+					fileSize: size,
 				};
 			});
 	}

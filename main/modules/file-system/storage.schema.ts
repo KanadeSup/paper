@@ -42,6 +42,8 @@ export const storageDefinition = {
 					author: z.string().nullable(),
 					totalPages: z.number().nullable(),
 					fileName: z.string(),
+					fileSize: z.number().nullable().default(null),
+					tags: z.array(z.string()).default([]),
 				})
 				.array(),
 		}),

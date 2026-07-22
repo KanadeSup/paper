@@ -10,6 +10,7 @@ import { PdfService } from "@main/modules/pdf";
 import { LOCAL_ASSET_PROTOCOL } from "@shared/common/constants/local-asset.constant";
 import type { GetDocumentResponse } from "@shared/library/ipc/get-document.contract";
 import type { ResponseDocument } from "@shared/library/ipc/get-document-list.contract";
+import type { UpdateDocumentRequest } from "@shared/library/ipc/update-document.contract";
 
 export class LibraryService {
 	private readonly documentService = new DocumentService();
@@ -42,7 +43,12 @@ export class LibraryService {
 				continue;
 			}
 
-			updatedRecords.push(record);
+			updatedRecords.push({
+				...record,
+				fileName: scannedDocument.fileName,
+				fileSize: scannedDocument.fileSize,
+				tags: record.tags ?? [],
+			});
 			scannedDocumentMap.delete(record.id);
 		}
 
@@ -68,24 +74,12 @@ export class LibraryService {
 
 		const { records } = this.fileStorageService.getStorageData("documents");
 		const record = records.find((document) => document.id === documentId);
-		const thumbnailFilename = `${documentId}.png`;
-		const isThumbnailExists = this.imageStorageService.imageExists(
-			DOCUMENT_THUMBNAIL_CATEGORY,
-			thumbnailFilename,
-		);
+		if (!record) {
+			throw new NotFoundError("Document not found");
+		}
 
 		return {
-			id: documentId,
-			title: record?.title ?? null,
-			author: record?.author ?? null,
-			totalPages: record?.totalPages ?? null,
-			thumbnail: isThumbnailExists
-				? this.imageStorageService.getAssetUrl(
-						DOCUMENT_THUMBNAIL_CATEGORY,
-						thumbnailFilename,
-					)
-				: null,
-			fileName: scannedDocument.fileName,
+			...this.toResponseDocument(record),
 			url: this.getDocumentUrl(documentId),
 		};
 	}
@@ -99,28 +93,33 @@ export class LibraryService {
 
 		const { records } = this.fileStorageService.getStorageData("documents");
 
-		return records.map((document) => {
-			const thumbnailFilename = `${document.id}.png`;
+		return records.map((document) => this.toResponseDocument(document));
+	}
 
-			const isThumbnailExists = this.imageStorageService.imageExists(
-				DOCUMENT_THUMBNAIL_CATEGORY,
-				thumbnailFilename,
-			);
+	async updateDocument(
+		documentId: string,
+		data: Omit<UpdateDocumentRequest, "documentId">,
+	): Promise<ResponseDocument> {
+		const { records } = this.fileStorageService.getStorageData("documents");
+		const targetIndex = records.findIndex(
+			(document) => document.id === documentId,
+		);
+		if (targetIndex < 0) {
+			throw new NotFoundError("Document not found");
+		}
 
-			return {
-				id: document.id,
-				title: document.title,
-				author: document.author,
-				totalPages: document.totalPages,
-				thumbnail: isThumbnailExists
-					? this.imageStorageService.getAssetUrl(
-							DOCUMENT_THUMBNAIL_CATEGORY,
-							thumbnailFilename,
-						)
-					: null,
-				fileName: document.fileName,
-			};
-		});
+		const targetRecord = records[targetIndex];
+		const nextRecord: DocumentRecord = {
+			...targetRecord,
+			...(data.title !== undefined ? { title: data.title } : {}),
+			...(data.author !== undefined ? { author: data.author } : {}),
+			...(data.tags !== undefined ? { tags: data.tags } : {}),
+		};
+
+		records[targetIndex] = nextRecord;
+		this.fileStorageService.setCollectionRecords("documents", records);
+
+		return this.toResponseDocument(nextRecord);
 	}
 
 	private findScannedDocument(documentId: string) {
@@ -168,6 +167,32 @@ export class LibraryService {
 			author: metadata.author,
 			totalPages: metadata.totalPages,
 			fileName: document.fileName,
+			fileSize: document.fileSize,
+			tags: [],
+		};
+	}
+
+	private toResponseDocument(document: DocumentRecord): ResponseDocument {
+		const thumbnailFilename = `${document.id}.png`;
+		const isThumbnailExists = this.imageStorageService.imageExists(
+			DOCUMENT_THUMBNAIL_CATEGORY,
+			thumbnailFilename,
+		);
+
+		return {
+			id: document.id,
+			title: document.title,
+			author: document.author,
+			totalPages: document.totalPages,
+			thumbnail: isThumbnailExists
+				? this.imageStorageService.getAssetUrl(
+						DOCUMENT_THUMBNAIL_CATEGORY,
+						thumbnailFilename,
+					)
+				: null,
+			fileName: document.fileName,
+			fileSize: document.fileSize ?? null,
+			tags: document.tags ?? [],
 		};
 	}
 

@@ -8,6 +8,8 @@ export type ResponseDocument = {
 	totalPages: number | null;
 	thumbnail: string | null;
 	fileName: string;
+	fileSize: number | null;
+	tags: string[];
 };
 
 export type GetDocumentListRequest = undefined;

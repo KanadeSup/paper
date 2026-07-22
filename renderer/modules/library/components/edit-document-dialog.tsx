@@ -38,7 +38,7 @@ export type EditDocumentDialogProps = {
 	document: EditableDocument;
 	tagSuggestions?: string[];
 	onOpenChange: (open: boolean) => void;
-	onSave: (data: EditDocumentFormValues) => void;
+	onSave: (data: EditDocumentFormValues) => void | Promise<void>;
 };
 
 export function EditDocumentDialog(props: EditDocumentDialogProps) {

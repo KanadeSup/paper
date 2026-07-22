@@ -7,9 +7,12 @@ import {
 	SearchInput,
 } from "@renderer/modules/design-system";
 import { Link } from "@tanstack/react-router";
+import Logger from "electron-log/renderer.js";
 import { ImportIcon, Loader2, RefreshCcw } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useDocumentList } from "../hooks/useDocumentList";
+import { updateDocument } from "../ipc/document.ipc";
 import { DocumentCard } from "./document-card";
 import {
 	type EditableDocument,
@@ -34,9 +37,22 @@ export function BookList() {
 	const [editingDocument, setEditingDocument] =
 		useState<EditableDocument | null>(null);
 
-	const handleSave = (data: EditDocumentFormValues) => {
-		// TODO: call update-document IPC when available
-		console.log("edit-document", data);
+	const handleSave = async (data: EditDocumentFormValues) => {
+		const response = await updateDocument({
+			documentId: data.id,
+			title: data.title?.trim() ? data.title.trim() : null,
+			author: data.author?.trim() ? data.author.trim() : null,
+			tags: data.tags,
+		});
+
+		if (!response.success) {
+			Logger.error(response.errorMessage ?? "Failed to update document");
+			toast.error("Failed to update document");
+			return;
+		}
+		toast.success("Document updated successfully");
+
+		await refresh(true);
 	};
 
 	return (
@@ -93,8 +109,9 @@ export function BookList() {
 											author: document.author ?? undefined,
 											totalPages: document.totalPages ?? undefined,
 											thumbnail: document.thumbnail ?? undefined,
-											fileName: document.fileName ?? undefined,
-											tags: [],
+											fileName: document.fileName,
+											fileSize: document.fileSize,
+											tags: document.tags,
 										})
 									}
 								/>
