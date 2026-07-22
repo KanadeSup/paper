@@ -26,6 +26,7 @@ export function BookList() {
 	const [editingDocument, setEditingDocument] =
 		useState<EditableDocument | null>(null);
 	const [activeTags, setActiveTags] = useState<string[]>([]);
+	const [searchQuery, setSearchQuery] = useState<string>("");
 
 	const availableTags = useMemo(
 		() =>
@@ -40,13 +41,21 @@ export function BookList() {
 		return activeTags.filter((tag) => availableTags.includes(tag));
 	}, [activeTags, availableTags]);
 
+	// Filter documents by tags and search query
 	const filteredDocuments = useMemo(() => {
-		if (validActiveTags.length === 0) return documents;
+		return documents.filter((document) => {
+			const matchesTags =
+				validActiveTags.length === 0 ||
+				validActiveTags.every((tag) => document.tags.includes(tag));
 
-		return documents.filter((document) =>
-			validActiveTags.every((tag) => document.tags.includes(tag)),
-		);
-	}, [documents, validActiveTags]);
+			const matchesSearch =
+				searchQuery.length === 0 ||
+				document.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				document.author?.toLowerCase().includes(searchQuery.toLowerCase());
+
+			return matchesTags && matchesSearch;
+		});
+	}, [documents, validActiveTags, searchQuery]);
 
 	const handleSave = async (data: EditDocumentFormValues) => {
 		const response = await updateDocument({
@@ -68,7 +77,11 @@ export function BookList() {
 
 	return (
 		<div className="flex min-h-0 flex-1 flex-col gap-4">
-			<BookListToolbar isLoading={isLoading} onRefresh={refresh} />
+			<BookListToolbar
+				isLoading={isLoading}
+				onRefresh={refresh}
+				onSearchChange={setSearchQuery}
+			/>
 
 			{availableTags.length > 0 && (
 				<TagsGroup
@@ -162,15 +175,20 @@ export function BookList() {
 
 type BookListToolbarProps = {
 	isLoading: boolean;
-	onRefresh: () => void;
+	onRefresh?: () => void;
+	onSearchChange?: (query: string) => void;
 };
 
 export function BookListToolbar(props: BookListToolbarProps) {
-	const { isLoading, onRefresh } = props;
+	const { isLoading, onRefresh, onSearchChange } = props;
 
 	return (
 		<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-			<SearchInput placeholder="Search" className="w-full sm:max-w-xs" />
+			<SearchInput
+				placeholder="Search by title or author"
+				className="w-full sm:max-w-xs"
+				onChange={(e) => onSearchChange?.(e.target.value)}
+			/>
 			<div className="flex shrink-0 items-center gap-2 self-end sm:self-auto">
 				<Button>
 					<ImportIcon className="size-4" />
