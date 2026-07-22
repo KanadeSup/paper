@@ -166,11 +166,15 @@ export function TagInput(props: TagInputProps) {
 				align="start"
 				sideOffset={4}
 				onOpenAutoFocus={(event) => event.preventDefault()}
+				onCloseAutoFocus={(event) => event.preventDefault()}
+				onMouseDown={(event) => event.preventDefault()}
+				onWheel={(event) => event.stopPropagation()}
+				onTouchMove={(event) => event.stopPropagation()}
 				className="gap-0 p-1"
 				style={anchorWidth ? { width: anchorWidth } : undefined}
 			>
 				{filteredSuggestions.length > 0 ? (
-					<ul className="flex max-h-48 flex-col overflow-auto">
+					<ul className="flex max-h-48 flex-col overflow-auto overscroll-contain">
 						{filteredSuggestions.map((suggestion) => (
 							<li key={suggestion}>
 								<button
@@ -179,7 +183,6 @@ export function TagInput(props: TagInputProps) {
 										"flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm",
 										"hover:bg-muted transition-colors",
 									)}
-									onMouseDown={(event) => event.preventDefault()}
 									onClick={() => addTag(suggestion)}
 								>
 									{suggestion}
@@ -195,7 +198,6 @@ export function TagInput(props: TagInputProps) {
 							"hover:bg-muted transition-colors",
 							"break-all",
 						)}
-						onMouseDown={(event) => event.preventDefault()}
 						onClick={() => addTag(trimmedQuery)}
 					>
 						create "{trimmedQuery}" tag
