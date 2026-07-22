@@ -11,21 +11,21 @@ import { Popover, PopoverAnchor, PopoverContent } from "../ui/popover";
 
 export type TagInputProps = {
 	value: string[];
-	onChange: (tags: string[]) => void;
 	suggestions?: string[];
 	placeholder?: string;
 	className?: string;
 	disabled?: boolean;
+	onChange: (tags: string[]) => void;
 };
 
 export function TagInput(props: TagInputProps) {
 	const {
 		value,
-		onChange,
 		suggestions = [],
 		placeholder = "Add a tag…",
 		className,
 		disabled,
+		onChange,
 	} = props;
 
 	const [open, setOpen] = useState(false);
@@ -98,7 +98,7 @@ export function TagInput(props: TagInputProps) {
 	};
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
+		<Popover open={open}>
 			<PopoverAnchor asChild>
 				<div
 					ref={anchorRef}
@@ -111,7 +111,6 @@ export function TagInput(props: TagInputProps) {
 					)}
 					onClick={() => {
 						if (disabled) return;
-						setOpen(true);
 						inputRef.current?.focus();
 					}}
 				>
@@ -122,11 +121,13 @@ export function TagInput(props: TagInputProps) {
 								"inline-flex max-w-full items-center gap-1 rounded-md",
 								"bg-muted px-1.5 py-0.5 text-xs font-medium text-foreground",
 							)}
+							onMouseDown={(event) => {
+								event.preventDefault();
+							}}
 						>
 							<span className="truncate">{tag}</span>
 							<button
 								type="button"
-								aria-label={`Remove ${tag}`}
 								className={cn(
 									"shrink-0 rounded-sm text-muted-foreground",
 									"hover:text-foreground transition-colors",
@@ -147,17 +148,15 @@ export function TagInput(props: TagInputProps) {
 						value={query}
 						disabled={disabled}
 						placeholder={value.length === 0 ? placeholder : undefined}
-						aria-autocomplete="list"
-						aria-expanded={open}
 						className={cn(
 							"min-w-24 flex-1 bg-transparent text-sm outline-none",
 							"placeholder:text-muted-foreground",
 						)}
 						onChange={(event) => {
 							setQuery(event.target.value);
-							if (!open) setOpen(true);
 						}}
 						onFocus={() => setOpen(true)}
+						onBlur={() => setOpen(false)}
 						onKeyDown={handleKeyDown}
 					/>
 				</div>
@@ -192,13 +191,14 @@ export function TagInput(props: TagInputProps) {
 					<button
 						type="button"
 						className={cn(
-							"flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm",
+							"w-full rounded-md px-2 py-1.5 text-sm text-left",
 							"hover:bg-muted transition-colors",
+							"break-all",
 						)}
 						onMouseDown={(event) => event.preventDefault()}
 						onClick={() => addTag(trimmedQuery)}
 					>
-						create {trimmedQuery} tag
+						create "{trimmedQuery}" tag
 					</button>
 				) : (
 					<p className="px-2 py-1.5 text-xs text-muted-foreground">
