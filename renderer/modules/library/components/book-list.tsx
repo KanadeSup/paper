@@ -5,11 +5,12 @@ import {
 	IconButton,
 	ScrollArea,
 	SearchInput,
+	TagsGroup,
 } from "@renderer/modules/design-system";
 import { Link } from "@tanstack/react-router";
 import Logger from "electron-log/renderer.js";
 import { ImportIcon, Loader2, RefreshCcw } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useDocumentList } from "../hooks/useDocumentList";
 import { updateDocument } from "../ipc/document.ipc";
@@ -24,10 +25,28 @@ export function BookList() {
 	const { documents, isLoading, error, refresh } = useDocumentList();
 	const [editingDocument, setEditingDocument] =
 		useState<EditableDocument | null>(null);
+	const [activeTags, setActiveTags] = useState<string[]>([]);
 
-	const tagSuggestions = [
-		...new Set(documents.flatMap((document) => document.tags)),
-	].sort((a, b) => a.localeCompare(b));
+	const availableTags = useMemo(
+		() =>
+			[...new Set(documents.flatMap((document) => document.tags))].sort(
+				(a, b) => a.localeCompare(b),
+			),
+		[documents],
+	);
+
+	// Ensure active tags are valid by removing any tags that are no longer in the available tags list
+	const validActiveTags = useMemo(() => {
+		return activeTags.filter((tag) => availableTags.includes(tag));
+	}, [activeTags, availableTags]);
+
+	const filteredDocuments = useMemo(() => {
+		if (validActiveTags.length === 0) return documents;
+
+		return documents.filter((document) =>
+			validActiveTags.every((tag) => document.tags.includes(tag)),
+		);
+	}, [documents, validActiveTags]);
 
 	const handleSave = async (data: EditDocumentFormValues) => {
 		const response = await updateDocument({
@@ -51,6 +70,14 @@ export function BookList() {
 		<div className="flex min-h-0 flex-1 flex-col gap-4">
 			<BookListToolbar isLoading={isLoading} onRefresh={refresh} />
 
+			{availableTags.length > 0 && (
+				<TagsGroup
+					tags={availableTags}
+					value={validActiveTags}
+					onChange={setActiveTags}
+				/>
+			)}
+
 			{error && (
 				<div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-destructive text-sm">
 					{error}
@@ -65,6 +92,10 @@ export function BookList() {
 				) : documents.length === 0 ? (
 					<div className="flex h-40 items-center justify-center text-muted-foreground text-sm">
 						No documents found. Add PDF files to your storage directory.
+					</div>
+				) : filteredDocuments.length === 0 ? (
+					<div className="flex h-40 items-center justify-center text-muted-foreground text-sm">
+						No documents match the selected tags.
 					</div>
 				) : (
 					<div
@@ -86,7 +117,7 @@ export function BookList() {
 							"@xl:gap-6",
 						)}
 					>
-						{documents.map((document) => (
+						{filteredDocuments.map((document) => (
 							<Link to={`/library/${document.id}`} key={document.id}>
 								<DocumentCard
 									key={document.id}
@@ -118,7 +149,7 @@ export function BookList() {
 				<EditDocumentDialog
 					open={true}
 					document={editingDocument}
-					tagSuggestions={tagSuggestions}
+					tagSuggestions={availableTags}
 					onOpenChange={(open) => {
 						if (!open) setEditingDocument(null);
 					}}
