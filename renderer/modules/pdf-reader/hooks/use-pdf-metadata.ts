@@ -1,6 +1,7 @@
 import { useRegistry } from "@embedpdf/core/react";
 import { useBookmarkCapability } from "@embedpdf/plugin-bookmark/react";
 import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/react";
+import { getDocument } from "@renderer/modules/library/ipc/document.ipc";
 import Logger from "electron-log/renderer.js";
 import { useCallback, useEffect, useState } from "react";
 import type { PdfMetadata, PdfOutlineObject } from "../types/pdf.type";
@@ -33,18 +34,27 @@ export function usePdfMetadata(documentId: string) {
 				throw new Error("Document not found");
 			}
 
-			const [bookmarkResult, pdfMetadata] = await Promise.all([
-				bookmarkProvides.forDocument(documentId).getBookmarks().toPromise(),
-				engine.getMetadata(document).toPromise(),
-			]);
+			const bookmarkResult = await bookmarkProvides
+				.forDocument(documentId)
+				.getBookmarks()
+				.toPromise();
 
 			const outlines: PdfOutlineObject[] = bookmarkResult.bookmarks;
 			resolveBookmarkStartPage(outlines);
 			resolveBookmarkEndPage(outlines, null);
 
+			const res = await getDocument(documentId);
+			if (!res.success) {
+				throw new Error("Document not found");
+			}
+			const documentInfo = res.data;
+
 			setMetadata({
-				...pdfMetadata,
-				outlines: outlines,
+				id: documentId,
+				title: documentInfo.title,
+				author: documentInfo.author,
+				tags: documentInfo.tags,
+				outlines,
 			});
 		} catch (err) {
 			Logger.error("Failed to load PDF metadata", err);
