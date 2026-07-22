@@ -20,22 +20,14 @@ import {
 	type EditDocumentFormValues,
 } from "./edit-document-dialog";
 
-/**
- * Placeholder suggestions until a get-tags IPC channel exists.
- * Replace with data from the main process when integrating.
- */
-const TAG_SUGGESTIONS = [
-	"Research",
-	"Textbook",
-	"Fiction",
-	"Reference",
-	"Paper",
-];
-
 export function BookList() {
 	const { documents, isLoading, error, refresh } = useDocumentList();
 	const [editingDocument, setEditingDocument] =
 		useState<EditableDocument | null>(null);
+
+	const tagSuggestions = [
+		...new Set(documents.flatMap((document) => document.tags)),
+	].sort((a, b) => a.localeCompare(b));
 
 	const handleSave = async (data: EditDocumentFormValues) => {
 		const response = await updateDocument({
@@ -102,6 +94,7 @@ export function BookList() {
 									author={document.author}
 									totalPages={document.totalPages}
 									thumbnail={document.thumbnail}
+									tags={document.tags}
 									onEditClick={() =>
 										setEditingDocument({
 											id: document.id,
@@ -125,7 +118,7 @@ export function BookList() {
 				<EditDocumentDialog
 					open={true}
 					document={editingDocument}
-					tagSuggestions={TAG_SUGGESTIONS}
+					tagSuggestions={tagSuggestions}
 					onOpenChange={(open) => {
 						if (!open) setEditingDocument(null);
 					}}

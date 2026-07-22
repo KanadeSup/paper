@@ -6,11 +6,19 @@ export type DocumentCardProps = {
 	totalPages?: number | null;
 	author?: string | null;
 	thumbnail?: string | null;
+	tags?: string[];
 	onEditClick?: () => void;
 };
 
 export function DocumentCard(props: DocumentCardProps) {
-	const { title, totalPages, author, thumbnail, onEditClick } = props;
+	const {
+		title,
+		totalPages,
+		author,
+		thumbnail,
+		tags = [],
+		onEditClick,
+	} = props;
 
 	return (
 		<div className="group flex min-w-0 flex-col gap-2.5">
@@ -75,6 +83,22 @@ export function DocumentCard(props: DocumentCardProps) {
 					<p className="mt-1 truncate text-muted-foreground text-xs">
 						{author}
 					</p>
+				) : null}
+				{tags.length > 0 ? (
+					<ul className="mt-1.5 flex flex-wrap gap-1">
+						{tags.map((tag) => (
+							<li
+								key={tag}
+								className={cn(
+									"max-w-full truncate rounded-md bg-muted px-1.5 py-0.5",
+									"text-[10px] font-medium text-muted-foreground leading-none",
+								)}
+								title={tag}
+							>
+								{tag}
+							</li>
+						))}
+					</ul>
 				) : null}
 			</div>
 		</div>
